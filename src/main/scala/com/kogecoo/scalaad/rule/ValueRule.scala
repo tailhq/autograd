@@ -1,16 +1,18 @@
 package com.kogecoo.scalaad.rule
 
+import com.kogecoo.scalaad.graph.Value
+
 import scala.language.higherKinds
+
 
 // Define concrete calculations for U[T] type instances which performed on nodes in computational graph.
 trait ValueRule[U[_], T] {
 
-  val zeroAdd: U[T]  // T + zeroAdd() = T
-  val zeroMul: U[T]  // T * zeroMul() = T
-  val derivConst: U[T]
+  val zeroAdd: Value[U, T]  // T + zeroAdd() = T
+  val zeroMul: Value[U, T]  // T * zeroMul() = T
+  val derivConst: Value[U, T]
 
-  // wrap/unwrapping value for treat as scalar
-  def wrap(v: T): U[T]   // FIXME
+  def wrap(v: T): Value[U, T]   // FIXME
 
   // because of type erasure, we cannot every 'add' methods to be a same name
 
@@ -40,15 +42,23 @@ trait ValueRule[U[_], T] {
   def mulMM(l: T, r: T): T
   def divMM(l: T, r: T): T
 
-  def pos(v: U[T]): U[T]
-  def neg(v: U[T]): U[T]
+  def posS(v: U[T]): U[T]
+  def negS(v: U[T]): U[T]
+
+  def posM(v: T): T
+  def negM(v: T): T
 }
 
 trait MathRule[U[_], T] extends ValueRule[U, T] {
 
-  def sin(v: U[T]): U[T]
-  def cos(v: U[T]): U[T]
-  def tan(v: U[T]): U[T]
-  def ln(v: U[T]): U[T]
+  def sinS(v: U[T]): U[T]
+  def cosS(v: U[T]): U[T]
+  def tanS(v: U[T]): U[T]
+  def lnS(v: U[T]): U[T]
+
+  def sinM(v: T): T
+  def cosM(v: T): T
+  def tanM(v: T): T
+  def lnM(v: T): T
 
 }

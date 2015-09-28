@@ -15,10 +15,10 @@ import scala.language.higherKinds
 trait Node[U[_], T] {
   override def toString: String
 
-  def apply(): U[T]
-  def deriv(wrt: Node[U, T]): U[T] // compute with forward-mode automatic differentiation
-  def propagate(g: U[T]): U[T]    // compute with reverse-mode autmatic differentiation
-  def grad()(implicit r: ValueRule[U, T]): U[T] = {
+  def apply(): Value[U, T]
+  def deriv(wrt: Node[U, T]): Value[U, T] // compute with forward-mode automatic differentiation
+  def propagate(g: Value[U, T]): Value[U, T]    // compute with reverse-mode autmatic differentiation
+  def grad()(implicit r: ValueRule[U, T]): Value[U, T] = {
     propagate(r.zeroMul)
   }
 
@@ -29,4 +29,5 @@ trait Node[U[_], T] {
 
   def unary_+(rhs: Node[U, T])(implicit r: ValueRule[U, T]): Node[U, T] = Pos(this)
   def unary_-(rhs: Node[U, T])(implicit r: ValueRule[U, T]): Node[U, T] = Neg(this)
+
 }

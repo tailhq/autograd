@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.{Scalar, ScalarConst}
+import com.kogecoo.scalaad.graph.{ NonContainerValue, Scalar, ScalarConst, Value}
 import com.kogecoo.scalaad.rule.{ MathRule, ValueRule }
 
 import scala.language.implicitConversions
@@ -9,7 +9,7 @@ object DoubleRule {
 
   object Implicits {
 
-    implicit val doubleValueRule = new DoubleValueRule
+    implicit val doubleRule = new DoubleRule
 
     // Literal conversion for constructing computational tree
     implicit def fromByte(v: Byte):     ScalarConst[Scalar, Double] = ScalarConst[Scalar, Double](v.toDouble)
@@ -20,14 +20,14 @@ object DoubleRule {
     implicit def fromDouble(v: Double): ScalarConst[Scalar, Double] = ScalarConst[Scalar, Double](v)
   }
 
-  class DoubleValueRule extends DoubleValueRuleBase with DoubleMathRule
+  class DoubleRule extends DoubleValueRule with DoubleMathRule
 
-  trait DoubleValueRuleBase extends ValueRule[Scalar, Double] {
-    override val zeroAdd: Scalar[Double] = Scalar(0.0)
-    override val zeroMul: Scalar[Double] = Scalar(1.0)
-    override val derivConst: Scalar[Double] = Scalar(0.0)
+  trait DoubleValueRule extends ValueRule[Scalar, Double] {
+    override val zeroAdd: Value[Scalar, Double] = wrap(0.0)
+    override val zeroMul: Value[Scalar, Double] = wrap(1.0)
+    override val derivConst: Value[Scalar, Double] = wrap(0.0)
 
-    override def wrap(v: Double): Scalar[Double] = Scalar(v)
+    override def wrap(v: Double): Value[Scalar, Double] = NonContainerValue[Scalar, Double](v)
 
     override def addSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Double] = Scalar(l.data + r.data)
     override def subSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Double] = Scalar(l.data - r.data)
@@ -49,14 +49,24 @@ object DoubleRule {
     override def mulMM(l: Double, r: Double): Double = l * r
     override def divMM(l: Double, r: Double): Double = l / r
 
-    override def pos(v: Scalar[Double]): Scalar[Double] = Scalar(+v.data)
-    override def neg(v: Scalar[Double]): Scalar[Double] = Scalar(-v.data)
+    override def posS(v: Scalar[Double]): Scalar[Double] = Scalar(+v.data)
+    override def negS(v: Scalar[Double]): Scalar[Double] = Scalar(-v.data)
+
+    override def posM(v: Double): Double = +v
+    override def negM(v: Double): Double = -v
   }
 
   trait DoubleMathRule extends MathRule[Scalar, Double] {
-    override def sin(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.sin(v.data))
-    override def cos(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.cos(v.data))
-    override def tan(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.tan(v.data))
-    override def ln(v: Scalar[Double]):  Scalar[Double] = Scalar(scala.math.log(v.data))
+
+    override def sinS(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.sin(v.data))
+    override def cosS(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.cos(v.data))
+    override def tanS(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.tan(v.data))
+    override def lnS(v: Scalar[Double]):  Scalar[Double] = Scalar(scala.math.log(v.data))
+
+    override def sinM(v: Double): Double = scala.math.sin(v)
+    override def cosM(v: Double): Double = scala.math.cos(v)
+    override def tanM(v: Double): Double = scala.math.tan(v)
+    override def lnM(v: Double):  Double = scala.math.log(v)
+
   }
 }

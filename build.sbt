@@ -6,7 +6,11 @@ scalaVersion := "2.11.7"
 
 lazy val root = project.in(file("."))
 
-libraryDependencies ++= Seq()
+libraryDependencies ++= Seq(
+  "org.scalanlp" %% "breeze" % "0.11.2",
+  "org.scalanlp" %% "breeze-natives" % "0.11.2"
+  //"org.scalanlp" %% "breeze-viz" % "0.11.2"
+)
 
 scalacOptions += "-feature"
 
