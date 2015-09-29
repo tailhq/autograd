@@ -1,7 +1,5 @@
 package com.kogecoo.scalaad.rule
 
-import com.kogecoo.scalaad.graph.{ ContainerValue, Node, NonContainerValue, ScalarConst, Value }
-
 import scala.language.higherKinds
 
 

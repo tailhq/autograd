@@ -1,8 +1,8 @@
 package com.kogecoo.scalaad
 
 import com.kogecoo.scalaad.ScalarRule.Implicits._
-import com.kogecoo.scalaad.graph.{ NonContainerValue, Scalar, ScalarConst, Value }
-import com.kogecoo.scalaad.rule.{ MathRule, ValueRule }
+import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.rule._
 
 import breeze.linalg._
 import scala.language.implicitConversions
@@ -32,15 +32,18 @@ object BreezeRule {
   class DenseMatrixRule extends DenseMatrixValueRule with DenseMatrixMathRule
 
   trait DenseVectorValueRule extends ValueRule[DenseVector, T]{
-    override val zeroAdd: Value[DenseVector, T]    = wrap(0.0)
-    override val zeroMul: Value[DenseVector, T]    = wrap(1.0)
-    override val derivConst: Value[DenseVector, T] = wrap(0.0)
+    override val zeroAdd: Value[DenseVector, T]    = toValue(0.0)
+    override val zeroMul: Value[DenseVector, T]    = toValue(1.0)
+    override val derivConst: Value[DenseVector, T] = toValue(0.0)
 
-    override def wrap(v: T): Value[DenseVector, T] = NonContainerValue[DenseVector, T](v)
+    override def toValue(v: T): Value[DenseVector, T] = NonContainerValue[DenseVector, T](v)
+    override def toValue(v: V)(implicit e: DummyImplicit): Value[DenseVector, T] = {
+      ContainerValue[DenseVector, T](v)
+    }
 
     override def addSS(l: V, r: V): V = l + r
     override def subSS(l: V, r: V): V = l - r
-    override def mulSS(l: V, r: V): V = { println(s"l: ${l}"); println(s"r: ${r}");l :* r }
+    override def mulSS(l: V, r: V): V = l :* r
     override def divSS(l: V, r: V): V = l :/ r
 
     override def addSM(l: V, r: T): V = l + r
@@ -80,11 +83,14 @@ object BreezeRule {
   }
 
   trait DenseMatrixValueRule extends ValueRule[DenseMatrix, T] {
-    override val zeroAdd: Value[DenseMatrix, T]    = wrap(0.0)
-    override val zeroMul: Value[DenseMatrix, T]    = wrap(1.0)
-    override val derivConst: Value[DenseMatrix, T] = wrap(0.0)
+    override val zeroAdd: Value[DenseMatrix, T]    = toValue(0.0)
+    override val zeroMul: Value[DenseMatrix, T]    = toValue(1.0)
+    override val derivConst: Value[DenseMatrix, T] = toValue(0.0)
 
-    override def wrap(v: T): Value[DenseMatrix, T] = NonContainerValue[DenseMatrix, T](v)
+    override def toValue(v: T): Value[DenseMatrix, T] = NonContainerValue[DenseMatrix, T](v)
+    override def toValue(v: M)(implicit e: DummyImplicit): Value[DenseMatrix, T] = {
+      ContainerValue[DenseMatrix, T](v)
+    }
 
     override def addSS(l: M, r: M): M = l + r
     override def subSS(l: M, r: M): M = l - r

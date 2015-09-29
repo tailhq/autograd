@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.rule.MathRule
-import com.kogecoo.scalaad.rule.Implicits._
+import com.kogecoo.scalaad.rule.{ContainerValue, MathRule, NonContainerValue, Value}
 
 import scala.language.higherKinds
 
@@ -24,14 +23,13 @@ class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U
   override def toString: String = s"tan(${ v })"
   override def apply(): Value[U, T] = tan(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
-    val v_val: Value[U, T] = v()
-    val tan2: Value[U, T] = tan(v_val) * tan(v_val)
-    v.deriv(wrt) * (vr.zeroMul + tan2)
+    val tan_v_val = tan(v())
+    v.deriv(wrt) * (vr.zeroMul + tan_v_val * tan_v_val)
   }
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
-    val v_val: Value[U, T] = v()
-    v.propagate(g * (vr.zeroMul + tan(v_val) * tan(v_val)))
+    val tan_v_val = tan(v())
+    v.propagate(g * (vr.zeroMul + tan_v_val * tan_v_val))
   }
 }
 
@@ -47,7 +45,7 @@ object sin {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sin[U, T] = new sin(v)
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.sinM(v.data))
-    case v: ContainerValue[U, T] => ContainerValue[U, T](mr.sinS(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.sinS(v.data))
   }
 }
 
@@ -55,7 +53,7 @@ object cos {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): cos[U, T] = new cos(v)
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.cosM(v.data))
-    case v: ContainerValue[U, T] => ContainerValue[U, T](mr.cosS(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.cosS(v.data))
   }
 }
 
@@ -63,7 +61,7 @@ object tan {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): tan[U, T] = new tan(v)
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.tanM(v.data))
-    case v: ContainerValue[U, T] => ContainerValue[U, T](mr.tanS(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.tanS(v.data))
   }
 }
 
@@ -71,6 +69,6 @@ object ln {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): ln[U, T] = new ln(v)
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.lnM(v.data))
-    case v: ContainerValue[U, T] => ContainerValue[U, T](mr.lnS(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.lnS(v.data))
   }
 }

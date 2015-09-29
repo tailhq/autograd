@@ -1,9 +1,7 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.rule.ValueRule
-import com.kogecoo.scalaad.rule.Implicits._
+import com.kogecoo.scalaad.rule.{Value, ValueRule}
 
-import Predef.{any2stringadd => _, _}
 import scala.language.higherKinds
 
 

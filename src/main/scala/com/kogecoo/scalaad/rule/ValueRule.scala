@@ -1,8 +1,7 @@
 package com.kogecoo.scalaad.rule
 
-import com.kogecoo.scalaad.graph.Value
-
 import scala.language.higherKinds
+import scala.reflect.ClassTag
 
 
 // Define concrete calculations for U[T] type instances which performed on nodes in computational graph.
@@ -12,7 +11,8 @@ trait ValueRule[U[_], T] {
   val zeroMul: Value[U, T]  // T * zeroMul() = T
   val derivConst: Value[U, T]
 
-  def wrap(v: T): Value[U, T]   // FIXME
+  def toValue(v: T): Value[U, T]   // FIXME
+  def toValue(v: U[T])(implicit e: DummyImplicit): Value[U, T]   // FIXME
 
   // because of type erasure, we cannot every 'add' methods to be a same name
 
@@ -61,4 +61,8 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def tanM(v: T): T
   def lnM(v: T): T
 
+}
+
+trait ValueWrapperRule[Wrappee, Wrapper[_], T] {
+  def toWrapper(data: Wrappee): Wrapper[T]
 }

@@ -1,6 +1,4 @@
-package com.kogecoo.scalaad.graph
-
-import com.kogecoo.scalaad.rule.ValueRule
+package com.kogecoo.scalaad.rule
 
 import scala.language.higherKinds
 
