@@ -44,32 +44,4 @@ object Implicits {
 
   }
 
-  def sin_#[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = {
-    v match {
-      case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.sinM(v.data))
-      case v: ContainerValue[U, T] => ContainerValue[U, T](mr.sinS(v.data))
-    }
-  }
-
-  def cos_#[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = {
-    v match {
-      case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.cosM(v.data))
-      case v: ContainerValue[U, T] => ContainerValue[U, T](mr.cosS(v.data))
-    }
-  }
-
-  def tan_#[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = {
-    v match {
-      case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.tanM(v.data))
-      case v: ContainerValue[U, T] => ContainerValue[U, T](mr.tanS(v.data))
-    }
-  }
-
-  def ln_#[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = {
-    v match {
-      case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.lnM(v.data))
-      case v: ContainerValue[U, T] => ContainerValue[U, T](mr.lnS(v.data))
-    }
-  }
-
 }
