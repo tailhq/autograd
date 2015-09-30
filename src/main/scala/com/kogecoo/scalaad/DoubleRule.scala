@@ -69,11 +69,13 @@ object DoubleRule {
     override def cosS(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.cos(v.data))
     override def tanS(v: Scalar[Double]): Scalar[Double] = Scalar(scala.math.tan(v.data))
     override def lnS(v: Scalar[Double]):  Scalar[Double] = Scalar(scala.math.log(v.data))
+    override def expS(v: Scalar[Double]):  Scalar[Double] = Scalar(scala.math.exp(v.data))
 
     override def sinM(v: Double): Double = scala.math.sin(v)
     override def cosM(v: Double): Double = scala.math.cos(v)
     override def tanM(v: Double): Double = scala.math.tan(v)
     override def lnM(v: Double):  Double = scala.math.log(v)
+    override def expM(v: Double):  Double = scala.math.exp(v)
 
   }
 

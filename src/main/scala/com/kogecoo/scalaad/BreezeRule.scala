@@ -74,11 +74,13 @@ object BreezeRule {
     override def cosS(v: V): V = breeze.numerics.cos(v)
     override def tanS(v: V): V = breeze.numerics.tan(v)
     override def lnS(v: V):  V = breeze.numerics.log(v)
+    override def expS(v: V):  V = breeze.numerics.exp(v)
 
     override def sinM(v: T): T = breeze.numerics.sin(v)
     override def cosM(v: T): T = breeze.numerics.cos(v)
     override def tanM(v: T): T = breeze.numerics.tan(v)
     override def lnM(v: T):  T = breeze.numerics.log(v)
+    override def expM(v: T):  T = breeze.numerics.exp(v)
 
   }
 
@@ -125,11 +127,13 @@ object BreezeRule {
     override def cosS(v: M): M = breeze.numerics.cos(v)
     override def tanS(v: M): M = breeze.numerics.tan(v)
     override def lnS(v: M):  M = breeze.numerics.log(v)
+    override def expS(v: M):  M = breeze.numerics.exp(v)
 
     override def sinM(v: T): T = breeze.numerics.sin(v)
     override def cosM(v: T): T = breeze.numerics.cos(v)
     override def tanM(v: T): T = breeze.numerics.tan(v)
     override def lnM(v: T):  T = breeze.numerics.log(v)
+    override def expM(v: T):  T = breeze.numerics.exp(v)
 
   }
 

@@ -80,11 +80,13 @@ object Nd4jRule {
     override def cosS(v: C): C = INDArray_(v.data.map(scala.math.cos))
     override def tanS(v: C): C = INDArray_(v.data.map(scala.math.tan))
     override def lnS(v: C):  C = INDArray_(v.data.map(scala.math.log))
+    override def expS(v: C):  C = INDArray_(v.data.map(scala.math.log))
 
     override def sinM(v: T): T = scala.math.sin(v)
     override def cosM(v: T): T = scala.math.cos(v)
     override def tanM(v: T): T = scala.math.tan(v)
     override def lnM(v: T):  T = scala.math.log(v)
+    override def expM(v: T):  T = scala.math.log(v)
 
   }
 
