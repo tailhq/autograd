@@ -81,7 +81,7 @@ object ln {
 }
 
 object exp {
-  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): ln[U, T] = new ln(v)
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): exp[U, T] = new exp(v)
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.expM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.expS(v.data))
