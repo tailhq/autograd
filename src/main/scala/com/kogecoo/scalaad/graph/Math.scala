@@ -47,6 +47,29 @@ class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * v())
 }
 
+class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
+  override def toString: String = s"pow(${ a }, ${ b } )"
+  override def apply(): Value[U, T] = pow(a(), b())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+    val a_val = a()
+    val b_val =  b()
+    val b_minus_one = b_val - r.zeroMul
+
+    val lhs = a.deriv(wrt) * b_val * pow(a_val, b_minus_one)
+    val rhs = b.deriv(wrt) * ln(a_val) * pow(a_val, b_val)
+    lhs + rhs
+  }
+  override def propagate(g: Value[U, T]): Value[U, T] = {
+    val a_val = a()
+    val b_val = b()
+    val b_minus_one = b_val - r.zeroMul
+
+    val lhs = a.propagate(g * b_val * pow(a_val, b_minus_one))
+    val rhs = b.propagate(g * ln(a_val) * pow(a_val, b_val))
+    lhs + rhs
+  }
+}
+
 
 object sin {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sin[U, T] = new sin(v)
@@ -85,6 +108,16 @@ object exp {
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.expM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.expS(v.data))
+  }
+}
+
+object pow {
+  def apply[U[_], T](v: Node[U, T], p: Node[U, T])(implicit vr: MathRule[U, T]): pow[U, T] = new pow(v, p)
+  def apply[U[_], T](v: Value[U, T], p: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = (v, p) match {
+    case (v: NonContainerValue[U, T], p: NonContainerValue[U, T]) => NonContainerValue[U, T](mr.powMM(v.data, p.data))
+    case (v: NonContainerValue[U, T], p: ContainerValue[U, T])    => ContainerValue[U, T](mr.powMS(v.data, p.data))
+    case (v: ContainerValue[U, T], p: NonContainerValue[U, T])    => ContainerValue[U, T](mr.powSM(v.data, p.data))
+    case (v: ContainerValue[U, T], p: ContainerValue[U, T])    => ContainerValue[U, T](mr.powSS(v.data, p.data))
   }
 }
 

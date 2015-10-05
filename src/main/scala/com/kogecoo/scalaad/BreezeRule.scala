@@ -82,6 +82,10 @@ object BreezeRule {
     override def lnM(v: T):  T = breeze.numerics.log(v)
     override def expM(v: T):  T = breeze.numerics.exp(v)
 
+    override def powSS(v: V, p: V): V = breeze.numerics.pow(v, p)
+    override def powSM(v: V, p: T): V = breeze.numerics.pow(v, p)
+    override def powMS(v: T, p: V): V = breeze.numerics.pow(v, p)
+    override def powMM(v: T, p: T): T = breeze.numerics.pow(v, p)
   }
 
   trait DenseMatrixValueRule extends ValueRule[DenseMatrix, T] {
@@ -119,6 +123,7 @@ object BreezeRule {
 
     override def posM(v: T): T = v
     override def negM(v: T): T = -v
+
   }
 
   trait DenseMatrixMathRule extends MathRule[DenseMatrix, T] {
@@ -134,6 +139,11 @@ object BreezeRule {
     override def tanM(v: T): T = breeze.numerics.tan(v)
     override def lnM(v: T):  T = breeze.numerics.log(v)
     override def expM(v: T):  T = breeze.numerics.exp(v)
+
+    override def powSS(v: M, p: M): M = breeze.numerics.pow(v, p)
+    override def powSM(v: M, p: T): M = breeze.numerics.pow(v, p)
+    override def powMS(v: T, p: M): M = breeze.numerics.pow(v, p)
+    override def powMM(v: T, p: T): T = breeze.numerics.pow(v, p)
 
   }
 

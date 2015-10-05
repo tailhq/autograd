@@ -88,10 +88,28 @@ object Nd4jRule {
     override def lnM(v: T):  T = scala.math.log(v)
     override def expM(v: T):  T = scala.math.log(v)
 
+    override def powSS(v: C, p: C): C = applyEach(v, p, scala.math.pow)
+    override def powSM(v: C, p: T): C = INDArray_(v.data.map(scala.math.pow(_, p)))
+    override def powMS(v: T, p: C): C = INDArray_(p.data.map(scala.math.pow(v, _)))
+    override def powMM(v: T, p: T): T = scala.math.pow(v, p)
   }
 
   class INDArrayWrapperRule extends ValueWrapperRule[INDArray, INDArray_, Double] {
     override def toWrapper(src: INDArray): INDArray_[Double] = INDArray_(src)
+  }
+
+  // FIXME
+  def applyEach(self: C, other: C, f: (T, T) => T): C = {
+    val builder = scala.collection.mutable.ArrayBuilder.make[T]
+    other.data.map { pv => builder += pv; pv }
+
+    var args = builder.result()
+      val applied = self.data.map({
+        val arg = args.head
+        args = args.tail
+        f(_, arg)
+      })
+      INDArray_(applied)
   }
 
 }

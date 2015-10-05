@@ -77,6 +77,10 @@ object DoubleRule {
     override def lnM(v: Double):  Double = scala.math.log(v)
     override def expM(v: Double):  Double = scala.math.exp(v)
 
+    override def powSS(v: Scalar[Double], p: Scalar[Double]): Scalar[Double] = Scalar(scala.math.pow(v.data, p.data))
+    override def powSM(v: Scalar[Double], p: Double): Scalar[Double] = Scalar(scala.math.pow(v.data, p))
+    override def powMS(v: Double, p: Scalar[Double]): Scalar[Double] = Scalar(scala.math.pow(v, p.data))
+    override def powMM(v: Double, p: Double): Double = scala.math.pow(v, p)
   }
 
   class DoubleWrapperRule extends ValueWrapperRule[Double, Scalar, Double] {
