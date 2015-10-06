@@ -56,6 +56,7 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def tanS(v: U[T]): U[T]
   def asinS(v: U[T]): U[T]
   def acosS(v: U[T]): U[T]
+  def atanS(v: U[T]): U[T]
   def lnS(v: U[T]): U[T]
   def expS(v: U[T]): U[T]
   def absS(v: U[T]): U[T]
@@ -66,6 +67,7 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def tanM(v: T): T
   def asinM(v: T): T
   def acosM(v: T): T
+  def atanM(v: T): T
   def lnM(v: T): T
   def expM(v: T): T
   def absM(v: T): T
