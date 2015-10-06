@@ -47,6 +47,13 @@ class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * v())
 }
 
+class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"|${ v }|"
+  override def apply(): Value[U, T] = abs(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = abs(v.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(abs(g))
+}
+
 class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"pow(${ a }, ${ b } )"
   override def apply(): Value[U, T] = pow(a(), b())
@@ -108,6 +115,14 @@ object exp {
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.expM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.expS(v.data))
+  }
+}
+
+object abs {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): abs[U, T] = new abs(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.absM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.absS(v.data))
   }
 }
 

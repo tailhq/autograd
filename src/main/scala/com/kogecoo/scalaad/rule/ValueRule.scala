@@ -56,13 +56,14 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def tanS(v: U[T]): U[T]
   def lnS(v: U[T]): U[T]
   def expS(v: U[T]): U[T]
-
+  def absS(v: U[T]): U[T]
 
   def sinM(v: T): T
   def cosM(v: T): T
   def tanM(v: T): T
   def lnM(v: T): T
   def expM(v: T): T
+  def absM(v: T): T
 
   def powSS(v: U[T], p: U[T]): U[T]
   def powSM(v: U[T], p: T): U[T]
