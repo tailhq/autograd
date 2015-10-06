@@ -9,14 +9,14 @@ class sin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U
   override def toString: String = s"sin(${ v })"
   override def apply(): Value[U, T] = sin(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = cos(v()) * v.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = g * cos(v())
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * cos(v()))
 }
 
 class cos[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"cos(${ v })"
   override def apply(): Value[U, T] = cos(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = -sin(v()) * v.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = -sin(v()) * g
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(-sin(v()) * g)
 }
 
 class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
