@@ -84,6 +84,13 @@ class atan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   }
 }
 
+class sinh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"sinh(${ v })"
+  override def apply(): Value[U, T] = sinh(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = cosh(v()) * v.deriv(wrt)
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * cosh(v()))
+}
+
 class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"ln(${ v })"
   override def apply(): Value[U, T] = ln(v())
@@ -197,6 +204,15 @@ object atan {
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.atanS(v.data))
   }
 }
+
+object sinh {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sinh[U, T] = new sinh(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.sinhM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.sinhS(v.data))
+  }
+}
+
 
 object ln {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): ln[U, T] = new ln(v)
