@@ -91,6 +91,13 @@ class sinh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * cosh(v()))
 }
 
+class cosh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"cosh(${ v })"
+  override def apply(): Value[U, T] = cosh(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = sinh(v()) * v.deriv(wrt)
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(sinh(v()) * g)
+}
+
 class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"ln(${ v })"
   override def apply(): Value[U, T] = ln(v())
@@ -210,6 +217,14 @@ object sinh {
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.sinhM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.sinhS(v.data))
+  }
+}
+
+object cosh {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): cosh[U, T] = new cosh(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.coshM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.coshS(v.data))
   }
 }
 
