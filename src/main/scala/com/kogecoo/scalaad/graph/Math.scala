@@ -33,6 +33,21 @@ class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U
   }
 }
 
+class asin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"asin(${ v })"
+  override def apply(): Value[U, T] = asin(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+    val v_val = v()
+    val d = vr.zeroMul / sqrt(vr.zeroMul - (v_val * v_val))
+    d * v.deriv(wrt)
+  }
+  override def propagate(g: Value[U, T]): Value[U, T] = {
+    val v_val = v()
+    val d = vr.zeroMul / sqrt(vr.zeroMul - (v_val * v_val))
+    v.propagate(g * d)
+  }
+}
+
 class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"ln(${ v })"
   override def apply(): Value[U, T] = ln(v())
@@ -120,6 +135,14 @@ object tan {
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.tanM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.tanS(v.data))
+  }
+}
+
+object asin {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): asin[U, T] = new asin(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.asinM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.asinS(v.data))
   }
 }
 
