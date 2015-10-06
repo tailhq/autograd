@@ -59,6 +59,7 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def atanS(v: U[T]): U[T]
   def sinhS(v: U[T]): U[T]
   def coshS(v: U[T]): U[T]
+  def tanhS(v: U[T]): U[T]
   def lnS(v: U[T]): U[T]
   def expS(v: U[T]): U[T]
   def absS(v: U[T]): U[T]
@@ -72,6 +73,7 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def atanM(v: T): T
   def sinhM(v: T): T
   def coshM(v: T): T
+  def tanhM(v: T): T
   def lnM(v: T): T
   def expM(v: T): T
   def absM(v: T): T

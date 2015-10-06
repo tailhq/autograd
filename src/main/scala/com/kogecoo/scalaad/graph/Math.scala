@@ -98,6 +98,22 @@ class cosh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(sinh(v()) * g)
 }
 
+class tanh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"tanh(${ v })"
+  override def apply(): Value[U, T] = tanh(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+    val tanh_v_val = tanh(v())
+    val one = vr.zeroMul
+    v.deriv(wrt) * (one - tanh_v_val * tanh_v_val)
+  }
+
+  override def propagate(g: Value[U, T]): Value[U, T] = {
+    val tanh_v_val = tanh(v())
+    val one = vr.zeroMul
+    v.propagate(g * (one - tanh_v_val * tanh_v_val))
+  }
+}
+
 class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"ln(${ v })"
   override def apply(): Value[U, T] = ln(v())
@@ -228,6 +244,13 @@ object cosh {
   }
 }
 
+object tanh {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): tanh[U, T] = new tanh(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.tanhM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.tanhS(v.data))
+  }
+}
 
 object ln {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): ln[U, T] = new ln(v)
