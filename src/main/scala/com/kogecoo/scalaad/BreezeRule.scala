@@ -76,6 +76,7 @@ object BreezeRule {
     override def lnS(v: V):  V = breeze.numerics.log(v)
     override def expS(v: V):  V = breeze.numerics.exp(v)
     override def absS(v: V):  V = breeze.numerics.abs(v)
+    override def sqrtS(v: V):  V = breeze.numerics.sqrt(v)
 
     override def sinM(v: T): T = breeze.numerics.sin(v)
     override def cosM(v: T): T = breeze.numerics.cos(v)
@@ -83,6 +84,7 @@ object BreezeRule {
     override def lnM(v: T):  T = breeze.numerics.log(v)
     override def expM(v: T):  T = breeze.numerics.exp(v)
     override def absM(v: T):  T = breeze.numerics.abs(v)
+    override def sqrtM(v: T):  T = breeze.numerics.sqrt(v)
 
     override def powSS(v: V, p: V): V = breeze.numerics.pow(v, p)
     override def powSM(v: V, p: T): V = breeze.numerics.pow(v, p)
@@ -136,6 +138,7 @@ object BreezeRule {
     override def lnS(v: M):  M = breeze.numerics.log(v)
     override def expS(v: M):  M = breeze.numerics.exp(v)
     override def absS(v: M):  M = breeze.numerics.abs(v)
+    override def sqrtS(v: M):  M = breeze.numerics.sqrt(v)
 
     override def sinM(v: T): T = breeze.numerics.sin(v)
     override def cosM(v: T): T = breeze.numerics.cos(v)
@@ -143,6 +146,7 @@ object BreezeRule {
     override def lnM(v: T):  T = breeze.numerics.log(v)
     override def expM(v: T):  T = breeze.numerics.exp(v)
     override def absM(v: T):  T = breeze.numerics.abs(v)
+    override def sqrtM(v: T):  T = breeze.numerics.sqrt(v)
 
     override def powSS(v: M, p: M): M = breeze.numerics.pow(v, p)
     override def powSM(v: M, p: T): M = breeze.numerics.pow(v, p)

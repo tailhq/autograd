@@ -54,6 +54,27 @@ class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(abs(g))
 }
 
+// this may be unnecessary because it can be replaced with pow(x, 1/2)
+class sqrt[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"sqrt(${ v })"
+  override def apply(): Value[U, T] = sqrt(v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+    // FIXME
+    val v_val = v()
+    val half = r.zeroMul / r.zeroMul + r.zeroMul
+    val minus_half = half - r.zeroMul
+    v.deriv(wrt) * v_val * half / pow(v_val, minus_half)
+  }
+  override def propagate(g: Value[U, T]): Value[U, T] = {
+    // FIXME
+    val v_val = v()
+    val half = r.zeroMul / r.zeroMul + r.zeroMul
+    val minus_half = half - r.zeroMul
+    val gv = v_val * half / pow(v_val, minus_half)
+    v.propagate(g * gv)
+  }
+}
+
 class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"pow(${ a }, ${ b } )"
   override def apply(): Value[U, T] = pow(a(), b())
@@ -123,6 +144,14 @@ object abs {
   def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
     case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.absM(v.data))
     case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.absS(v.data))
+  }
+}
+
+object sqrt {
+  def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sqrt[U, T] = new sqrt(v)
+  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
+    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.sqrtM(v.data))
+    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.sqrtS(v.data))
   }
 }
 
