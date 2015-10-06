@@ -23,6 +23,11 @@ println(x.gradient)
 println(y.gradient)
 ```
 
+## TODO
+* test
+* make it to be multiple package
+* exclude Nd4jRule and BreezeRule to other package
+* maven repo
 
 ## Reference
 * http://d.hatena.ne.jp/Nos/20130811/1376232751
