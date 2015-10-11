@@ -43,7 +43,7 @@ case class Div[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit r: ValueRule[
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val rhs_val = rhs()
-    lhs.propagate(g / rhs_val) + rhs.propagate(-g * lhs() / rhs_val)
+    lhs.propagate(g / rhs_val) + rhs.propagate(-g * lhs() / rhs_val / rhs_val)
   }
 }
 
