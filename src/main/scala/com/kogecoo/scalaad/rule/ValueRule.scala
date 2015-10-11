@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.rule
 
 import scala.language.higherKinds
-import scala.reflect.ClassTag
 
 
 // Define concrete calculations for U[T] type instances which performed on nodes in computational graph.
