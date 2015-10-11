@@ -11,8 +11,10 @@ libraryDependencies ++= Seq(
   "org.nd4j" % "nd4j-api" % "0.4-rc3",
   "org.nd4j" % "nd4j-jblas" % "0.4-rc3",
   "org.scalanlp" %% "breeze" % "0.11.2",
-  "org.scalanlp" %% "breeze-natives" % "0.11.2"
+  "org.scalanlp" %% "breeze-natives" % "0.11.2",
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
+//"org.scalacheck" %% "scalacheck" % "1.25.5" % "test", //TODO: future
 
 scalacOptions += "-feature"
 
