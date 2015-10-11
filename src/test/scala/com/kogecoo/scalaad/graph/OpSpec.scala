@@ -125,7 +125,7 @@ class OpSpec extends FunSuite {
     val value15 = NonContainerValue[Seq, Float](15.0f)
     val cValue8 = ContainerValue[Seq, Float](Seq(3.0f, 5.0f))
 
-        // ContainerConst + ContainerConst
+    // ContainerConst + ContainerConst
     val a1 = Add(c12_42, c63_21)
 
     a1.apply()            shouldBe Seq(75.0f, 63.0f)
@@ -136,7 +136,7 @@ class OpSpec extends FunSuite {
 
     // above a1 - a4 is may be redundant
 
-    // Var + ScalarConst
+    // Var + ContainerConst
     val a2 = Add(var71_3, c63_21)
 
     a2.apply()            shouldBe Seq(134f, 24f)
@@ -145,7 +145,7 @@ class OpSpec extends FunSuite {
     a2.propagate(value15) shouldBe 15
     a2.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
-    // ScalarConst + Var
+    // ContainerConst + Var
     val a3 = Add(c12_42, var33_51)
 
     a3.apply()            shouldBe Seq(45f, 93f)
@@ -185,7 +185,7 @@ class OpSpec extends FunSuite {
     val value15 = NonContainerValue[Seq, Float](15.0f)
     val cValue8 = ContainerValue[Seq, Float](Seq(3.0f, 5.0f))
 
-        // ContainerConst + ContainerConst
+    // ContainerConst - ContainerConst
     val a1 = Sub(c12_42, c63_21)
 
     a1.apply()            shouldBe Seq(12f - 63f, 42f - 21f)
@@ -194,9 +194,7 @@ class OpSpec extends FunSuite {
     a1.propagate(value15) shouldBe 0f
     a1.propagate(cValue8) shouldBe Seq(0.0f, 0.0f)
 
-    // above a1 - a4 is may be redundant
-
-    // Var + ScalarConst
+    // Var - ContainerConst
     val a2 = Sub(var71_3, c63_21)
 
     a2.apply()            shouldBe Seq(71f - 63f, 3f - 21f)
@@ -205,7 +203,7 @@ class OpSpec extends FunSuite {
     a2.propagate(value15) shouldBe 15f
     a2.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
-    // ScalarConst + Var
+    // ContainerConst - Var
     val a3 = Sub(c12_42, var33_51)
 
     a3.apply()            shouldBe Seq(12f - 33f, 42f - 51f)
@@ -214,7 +212,7 @@ class OpSpec extends FunSuite {
     a3.propagate(value15) shouldBe -15f
     a3.propagate(cValue8) shouldBe Seq(-3.0f, -5.0f)
 
-    // Var + Var
+    // Var - Var
     val a4 = Sub(var71_3, var33_51)
 
     a4.apply()            shouldBe Seq(71f - 33f, 3f - 51f)
@@ -245,7 +243,7 @@ class OpSpec extends FunSuite {
     val value15 = NonContainerValue[Seq, Float](15.0f)
     val cValue3_5 = ContainerValue[Seq, Float](Seq(3.0f, 5.0f))
 
-        // ContainerConst + ContainerConst
+    // ContainerConst * ContainerConst
     val a1 = Mul(c12_42, c63_21)
 
     a1.apply()              shouldBe Seq(12f * 63f, 42f * 21f)
@@ -256,7 +254,7 @@ class OpSpec extends FunSuite {
 
     // above a1 - a4 is may be redundant
 
-    // Var + ScalarConst
+    // Var * ContainerConst
     val a2 = Mul[Seq, Float](var71_3, c63_21)
 
     a2.apply()              shouldBe Seq(71f * 63f, 3f * 21f)
@@ -265,7 +263,7 @@ class OpSpec extends FunSuite {
     a2.propagate(value15)   shouldBe Seq(15f * 63f, 15f * 21f)
     a2.propagate(cValue3_5) shouldBe Seq(3.0f * 63f, 5.0f * 21f)
 
-    // ScalarConst + Var
+    // ContainerConst * Var
     val a3 = Mul(c12_42, var33_51)
 
     a3.apply()              shouldBe Seq(12f * 33f, 42f * 51f)
@@ -274,7 +272,7 @@ class OpSpec extends FunSuite {
     a3.propagate(value15)   shouldBe Seq(12f * 15f, 42f * 15f)
     a3.propagate(cValue3_5) shouldBe Seq(12f * 3.0f , 42f * 5f)
 
-    // Var + Var
+    // Var * Var
     val a4 = Mul(var71_3, var33_51)
 
     a4.apply()              shouldBe Seq(71f * 33f, 3f * 51f)
@@ -305,7 +303,7 @@ class OpSpec extends FunSuite {
     val value15 = NonContainerValue[Seq, Float](15.0f)
     val cValue3_5 = ContainerValue[Seq, Float](Seq(3.0f, 5.0f))
 
-        // ContainerConst + ContainerConst
+    // ContainerConst / ContainerConst
     val a1 = Div(c12_42, c63_21)
 
     a1.apply()              shouldBe Seq(12f / 63f, 42f / 21f)
@@ -314,9 +312,7 @@ class OpSpec extends FunSuite {
     a1.propagate(value15)   shouldBe Seq(0f, 0f)
     a1.propagate(cValue3_5) shouldBe Seq(0.0f, 0.0f)
 
-    // above a1 - a4 is may be redundant
-
-    // Var + ScalarConst
+    // Var / ScalarConst
     val a2 = Div(var71_3, c63_21)
 
     a2.apply()              shouldBe Seq(71f / 63f, 3f / 21f)
@@ -325,7 +321,7 @@ class OpSpec extends FunSuite {
     a2.propagate(value15)   shouldBe Seq(15f * 1f / 63f, 15f * 1f / 21f)
     a2.propagate(cValue3_5) shouldBe Seq(3.0f * 1f / 63f, 5.0f * 1f / 21f)
 
-    // ScalarConst + Var
+    // ScalarConst / Var
     val a3 = Div(c12_42, var33_51)
 
     a3.apply()              shouldBe Seq(12f / 33f, 42f / 51f)
@@ -334,7 +330,7 @@ class OpSpec extends FunSuite {
     a3.propagate(value15)   shouldBe Seq(-15f * 12f / 33f / 33f, -15 * 42f / 51f / 51f)
     a3.propagate(cValue3_5) shouldBe Seq(-3f * 12f / 33f / 33f, -5f * 42f / 51f / 51f)
 
-    // Var + Var
+    // Var / Var
     val a4 = Div(var71_3, var33_51)
 
     a4.apply()              shouldBe Seq(71f / 33f, 3f / 51f)
