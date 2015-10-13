@@ -179,6 +179,24 @@ class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
   }
 }
 
+// mimic the behavior of numpy's maximum
+// http://docs.scipy.org/doc/numpy/reference/generated/numpy.maximum.html
+class max[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
+  override def toString: String = s"max(${ a }, ${ b })"
+  override def apply(): Value[U, T] = where(a() >= b(), a(), b())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = where(a() >= b(), a.deriv(wrt), b.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = where(a() >= b(), a.propagate(g), b.propagate(g))
+}
+
+// mimic the behavior of numpy's minimum
+// http://docs.scipy.org/doc/numpy/reference/generated/numpy.minimum.html
+class min[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
+  override def toString: String = s"min(${ a }, ${ b }})"
+  override def apply(): Value[U, T] = where(a() <= b(), a(), b())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = where(a() <= b(), a.deriv(wrt), b.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = where(a() <= b(), a.propagate(g), b.propagate(g))
+}
+
 
 object sin {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sin[U, T] = new sin(v)
