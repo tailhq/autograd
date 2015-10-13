@@ -41,6 +41,30 @@ trait ValueRule[U[_], T] {
   def mulMM(l: T, r: T): T
   def divMM(l: T, r: T): T
 
+  def ltSS (l: U[T], r: U[T]): U[Boolean]
+  def lteSS(l: U[T], r: U[T]): U[Boolean]
+  def gtSS (l: U[T], r: U[T]): U[Boolean]
+  def gteSS(l: U[T], r: U[T]): U[Boolean]
+  def eqSS (l: U[T], r: U[T]): U[Boolean]
+
+  def ltSM (l: U[T], r: T): U[Boolean]
+  def lteSM(l: U[T], r: T): U[Boolean]
+  def gtSM (l: U[T], r: T): U[Boolean]
+  def gteSM(l: U[T], r: T): U[Boolean]
+  def eqSM (l: U[T], r: T): U[Boolean]
+
+  def ltMS (l: T, r: U[T]): U[Boolean]
+  def lteMS(l: T, r: U[T]): U[Boolean]
+  def gtMS (l: T, r: U[T]): U[Boolean]
+  def gteMS(l: T, r: U[T]): U[Boolean]
+  def eqMS (l: T, r: U[T]): U[Boolean]
+
+  def ltMM (l: T, r: T): Boolean
+  def lteMM(l: T, r: T): Boolean
+  def gtMM (l: T, r: T): Boolean
+  def gteMM(l: T, r: T): Boolean
+  def eqMM (l: T, r: T): Boolean
+
   def posS(v: U[T]): U[T]
   def negS(v: U[T]): U[T]
 

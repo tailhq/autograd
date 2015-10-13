@@ -56,6 +56,30 @@ object DoubleRule {
     override def mulMM(l: Double, r: Double): Double = l * r
     override def divMM(l: Double, r: Double): Double = l / r
 
+    override def ltSS (l: Scalar[Double], r: Scalar[Double]): Scalar[Boolean] = Scalar(l.data < r.data)
+    override def lteSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Boolean] = Scalar(l.data <= r.data)
+    override def gtSS (l: Scalar[Double], r: Scalar[Double]): Scalar[Boolean] = Scalar(l.data > r.data)
+    override def gteSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Boolean] = Scalar(l.data >= r.data)
+    override def eqSS (l: Scalar[Double], r: Scalar[Double]): Scalar[Boolean] = Scalar(l.data == r.data)
+
+    override def ltSM (l: Scalar[Double], r: Double): Scalar[Boolean] = Scalar(l.data < r)
+    override def lteSM(l: Scalar[Double], r: Double): Scalar[Boolean] = Scalar(l.data <= r)
+    override def gtSM (l: Scalar[Double], r: Double): Scalar[Boolean] = Scalar(l.data > r)
+    override def gteSM(l: Scalar[Double], r: Double): Scalar[Boolean] = Scalar(l.data >= r)
+    override def eqSM (l: Scalar[Double], r: Double): Scalar[Boolean] = Scalar(l.data == r)
+
+    override def ltMS (l: Double, r: Scalar[Double]): Scalar[Boolean] = Scalar(l < r.data)
+    override def lteMS(l: Double, r: Scalar[Double]): Scalar[Boolean] = Scalar(l <= r.data)
+    override def gtMS (l: Double, r: Scalar[Double]): Scalar[Boolean] = Scalar(l > r.data)
+    override def gteMS(l: Double, r: Scalar[Double]): Scalar[Boolean] = Scalar(l >= r.data)
+    override def eqMS (l: Double, r: Scalar[Double]): Scalar[Boolean] = Scalar(l == r.data)
+
+    override def ltMM (l: Double, r: Double): Boolean = l < r
+    override def lteMM(l: Double, r: Double): Boolean = l <= r
+    override def gtMM (l: Double, r: Double): Boolean = l > r
+    override def gteMM(l: Double, r: Double): Boolean = l >= r
+    override def eqMM (l: Double, r: Double): Boolean = l == r
+
     override def posS(v: Scalar[Double]): Scalar[Double] = Scalar(+v.data)
     override def negS(v: Scalar[Double]): Scalar[Double] = Scalar(-v.data)
 

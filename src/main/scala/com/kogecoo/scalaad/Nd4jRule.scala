@@ -4,6 +4,9 @@ import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._
 
 import org.nd4j.linalg.api.ndarray.INDArray
+import org.nd4j.linalg.api.ops.impl.scalar.comparison.{ScalarGreaterThanOrEqual, ScalarLessThanOrEqual}
+import org.nd4j.linalg.api.ops.impl.transforms.comparison.{GreaterThanOrEqual, LessThanOrEqual}
+import org.nd4j.linalg.factory.Nd4j
 import org.nd4s.Implicits._
 
 import scala.language.implicitConversions
@@ -67,11 +70,68 @@ object Nd4jRule {
     override def mulMM(l: T, r: T): T = l * r
     override def divMM(l: T, r: T): T = l / r
 
+    override def ltSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.lt(r.data))
+    override def lteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](lte(l.data, r.data))
+    override def gtSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.gt(r.data))
+    override def gteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](gte(l.data, r.data))
+    override def eqSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.eq(r.data))
+
+    override def ltSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.lt(r))
+    override def lteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](lte(l.data, r))
+    override def gtSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.gt(r))
+    override def gteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](gte(l.data, r))
+    override def eqSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.eq(r))
+
+    override def ltMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.gt(l))
+    override def lteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](gte(r.data, l))
+    override def gtMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.lt(l))
+    override def gteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](lte(r.data, l))
+    override def eqMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.eq(l))
+
+    override def ltMM (l: T, r: T): Boolean = l < r
+    override def lteMM(l: T, r: T): Boolean = l <= r
+    override def gtMM (l: T, r: T): Boolean = l > r
+    override def gteMM(l: T, r: T): Boolean = l >= r
+    override def eqMM (l: T, r: T): Boolean = l == r
+
     override def posS(v: C): C = INDArray_(v.data)
     override def negS(v: C): C = INDArray_(v.data.neg())
 
     override def posM(v: T): T = +v
     override def negM(v: T): T = -v
+
+    // these are not in Nd4j
+    private[this] def lte(l: INDArray, r: INDArray): INDArray = {
+      val dup = l.dup()
+      Nd4j.getExecutioner().exec(
+        new LessThanOrEqual(dup.linearView(), r.linearView(), dup.linearView(), dup.length())
+      )
+      dup
+    }
+
+    private[this] def lte(l: INDArray, r: T): INDArray = {
+      val dup = l.dup()
+      Nd4j.getExecutioner().exec(
+        new ScalarLessThanOrEqual(dup.linearView(), r)
+      )
+      dup
+    }
+
+    private[this] def gte(l: INDArray, r: INDArray): INDArray = {
+      val dup = l.dup()
+      Nd4j.getExecutioner().exec(
+        new GreaterThanOrEqual(dup.linearView(), r.linearView(), dup.linearView(), dup.length())
+      )
+      dup
+    }
+
+    private[this] def gte(l: INDArray, r: T): INDArray = {
+      val dup = l.dup()
+      Nd4j.getExecutioner().exec(
+        new ScalarGreaterThanOrEqual(dup.linearView(), r)
+      )
+      dup
+    }
   }
 
   trait INDArrayMathRule extends MathRule[INDArray_, Double] {
@@ -115,18 +175,17 @@ object Nd4jRule {
   }
 
   // FIXME
-  def applyEach(self: C, other: C, f: (T, T) => T): C = {
+  private[this] def applyEach(self: C, other: C, f: (T, T) => T): C = {
     val builder = scala.collection.mutable.ArrayBuilder.make[T]
     other.data.map { pv => builder += pv; pv }
 
     var args = builder.result()
-      val applied = self.data.map({
-        val arg = args.head
-        args = args.tail
-        f(_, arg)
-      })
-      INDArray_(applied)
+    val applied = self.data.map({
+      val arg = args.head
+      args = args.tail
+      f(_, arg)
+    })
+    INDArray_(applied)
   }
-
 }
 

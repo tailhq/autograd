@@ -1,6 +1,5 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.ScalarRule.Implicits._
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._
 
@@ -60,6 +59,30 @@ object BreezeRule {
     override def subMM(l: T, r: T): T = l - r
     override def mulMM(l: T, r: T): T = l * r
     override def divMM(l: T, r: T): T = l / r
+
+    override def ltSS (l: V, r: V): DenseVector[Boolean] = (l :<  r).map(b => b)
+    override def lteSS(l: V, r: V): DenseVector[Boolean] = (l :<= r).map(b => b)
+    override def gtSS (l: V, r: V): DenseVector[Boolean] = (l :> r ).map(b => b)
+    override def gteSS(l: V, r: V): DenseVector[Boolean] = (l :>= r).map(b => b)
+    override def eqSS (l: V, r: V): DenseVector[Boolean] = (l :== r).map(b => b)
+
+    override def ltSM (l: V, r: T): DenseVector[Boolean] = l.map(_ < r)
+    override def lteSM(l: V, r: T): DenseVector[Boolean] = l.map(_ <= r)
+    override def gtSM (l: V, r: T): DenseVector[Boolean] = l.map(_ > r)
+    override def gteSM(l: V, r: T): DenseVector[Boolean] = l.map(_ >= r)
+    override def eqSM (l: V, r: T): DenseVector[Boolean] = l.map(_ == r)
+
+    override def ltMS (l: T, r: V): DenseVector[Boolean] = r.map(l < _)
+    override def lteMS(l: T, r: V): DenseVector[Boolean] = r.map(l <= _)
+    override def gtMS (l: T, r: V): DenseVector[Boolean] = r.map(l > _)
+    override def gteMS(l: T, r: V): DenseVector[Boolean] = r.map(l >= _)
+    override def eqMS (l: T, r: V): DenseVector[Boolean] = r.map(l == _)
+
+    override def ltMM (l: T, r: T): Boolean = l < r
+    override def lteMM(l: T, r: T): Boolean = l <= r
+    override def gtMM (l: T, r: T): Boolean = l > r
+    override def gteMM(l: T, r: T): Boolean = l >= r
+    override def eqMM (l: T, r: T): Boolean = l == r
 
     override def posS(v: V): V = v
     override def negS(v: V): V = -v
@@ -133,6 +156,30 @@ object BreezeRule {
     override def subMM(l: T, r: T): T = l - r
     override def mulMM(l: T, r: T): T = l * r
     override def divMM(l: T, r: T): T = l / r
+
+    override def ltSS (l: M, r: M): DenseMatrix[Boolean] = l :< r
+    override def lteSS(l: M, r: M): DenseMatrix[Boolean] = l :<= r
+    override def gtSS (l: M, r: M): DenseMatrix[Boolean] = l :> r
+    override def gteSS(l: M, r: M): DenseMatrix[Boolean] = l :>= r
+    override def eqSS (l: M, r: M): DenseMatrix[Boolean] = l :== r
+
+    override def ltSM (l: M, r: T): DenseMatrix[Boolean] = l.map(_ < r)
+    override def lteSM(l: M, r: T): DenseMatrix[Boolean] = l.map(_ <= r)
+    override def gtSM (l: M, r: T): DenseMatrix[Boolean] = l.map(_ > r)
+    override def gteSM(l: M, r: T): DenseMatrix[Boolean] = l.map(_ >= r)
+    override def eqSM (l: M, r: T): DenseMatrix[Boolean] = l.map(_ == r)
+
+    override def ltMS (l: T, r: M): DenseMatrix[Boolean] = r.map(l < _)
+    override def lteMS(l: T, r: M): DenseMatrix[Boolean] = r.map(l <= _)
+    override def gtMS (l: T, r: M): DenseMatrix[Boolean] = r.map(l > _)
+    override def gteMS(l: T, r: M): DenseMatrix[Boolean] = r.map(l >= _)
+    override def eqMS (l: T, r: M): DenseMatrix[Boolean] = r.map(l == _)
+
+    override def ltMM (l: T, r: T): Boolean = l < r
+    override def lteMM(l: T, r: T): Boolean = l <= r
+    override def gtMM (l: T, r: T): Boolean = l > r
+    override def gteMM(l: T, r: T): Boolean = l >= r
+    override def eqMM (l: T, r: T): Boolean = l == r
 
     override def posS(v: M): M = v
     override def negS(v: M): M = -v
