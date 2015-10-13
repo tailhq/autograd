@@ -100,6 +100,15 @@ object Nd4jRule {
     override def posM(v: T): T = +v
     override def negM(v: T): T = -v
 
+    override def whereSSS(cond: INDArray_[Boolean], a: C, b: C): C = { }
+    override def whereSSM(cond: INDArray_[Boolean], a: C, b: T): C = where(cond, a, b)
+    override def whereSMS(cond: INDArray_[Boolean], a: T, b: C): C = where(cond, a, b)
+    override def whereSMM(cond: INDArray_[Boolean], a: T, b: T): C = where(cond, a, b)
+    override def whereMSS(cond: Boolean,            a: C, b: C): C = where(cond, a, b)
+    override def whereMSM(cond: Boolean,            a: C, b: T): C = where(cond, a, b)
+    override def whereMMS(cond: Boolean,            a: T, b: C): C = where(cond, a, b)
+    override def whereMMM(cond: Boolean,            a: T, b: T): T = where(cond, a, b)
+
     // these are not in Nd4j
     private[this] def lte(l: INDArray, r: INDArray): INDArray = {
       val dup = l.dup()

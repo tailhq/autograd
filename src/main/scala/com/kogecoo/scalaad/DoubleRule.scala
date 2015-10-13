@@ -85,6 +85,16 @@ object DoubleRule {
 
     override def posM(v: Double): Double = +v
     override def negM(v: Double): Double = -v
+
+    override def whereSSS(cond: Scalar[Boolean], a: Scalar[Double], b: Scalar[Double]): Scalar[Double] = if (cond.data) a else b
+    override def whereSSM(cond: Scalar[Boolean], a: Scalar[Double], b: Double):         Scalar[Double] = if (cond.data) a else Scalar(b)
+    override def whereSMS(cond: Scalar[Boolean], a: Double,         b: Scalar[Double]): Scalar[Double] = if (cond.data) Scalar(a) else b
+    override def whereSMM(cond: Scalar[Boolean], a: Double,         b: Double):         Scalar[Double] = if (cond.data) Scalar(a) else Scalar(b)
+    override def whereMSS(cond: Boolean,         a: Scalar[Double], b: Scalar[Double]): Scalar[Double] = if (cond) a else b
+    override def whereMSM(cond: Boolean,         a: Scalar[Double], b: Double):         Scalar[Double] = if (cond) a else Scalar(b)
+    override def whereMMS(cond: Boolean,         a: Double,         b: Scalar[Double]): Scalar[Double] = if (cond) Scalar(a) else b
+    override def whereMMM(cond: Boolean,         a: Double,         b: Double):         Double         = if (cond) a else b
+
   }
 
   trait DoubleMathRule extends MathRule[Scalar, Double] {

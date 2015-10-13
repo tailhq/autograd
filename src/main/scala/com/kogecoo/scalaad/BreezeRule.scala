@@ -89,6 +89,17 @@ object BreezeRule {
 
     override def posM(v: T): T = v
     override def negM(v: T): T = -v
+
+    override def whereSSS(cond: DenseVector[Boolean], a: V, b: V): V = breeze.linalg.where(cond, a, b)
+    override def whereSSM(cond: DenseVector[Boolean], a: V, b: T): V = breeze.linalg.where(cond, a, fillLike(b, cond))
+    override def whereSMS(cond: DenseVector[Boolean], a: T, b: V): V = breeze.linalg.where(cond, fillLike(a, cond), b)
+    override def whereSMM(cond: DenseVector[Boolean], a: T, b: T): V = breeze.linalg.where(cond, fillLike(a, cond), fillLike(b, cond))
+    override def whereMSS(cond: Boolean,              a: V, b: V): V = if (cond) a else b
+    override def whereMSM(cond: Boolean,              a: V, b: T): V = if (cond) a else fillLike(b, a)
+    override def whereMMS(cond: Boolean,              a: T, b: V): V = if (cond) fillLike(a, b) else b
+    override def whereMMM(cond: Boolean,              a: T, b: T): T = if (cond) a else b
+
+    private[this] def fillLike[A](value: T, ref: DenseVector[A]): V = DenseVector.fill(ref.length, value)
   }
 
   trait DenseVectorMathRule extends MathRule[DenseVector, T] {
@@ -187,6 +198,16 @@ object BreezeRule {
     override def posM(v: T): T = v
     override def negM(v: T): T = -v
 
+    override def whereSSS(cond: DenseMatrix[Boolean], a: M, b: M): M = breeze.linalg.where(cond, a, b)
+    override def whereSSM(cond: DenseMatrix[Boolean], a: M, b: T): M = breeze.linalg.where(cond, a, fillLike(b, cond))
+    override def whereSMS(cond: DenseMatrix[Boolean], a: T, b: M): M = breeze.linalg.where(cond, fillLike(a, cond), b)
+    override def whereSMM(cond: DenseMatrix[Boolean], a: T, b: T): M = breeze.linalg.where(cond, fillLike(a, cond), fillLike(b, cond))
+    override def whereMSS(cond: Boolean,              a: M, b: M): M = if (cond) a else b
+    override def whereMSM(cond: Boolean,              a: M, b: T): M = if (cond) a else fillLike(b, a)
+    override def whereMMS(cond: Boolean,              a: T, b: M): M = if (cond) fillLike(a, b) else b
+    override def whereMMM(cond: Boolean,              a: T, b: T): T = if (cond) a else b
+
+    private[this] def fillLike[A](value: T, ref: DenseMatrix[A]): M = DenseMatrix.fill(ref.rows, ref.cols)(value)
   }
 
   trait DenseMatrixMathRule extends MathRule[DenseMatrix, T] {

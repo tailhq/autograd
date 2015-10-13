@@ -70,6 +70,16 @@ trait ValueRule[U[_], T] {
 
   def posM(v: T): T
   def negM(v: T): T
+
+  def whereSSS(cond: U[Boolean], a: U[T], b: U[T]): U[T]
+  def whereSSM(cond: U[Boolean], a: U[T], b: T):    U[T]
+  def whereSMS(cond: U[Boolean], a: T,    b: U[T]): U[T]
+  def whereSMM(cond: U[Boolean], a: T,    b: T):    U[T]
+  def whereMSS(cond: Boolean,    a: U[T], b: U[T]): U[T]
+  def whereMSM(cond: Boolean,    a: U[T], b: T):    U[T]
+  def whereMMS(cond: Boolean,    a: T,    b: U[T]): U[T]
+  def whereMMM(cond: Boolean,    a: T,    b: T):    T
+
 }
 
 trait MathRule[U[_], T] extends ValueRule[U, T] {
