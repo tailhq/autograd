@@ -130,9 +130,9 @@ class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
 
 class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"|${ v }|"
-  override def apply(): Value[U, T] = abs(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = abs(v.deriv(wrt))
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(abs(g))
+  override def apply(): Value[U, T] = where(v() >= r.zeroAdd, v(), -v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = where(v() >= r.zeroAdd, v.deriv(wrt), -v.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = where(v() >= r.zeroAdd, v.propagate(g), v.propagate(-g))
 }
 
 // this may be unnecessary because it can be replaced with pow(x, 1/2)
@@ -270,10 +270,6 @@ object exp {
 
 object abs {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): abs[U, T] = new abs(v)
-  def apply[U[_], T](v: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = v match {
-    case v: NonContainerValue[U, T] => NonContainerValue[U, T](mr.absM(v.data))
-    case v: ContainerValue[U, T]    => ContainerValue[U, T](mr.absS(v.data))
-  }
 }
 
 object sqrt {
