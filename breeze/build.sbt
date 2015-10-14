@@ -3,4 +3,8 @@ libraryDependencies ++= Seq(
   "org.scalanlp" %% "breeze-natives" % "0.11.2"
 )
 
-initialCommands in console := """ """
+initialCommands in console :=
+"""
+  |import breeze.linalg._
+  |import com.kogecoo.scalaad.breeze.BreezeRule.Implicits._
+""".stripMargin
