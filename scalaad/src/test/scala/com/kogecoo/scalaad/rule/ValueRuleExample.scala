@@ -64,6 +64,9 @@ object ValueRuleExample {
     override def posM(v: Float): Float = +v
     override def negM(v: Float): Float = -v
 
+    override def transposeS(v: Seq[Float]): Seq[Float] = v
+    override def transposeM(v: Float): Float = v
+
     override def whereSSS(cond: Seq[Boolean], a: Seq[Float], b: Seq[Float]): Seq[Float] = {
       cond.zip(a.zip(b)).map { case (c, (x, y)) => if (c) x else y }
     }
@@ -157,6 +160,9 @@ object ValueRuleExample {
 
     override def posM(v: Int): Int = +v
     override def negM(v: Int): Int = -v
+
+    override def transposeS(v: Scalar[Int]): Scalar[Int] = v
+    override def transposeM(v: Int): Int = v
 
     override def whereSSS(cond: Scalar[Boolean], a: Scalar[Int], b: Scalar[Int]): Scalar[Int] = if (cond.data) a else b
     override def whereSSM(cond: Scalar[Boolean], a: Scalar[Int], b: Int):         Scalar[Int] = if (cond.data) a else Scalar(b)
