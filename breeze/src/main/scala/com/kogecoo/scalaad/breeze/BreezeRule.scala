@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad
+package com.kogecoo.scalaad.breeze
 
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._

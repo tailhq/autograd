@@ -1,8 +1,7 @@
-package com.kogecoo.scalaad
+package com.kogecoo.scalaad.nd4j
 
 import com.kogecoo.scalaad.graph.{ContainerConst, ScalarConst}
 import com.kogecoo.scalaad.rule._
-import com.kogecoo.scalaad.{ INDArrayExtensions => Ext }
 
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4s.Implicits._
@@ -34,7 +33,7 @@ object Nd4jRule {
   }
 
   // wrapper for INDArray
-  case class INDArray_[T](data: INDArray) { type TypeOfScalarOp = T }
+  case class INDArray_[A](data: INDArray) { type TypeOfScalarOp = A }
 
   class INDArrayRule extends INDArrayValueRule with INDArrayMathRule
 
@@ -70,21 +69,21 @@ object Nd4jRule {
     override def divMM(l: T, r: T): T = l / r
 
     override def ltSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.lt (r.data))
-    override def lteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](Ext.lte(l.data, r.data))
+    override def lteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.lte(l.data, r.data))
     override def gtSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.gt (r.data))
-    override def gteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](Ext.gte(l.data, r.data))
+    override def gteSS(l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.gte(l.data, r.data))
     override def eqSS (l: C, r: C): INDArray_[Boolean] = INDArray_[Boolean](l.data.eq (r.data))
 
     override def ltSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.lt (r))
-    override def lteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](Ext.lte(l.data, r))
+    override def lteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.lte(l.data, r))
     override def gtSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.gt (r))
-    override def gteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](Ext.gte(l.data, r))
+    override def gteSM(l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.gte(l.data, r))
     override def eqSM (l: C, r: T): INDArray_[Boolean] = INDArray_[Boolean](l.data.eq (r))
 
     override def ltMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.gt (l))
-    override def lteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](Ext.gte(r.data, l))
+    override def lteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.gte(r.data, l))
     override def gtMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.lt (l))
-    override def gteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](Ext.lte(r.data, l))
+    override def gteMS(l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](Nd4jUtil.lte(r.data, l))
     override def eqMS (l: T, r: C): INDArray_[Boolean] = INDArray_[Boolean](r.data.eq (l))
 
     override def ltMM (l: T, r: T): Boolean = l < r
@@ -101,9 +100,9 @@ object Nd4jRule {
 
     // FIXME: maybe we need to implement Custom executioner which suports 3 args for
     //  remove folloing (UNEFFICIENT) trick.
-    override def whereSSS(cond: INDArray_[Boolean], a: C, b: C): C = INDArray_(Ext.where(cond.data, a.data, b.data))
-    override def whereSSM(cond: INDArray_[Boolean], a: C, b: T): C = INDArray_(Ext.where(cond.data, a.data, b))
-    override def whereSMS(cond: INDArray_[Boolean], a: T, b: C): C = INDArray_(Ext.where(cond.data, a, b.data))
+    override def whereSSS(cond: INDArray_[Boolean], a: C, b: C): C = INDArray_(Nd4jUtil.where(cond.data, a.data, b.data))
+    override def whereSSM(cond: INDArray_[Boolean], a: C, b: T): C = INDArray_(Nd4jUtil.where(cond.data, a.data, b))
+    override def whereSMS(cond: INDArray_[Boolean], a: T, b: C): C = INDArray_(Nd4jUtil.where(cond.data, a, b.data))
     override def whereSMM(cond: INDArray_[Boolean], a: T, b: T): C = INDArray_(cond.data.map(c => if (c != 0.0) a else b))
     override def whereMSS(cond: Boolean,            a: C, b: C): C = if (cond) a else b
     override def whereMSM(cond: Boolean,            a: C, b: T): C = if (cond) a else INDArray_(a.data.map(_ => b))
@@ -142,7 +141,7 @@ object Nd4jRule {
     override def absM(v: T):  T = scala.math.abs(v)
     override def sqrtM(v: T):  T = scala.math.sqrt(v)
 
-    override def powSS(v: C, p: C): C = INDArray_(Ext.zipAndMap(new Pow, v.data, p.data))
+    override def powSS(v: C, p: C): C = INDArray_(Nd4jUtil.zipAndMap(new Pow, v.data, p.data))
     override def powSM(v: C, p: T): C = INDArray_(v.data.map(scala.math.pow(_, p)))
     override def powMS(v: T, p: C): C = INDArray_(p.data.map(scala.math.pow(v, _)))
     override def powMM(v: T, p: T): T = scala.math.pow(v, p)
