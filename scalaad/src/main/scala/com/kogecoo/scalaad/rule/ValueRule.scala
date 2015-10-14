@@ -71,6 +71,9 @@ trait ValueRule[U[_], T] {
   def posM(v: T): T
   def negM(v: T): T
 
+  def transposeS(v: U[T]): U[T]
+  def transposeM(v: T): T
+
   def whereSSS(cond: U[Boolean], a: U[T], b: U[T]): U[T]
   def whereSSM(cond: U[Boolean], a: U[T], b: T):    U[T]
   def whereSMS(cond: U[Boolean], a: T,    b: U[T]): U[T]
@@ -116,6 +119,11 @@ trait MathRule[U[_], T] extends ValueRule[U, T] {
   def powSM(v: U[T], p: T): U[T]
   def powMS(v: T, p: U[T]): U[T]
   def powMM(v: T, p: T): T
+
+  def dotSS(v: U[T], p: U[T]): U[T]
+  def dotSM(v: U[T], p: T): U[T]
+  def dotMS(v: T, p: U[T]): U[T]
+  def dotMM(v: T, p: T): T
 }
 
 trait ValueWrapperRule[Wrappee, Wrapper[_], T] {

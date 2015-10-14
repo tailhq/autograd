@@ -60,3 +60,10 @@ case class Neg[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends Unar
   override def deriv(wrt: Node[U, T]): Value[U, T] = -v.deriv(wrt)
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(-g)
 }
+
+case class Transpose[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends UnaryOp[U, T] {
+  override def toString: String = s"${ v }.T"
+  override def apply(): Value[U, T] = v().T
+  override def deriv(wrt: Node[U, T]): Value[U, T] = v.T.deriv(wrt.T)
+  override def propagate(g: Value[U, T]): Value[U, T] = v.T.propagate(-g.T)
+}

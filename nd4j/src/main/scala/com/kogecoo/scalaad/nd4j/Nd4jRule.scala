@@ -98,6 +98,9 @@ object Nd4jRule {
     override def posM(v: T): T = +v
     override def negM(v: T): T = -v
 
+    override def transposeS(v: C): C = INDArray_(v.data.transpose())
+    override def transposeM(v: T): T = v
+
     // FIXME: maybe we need to implement Custom executioner which suports 3 args for
     //  remove folloing (UNEFFICIENT) trick.
     override def whereSSS(cond: INDArray_[Boolean], a: C, b: C): C = INDArray_(Nd4jUtil.where(cond.data, a.data, b.data))
@@ -145,6 +148,12 @@ object Nd4jRule {
     override def powSM(v: C, p: T): C = INDArray_(v.data.map(scala.math.pow(_, p)))
     override def powMS(v: T, p: C): C = INDArray_(p.data.map(scala.math.pow(v, _)))
     override def powMM(v: T, p: T): T = scala.math.pow(v, p)
+
+    override def dotSS(a: C, b: C): C = INDArray_(a.data.dot(b.data))
+    override def dotSM(a: C, b: T): C = INDArray_(a.data * b)
+    override def dotMS(a: T, b: C): C = INDArray_(b.data * a)
+    override def dotMM(a: T, b: T): T = a * b
+
   }
 
   class INDArrayWrapperRule extends ValueWrapperRule[INDArray, INDArray_, Double] {

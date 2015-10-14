@@ -197,6 +197,15 @@ class min[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
   override def propagate(g: Value[U, T]): Value[U, T] = where(a() <= b(), a.propagate(g), b.propagate(g))
 }
 
+// This have the same behavior as numpy's dot function
+// http://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html
+class dot[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
+  override def toString: String = s"${ a }・${ b })"
+  override def apply(): Value[U, T] = dot(a(), b())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = dot(a.deriv(wrt), b().T) + dot(a().T, b.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = a.propagate(dot(g, b().T)) + b.propagate(dot(a().T, g))
+}
+
 
 object sin {
   def apply[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]): sin[U, T] = new sin(v)
@@ -316,6 +325,17 @@ object min {
   def apply[U[_], T](a: Node[U, T], b: Node[U, T])(implicit vr: MathRule[U, T]): min[U, T] = new min(a, b)
 }
 
+object dot {
+  def apply[U[_], T](a: Node[U, T], b: Node[U, T])(implicit vr: MathRule[U, T]): dot[U, T] = new dot(a, b)
+  def apply[U[_], T](a: Value[U, T], b: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = (a, b) match {
+    case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => NonContainerValue[U, T](mr.dotMM(a.data, b.data))
+    case (a: NonContainerValue[U, T], b: ContainerValue[U, T])    => ContainerValue[U, T](mr.dotMS(a.data, b.data))
+    case (a: ContainerValue[U, T], b: NonContainerValue[U, T])    => ContainerValue[U, T](mr.dotSM(a.data, b.data))
+    case (a: ContainerValue[U, T], b: ContainerValue[U, T])       => ContainerValue[U, T](mr.dotSS(a.data, b.data))
+  }
+}
+
+// There is no Node which represents this functionality
 object where {
   def apply[U[_], T](cond: Value[U, Boolean], a: Value[U, T], b: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = (cond, a, b) match {
     case (cond: NonContainerValue[U, Boolean], a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => NonContainerValue[U, T](mr.whereMMM(cond.data, a.data, b.data))

@@ -90,6 +90,9 @@ object BreezeRule {
     override def posM(v: T): T = v
     override def negM(v: T): T = -v
 
+    override def transposeS(v: V): V = v
+    override def transposeM(v: T): T = v
+
     override def whereSSS(cond: DenseVector[Boolean], a: V, b: V): V = breeze.linalg.where(cond, a, b)
     override def whereSSM(cond: DenseVector[Boolean], a: V, b: T): V = breeze.linalg.where(cond, a, fillLike(b, cond))
     override def whereSMS(cond: DenseVector[Boolean], a: T, b: V): V = breeze.linalg.where(cond, fillLike(a, cond), b)
@@ -136,6 +139,11 @@ object BreezeRule {
     override def powSM(v: V, p: T): V = breeze.numerics.pow(v, p)
     override def powMS(v: T, p: V): V = breeze.numerics.pow(v, p)
     override def powMM(v: T, p: T): T = breeze.numerics.pow(v, p)
+
+    override def dotSS(a: V, b: V): V = DenseVector(a dot b) // FIXME
+    override def dotSM(a: V, b: T): V = a :* b
+    override def dotMS(a: T, b: V): V = a :* b
+    override def dotMM(a: T, b: T): T = a :* b
   }
 
   trait DenseMatrixValueRule extends ValueRule[DenseMatrix, T] {
@@ -198,6 +206,9 @@ object BreezeRule {
     override def posM(v: T): T = v
     override def negM(v: T): T = -v
 
+    override def transposeS(v: M): M = v.t
+    override def transposeM(v: T): T = v
+
     override def whereSSS(cond: DenseMatrix[Boolean], a: M, b: M): M = breeze.linalg.where(cond, a, b)
     override def whereSSM(cond: DenseMatrix[Boolean], a: M, b: T): M = breeze.linalg.where(cond, a, fillLike(b, cond))
     override def whereSMS(cond: DenseMatrix[Boolean], a: T, b: M): M = breeze.linalg.where(cond, fillLike(a, cond), b)
@@ -245,6 +256,10 @@ object BreezeRule {
     override def powMS(v: T, p: M): M = breeze.numerics.pow(v, p)
     override def powMM(v: T, p: T): T = breeze.numerics.pow(v, p)
 
+    override def dotSS(a: M, b: M): M = a * b
+    override def dotSM(a: M, b: T): M = a :* b
+    override def dotMS(a: T, b: M): M = a :* b
+    override def dotMM(a: T, b: T): T = a :* b
   }
 
 }

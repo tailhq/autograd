@@ -30,4 +30,6 @@ trait Node[U[_], T] {
   def unary_+(rhs: Node[U, T])(implicit r: ValueRule[U, T]): Node[U, T] = Pos(this)
   def unary_-(rhs: Node[U, T])(implicit r: ValueRule[U, T]): Node[U, T] = Neg(this)
 
+  def T()(implicit r: ValueRule[U, T]): Node[U, T] = Transpose(this)
+
 }

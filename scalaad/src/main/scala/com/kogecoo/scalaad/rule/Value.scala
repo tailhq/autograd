@@ -28,6 +28,7 @@ abstract class Value[U[_], T] {
   def unary_+()(implicit vr: ValueRule[U, T]): Value[U, T]
   def unary_-()(implicit vr: ValueRule[U, T]): Value[U, T]
 
+  def T()(implicit vr: ValueRule[U, T]): Value[U, T]
 }
 
 case class NonContainerValue[U[_], T](data: T) extends Value[U, T] {
@@ -138,6 +139,8 @@ case class NonContainerValue[U[_], T](data: T) extends Value[U, T] {
 
   def unary_-()(implicit vr: ValueRule[U, T]): Value[U, T] = NonContainerValue[U, T](vr.negM(data))
 
+  def T()(implicit vr: ValueRule[U, T]): Value[U, T] = NonContainerValue[U, T](vr.transposeM(data))
+
 }
 
 case class ContainerValue[U[_], T](data: U[T]) extends Value[U, T] {
@@ -247,4 +250,7 @@ case class ContainerValue[U[_], T](data: U[T]) extends Value[U, T] {
   def unary_+()(implicit vr: ValueRule[U, T]): Value[U, T] = ContainerValue[U, T](vr.posS(data))
 
   def unary_-()(implicit vr: ValueRule[U, T]): Value[U, T] = ContainerValue[U, T](vr.negS(data))
+
+  def T()(implicit vr: ValueRule[U, T]): Value[U, T] = ContainerValue[U, T](vr.transposeS(data))
+
 }

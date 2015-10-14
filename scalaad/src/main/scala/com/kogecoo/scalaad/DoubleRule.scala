@@ -86,6 +86,9 @@ object DoubleRule {
     override def posM(v: Double): Double = +v
     override def negM(v: Double): Double = -v
 
+    override def transposeS(v: Scalar[Double]): Scalar[Double] = v
+    override def transposeM(v: Double): Double = v
+
     override def whereSSS(cond: Scalar[Boolean], a: Scalar[Double], b: Scalar[Double]): Scalar[Double] = if (cond.data) a else b
     override def whereSSM(cond: Scalar[Boolean], a: Scalar[Double], b: Double):         Scalar[Double] = if (cond.data) a else Scalar(b)
     override def whereSMS(cond: Scalar[Boolean], a: Double,         b: Scalar[Double]): Scalar[Double] = if (cond.data) Scalar(a) else b
@@ -131,6 +134,11 @@ object DoubleRule {
     override def powSM(v: Scalar[Double], p: Double): Scalar[Double] = Scalar(scala.math.pow(v.data, p))
     override def powMS(v: Double, p: Scalar[Double]): Scalar[Double] = Scalar(scala.math.pow(v, p.data))
     override def powMM(v: Double, p: Double): Double = scala.math.pow(v, p)
+
+    override def dotSS(a: Scalar[Double], b: Scalar[Double]): Scalar[Double] = Scalar(a.data * b.data)
+    override def dotSM(a: Scalar[Double], b: Double): Scalar[Double] = Scalar(a.data * b)
+    override def dotMS(a: Double, b: Scalar[Double]): Scalar[Double] = Scalar(a * b.data)
+    override def dotMM(a: Double, b: Double): Double = a * b
   }
 
   class DoubleWrapperRule extends ValueWrapperRule[Double, Scalar, Double] {
