@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.rule.{Value, ValueRule, ValueWrapperRule}
 import scala.language.higherKinds
 
 
-class Var[U[_], T](data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, T] {
+class Var[U[_], T](val data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, T] {
   var gradient: Value[U, T] = r.zeroAdd
 
   override def toString: String = s"Var[${ data }]"

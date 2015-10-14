@@ -1,13 +1,14 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.TestUtil._
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, ValueRuleExample}
+import com.kogecoo.scalaad.ValueMatcher.Assert._
+import com.kogecoo.scalaad.rule.{SeqFloatValueRule, ScalarIntValueRule, ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.ValueMatcherAssert._
 import org.scalatest.FunSuite
 
 class OpSpec extends FunSuite {
 
   test("Add - Scalar[Int]") {
-    implicit val vr = ValueRuleExample.valueRuleScalarInt
+    implicit val vr = new ScalarIntValueRule
 
     val value42 = NonContainerValue[Scalar, Int](42)
     val cValue211 = ContainerValue[Scalar, Int](Scalar(211))
@@ -113,7 +114,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Add - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var(Seq(71.0f, 3f))
     val var33_51 = Var(Seq(33.0f, 51.0f))
@@ -174,7 +175,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Sub - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var(Seq(71.0f, 3f))
     val var33_51 = Var(Seq(33.0f, 51.0f))
@@ -232,7 +233,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Mul - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val var33_51 = Var[Seq, Float](Seq(33.0f, 51.0f))
@@ -292,7 +293,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Div - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val var33_51 = Var[Seq, Float](Seq(33.0f, 51.0f))
@@ -350,7 +351,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Pos - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val c12_42 = ContainerConst[Seq, Float](Seq(12.0f, 42.0f))
@@ -380,7 +381,7 @@ class OpSpec extends FunSuite {
   }
 
   test("Neg - Seq[Float]") {
-    implicit val vr = ValueRuleExample.valueRuleSeqFloat
+    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val c12_42 = ContainerConst[Seq, Float](Seq(12.0f, 42.0f))

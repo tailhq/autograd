@@ -59,7 +59,7 @@ lazy val commonResolvers = Seq(
 )
 
 lazy val commonLibraryDependencies = Seq(
-  //"org.scalacheck" %% "scalacheck" % "1.25.5" % "test", //TODO: future
+  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
 
