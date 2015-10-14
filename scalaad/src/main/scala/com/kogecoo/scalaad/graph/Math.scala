@@ -308,6 +308,14 @@ object pow {
   }
 }
 
+object max {
+  def apply[U[_], T](a: Node[U, T], b: Node[U, T])(implicit vr: MathRule[U, T]): max[U, T] = new max(a, b)
+}
+
+object min {
+  def apply[U[_], T](a: Node[U, T], b: Node[U, T])(implicit vr: MathRule[U, T]): min[U, T] = new min(a, b)
+}
+
 object where {
   def apply[U[_], T](cond: Value[U, Boolean], a: Value[U, T], b: Value[U, T])(implicit mr: MathRule[U, T]): Value[U, T] = (cond, a, b) match {
     case (cond: NonContainerValue[U, Boolean], a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => NonContainerValue[U, T](mr.whereMMM(cond.data, a.data, b.data))
