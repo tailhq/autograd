@@ -1,5 +1,6 @@
-package com.kogecoo.scalaad.rule
+package com.kogecoo.scalaad.test.helper.rule
 
+import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, Value, ValueRule}
 
 object SeqFloatValueRule {
 
@@ -14,8 +15,8 @@ object SeqFloatValueRule {
 
 class SeqFloatValueRule extends ValueRule[Seq, Float] {
 
-  override val zeroAdd: Value[Seq, Float] = toValue(0)
-  override val zeroMul: Value[Seq, Float] = toValue(1)
+  override val zero: Value[Seq, Float] = toValue(0)
+  override val one: Value[Seq, Float] = toValue(1)
   override val derivConst: Value[Seq, Float] = toValue(0)
 
   override def toValue(v: Float): Value[Seq, Float] = NonContainerValue[Seq, Float](v)

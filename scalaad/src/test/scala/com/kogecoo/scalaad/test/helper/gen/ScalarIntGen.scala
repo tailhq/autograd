@@ -1,7 +1,8 @@
-package com.kogecoo.scalaad.gen
+package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.rule.{Value, ScalarIntValueRule, NonContainerValue, ContainerValue}
+import com.kogecoo.scalaad.rule.{Value, NonContainerValue, ContainerValue}
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule
 import org.scalacheck.Gen
 import org.scalacheck.Gen.oneOf
 import org.scalacheck.Arbitrary.arbitrary

@@ -1,11 +1,14 @@
-package com.kogecoo.scalaad.graph
+package com.kogecoo.scalaad.graph.op
 
-import com.kogecoo.scalaad.ValueMatcher.Assert._
-import com.kogecoo.scalaad.rule.{SeqFloatValueRule, ScalarIntValueRule, ContainerValue, NonContainerValue}
-import com.kogecoo.scalaad.ValueMatcherAssert._
-import org.scalatest.FunSuite
+import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert
+import ValueMatcherAssert._
+import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
+import org.scalatest.{DiagrammedAssertions, FunSuite}
 
-class OpSpec extends FunSuite {
+
+class OpSuite extends FunSuite with DiagrammedAssertions {
 
   test("Add - Scalar[Int]") {
     implicit val vr = new ScalarIntValueRule

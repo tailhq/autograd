@@ -1,6 +1,6 @@
-package com.kogecoo.scalaad
+package com.kogecoo.scalaad.test.helper.matcher
 
-import com.kogecoo.scalaad.rule.{Value, ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, Value}
 import org.scalacheck.Prop
 import org.scalacheck.Prop.BooleanOperators
 

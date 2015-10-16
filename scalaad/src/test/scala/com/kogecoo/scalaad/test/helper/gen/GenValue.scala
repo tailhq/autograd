@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.gen
+package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.rule.{Value, ContainerValue, NonContainerValue}
 import org.scalacheck.Gen

@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.gen
+package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.graph.{Node, ContainerConst, Var, ScalarConst}
 import org.scalacheck.Gen

@@ -1,7 +1,8 @@
-package com.kogecoo.scalaad.gen
+package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.oneOf
 import org.scalacheck.Gen
@@ -16,15 +17,21 @@ class SeqFloatNodeGen extends GenNode[Seq, Float] {
   }
 
   override def genVar: Gen[Var[Seq, Float]] = {
-    for {v <- arbitrary[Seq[Float]]} yield Var[Seq, Float](v)
+    for {
+      v <- arbitrary[Seq[Float]] suchThat(_.nonEmpty)
+    } yield Var[Seq, Float](v)
   }
 
   override def genScalarConst: Gen[ScalarConst[Seq, Float]] = {
-    for (v <- arbitrary[Float]) yield ScalarConst[Seq, Float](v)
+    for {
+      v <- arbitrary[Float]
+    } yield ScalarConst[Seq, Float](v)
   }
 
   override def genContainerConst: Gen[ContainerConst[Seq, Float]] = {
-    for (v <- arbitrary[Seq[Float]]) yield ContainerConst[Seq, Float](v)
+    for {
+      v <- arbitrary[Seq[Float]] suchThat(_.nonEmpty)
+    } yield ContainerConst[Seq, Float](v)
   }
 
 }
@@ -38,11 +45,15 @@ class SeqFloatValueGen extends GenValue[Seq, Float] {
   }
 
   override def genNonContainerValue: Gen[NonContainerValue[Seq, Float]] = {
-    for (v <- arbitrary[Float]) yield NonContainerValue[Seq, Float](v)
+    for {
+      v <- arbitrary[Float]
+    } yield NonContainerValue[Seq, Float](v)
   }
 
   override def genContainerValue: Gen[ContainerValue[Seq, Float]] = {
-    for (v <- arbitrary[Seq[Float]]) yield ContainerValue[Seq, Float](v)
+    for {
+      v <- arbitrary[Seq[Float]] suchThat(_.nonEmpty)
+    } yield ContainerValue[Seq, Float](v)
   }
 
 }

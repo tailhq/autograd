@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad
+package com.kogecoo.scalaad.test.helper.matcher
 
 import com.kogecoo.scalaad.rule.Value
 

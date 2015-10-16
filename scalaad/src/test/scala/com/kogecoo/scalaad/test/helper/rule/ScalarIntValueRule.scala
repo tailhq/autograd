@@ -1,6 +1,7 @@
-package com.kogecoo.scalaad.rule
+package com.kogecoo.scalaad.test.helper.rule
 
 import com.kogecoo.scalaad.graph.Scalar
+import com.kogecoo.scalaad.rule.{NonContainerValue, Value, ValueRule}
 
 
 object ScalarIntValueRule {
@@ -16,8 +17,8 @@ object ScalarIntValueRule {
 
 class ScalarIntValueRule extends ValueRule[Scalar, Int]{
 
-  override val zeroAdd: Value[Scalar, Int] = toValue(0)
-  override val zeroMul: Value[Scalar, Int] = toValue(1)
+  override val zero: Value[Scalar, Int] = toValue(0)
+  override val one: Value[Scalar, Int] = toValue(1)
   override val derivConst: Value[Scalar, Int] = toValue(0)
 
   override def toValue(v: Int): Value[Scalar, Int] = NonContainerValue[Scalar, Int](v)

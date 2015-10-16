@@ -1,6 +1,6 @@
-package com.kogecoo.scalaad.arbitrary
+package com.kogecoo.scalaad.test.helper.arbitrary
 
-import com.kogecoo.scalaad.gen.{SeqFloatValueGen, SeqFloatNodeGen}
+import com.kogecoo.scalaad.test.helper.gen.{SeqFloatValueGen, SeqFloatNodeGen}
 import com.kogecoo.scalaad.graph.{ContainerConst, Var, ScalarConst, Node}
 import com.kogecoo.scalaad.rule.{ContainerValue, Value, NonContainerValue}
 

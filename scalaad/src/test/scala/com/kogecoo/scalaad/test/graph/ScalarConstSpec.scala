@@ -1,10 +1,13 @@
-package com.kogecoo.scalaad.graph
+package com.kogecoo.scalaad.test.graph
 
-import com.kogecoo.scalaad.ValueMatcherProp._
-import com.kogecoo.scalaad.gen._
+import com.kogecoo.scalaad.graph.Scalar
+import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp
+import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
+import ValueMatcherProp._
+import com.kogecoo.scalaad.test.helper.gen._
 import com.kogecoo.scalaad.rule.ValueRule
-import com.kogecoo.scalaad.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.rule.SeqFloatValueRule.Implicits._
+import ScalarIntValueRule.Implicits._
+import SeqFloatValueRule.Implicits._
 
 import org.scalacheck.{Properties, Prop}
 import org.scalacheck.Prop.forAll
@@ -40,19 +43,19 @@ class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(
   }
 
   def derivSelf = forAll(nodes.genScalarConst) {
-    c => c.deriv(c) shouldBe rule.zeroAdd
+    c => c.deriv(c) shouldBe rule.zero
   }
 
   def deriv = forAll(nodes.genScalarConst, nodes.genNode) {
-    (c, v) => c.deriv(v) shouldBe rule.zeroAdd
+    (c, v) => c.deriv(v) shouldBe rule.zero
   }
 
   def propagate = forAll(nodes.genScalarConst, values.genValue) {
-    (c, v) => c.propagate(v) shouldBe rule.zeroAdd
+    (c, v) => c.propagate(v) shouldBe rule.zero
   }
 
   def grad = forAll(nodes.genScalarConst) {
-    c => c.grad() shouldBe rule.zeroAdd
+    c => c.grad() shouldBe rule.zero
   }
 
 }
