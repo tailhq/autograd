@@ -43,15 +43,15 @@ class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(
   }
 
   def derivSelf = forAll(nodes.genScalarConst) {
-    c => c.deriv(c) shouldBe rule.zero
+    c => c.deriv(c) shouldBe rule.zero(c())
   }
 
   def deriv = forAll(nodes.genScalarConst, nodes.genNode) {
-    (c, v) => c.deriv(v) shouldBe rule.zero
+    (c, v) => c.deriv(v) shouldBe rule.zero(v())
   }
 
   def propagate = forAll(nodes.genScalarConst, values.genValue) {
-    (c, v) => c.propagate(v) shouldBe rule.zero
+    (c, v) => c.propagate(v) shouldBe rule.zero(v) * v
   }
 
   def grad = forAll(nodes.genScalarConst) {
