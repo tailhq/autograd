@@ -1,11 +1,10 @@
 package com.kogecoo.scalaad.graph.op
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert
-import ValueMatcherAssert._
+import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
 import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
 import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
-import org.scalatest.{DiagrammedAssertions, FunSuite}
+import org.scalatest.FunSuite
 
 
 class OpSuite extends FunSuite with DiagrammedAssertions {
