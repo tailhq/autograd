@@ -6,9 +6,27 @@ import scala.language.higherKinds
 // Define concrete calculations for U[T] type instances which performed on nodes in computational graph.
 trait ValueRule[U[_], T] {
 
-  val zeroAdd: Value[U, T]  // T + zeroAdd() = T
-  val zeroMul: Value[U, T]  // T * zeroMul() = T
-  val derivConst: Value[U, T]
+  final def zero: Value[U, T] = toValue(zeroM)
+  final def zero(shape: U[T]): Value[U, T] = toValue(zeroS(shape))
+  final def zero(shape: Value[U, T]): Value[U, T] = shape match {
+    case _: NonContainerValue[U, T] => zero
+    case s: ContainerValue[U, T]    => zero(shape)
+  }
+
+  final def one(implicit d: DummyImplicit): Value[U, T] = toValue(oneM)
+  final def one(shape: U[T])(implicit d: DummyImplicit): Value[U, T] = toValue(oneS(shape))
+  final def one(shape: Value[U, T]): Value[U, T] = shape match {
+    case _: NonContainerValue[U, T] => one
+    case s: ContainerValue[U, T]    => one(shape)
+  }
+
+  def zeroM: T
+  def zeroS(shape: U[T]): U[T]
+  def oneM: T
+  def oneS(shape: U[T]): U[T]
+
+  def derivConst(shape: U[T]): Value[U, T]
+  def derivConst(shape: Value[U, T]): Value[U, T]
 
   def toValue(v: T): Value[U, T]   // FIXME
   def toValue(v: U[T])(implicit e: DummyImplicit): Value[U, T]   // FIXME

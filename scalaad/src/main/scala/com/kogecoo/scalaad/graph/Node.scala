@@ -19,7 +19,7 @@ trait Node[U[_], T] {
   def deriv(wrt: Node[U, T]): Value[U, T] // compute with forward-mode automatic differentiation
   def propagate(g: Value[U, T]): Value[U, T]    // compute with reverse-mode autmatic differentiation
   def grad()(implicit r: ValueRule[U, T]): Value[U, T] = {
-    propagate(r.zeroMul)
+    propagate(r.one)
   }
 
   def +(rhs: Node[U, T])(implicit r: ValueRule[U, T]): Node[U, T] = Add(this, rhs)

@@ -4,6 +4,7 @@ import com.kogecoo.scalaad.graph.{ContainerConst, ScalarConst}
 import com.kogecoo.scalaad.rule._
 
 import org.nd4j.linalg.api.ndarray.INDArray
+import org.nd4j.linalg.factory.Nd4j
 import org.nd4s.Implicits._
 
 import scala.language.implicitConversions
@@ -37,15 +38,19 @@ object Nd4jRule {
 
   class INDArrayRule extends INDArrayValueRule with INDArrayMathRule
 
-  trait INDArrayValueRule extends ValueRule[INDArray_, Double] {
+  trait INDArrayValueRule extends ValueRule[INDArray_, T] {
 
-    override val zeroAdd: Value[INDArray_, Double] = toValue(0.0)
-    override val zeroMul: Value[INDArray_, Double] = toValue(1.0)
-    override val derivConst: Value[INDArray_, Double] = toValue(0.0)
+    override def zeroM: T = 0.0
+    override def zeroS(shape: C): C = INDArray_[T](Nd4j.zeros(shape.data.shape():_*))
+    override def oneM: T = 1.0
+    override def oneS(shape: C): C = INDArray_[T](Nd4j.ones(shape.data.shape():_*))
 
-    override def toValue(v: T): Value[INDArray_, T] = NonContainerValue[INDArray_, Double](v)
+    override def derivConst(shape: C): Value[INDArray_, T] = zero(shape)
+    override def derivConst(shape: Value[INDArray_, T]): Value[INDArray_, T] = zero(shape)
+
+    override def toValue(v: T): Value[INDArray_, T] = NonContainerValue[INDArray_, T](v)
     override def toValue(v: C)(implicit e: DummyImplicit): Value[INDArray_, T] = {
-      ContainerValue[INDArray_, Double](v)
+      ContainerValue[INDArray_, T](v)
     }
 
     override def addSS(l: C, r: C): C = INDArray_(l.data.add(r.data))

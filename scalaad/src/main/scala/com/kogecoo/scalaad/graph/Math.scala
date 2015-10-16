@@ -24,12 +24,12 @@ class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U
   override def apply(): Value[U, T] = tan(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val tan_v_val = tan(v())
-    v.deriv(wrt) * (vr.zeroMul + tan_v_val * tan_v_val)
+    v.deriv(wrt) * (vr.one + tan_v_val * tan_v_val)
   }
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val tan_v_val = tan(v())
-    v.propagate(g * (vr.zeroMul + tan_v_val * tan_v_val))
+    v.propagate(g * (vr.one + tan_v_val * tan_v_val))
   }
 }
 
@@ -38,13 +38,13 @@ class asin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def apply(): Value[U, T] = asin(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = one / sqrt(one - (v_val * v_val))
     d * v.deriv(wrt)
   }
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = one / sqrt(one - (v_val * v_val))
     v.propagate(g * d)
   }
@@ -55,13 +55,13 @@ class acos[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def apply(): Value[U, T] = acos(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = -(one / sqrt(one - (v_val * v_val)))
     d * v.deriv(wrt)
   }
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = -(one / sqrt(one - (v_val * v_val)))
     v.propagate(g * d)
   }
@@ -72,13 +72,13 @@ class atan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def apply(): Value[U, T] = atan(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = one / (one + (v_val * v_val))
     d * v.deriv(wrt)
   }
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val v_val = v()
-    val one = vr.zeroMul
+    val one = vr.one
     val d = one / (one + (v_val * v_val))
     v.propagate(g * d)
   }
@@ -103,13 +103,13 @@ class tanh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
   override def apply(): Value[U, T] = tanh(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val tanh_v_val = tanh(v())
-    val one = vr.zeroMul
+    val one = vr.one
     v.deriv(wrt) * (one - tanh_v_val * tanh_v_val)
   }
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val tanh_v_val = tanh(v())
-    val one = vr.zeroMul
+    val one = vr.one
     v.propagate(g * (one - tanh_v_val * tanh_v_val))
   }
 }
@@ -130,9 +130,9 @@ class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
 
 class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"|${ v }|"
-  override def apply(): Value[U, T] = where(v() >= r.zeroAdd, v(), -v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = where(v() >= r.zeroAdd, v.deriv(wrt), -v.deriv(wrt))
-  override def propagate(g: Value[U, T]): Value[U, T] = where(v() >= r.zeroAdd, v.propagate(g), v.propagate(-g))
+  override def apply(): Value[U, T] = where(v() >= r.zero, v(), -v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = where(v() >= r.zero, v.deriv(wrt), -v.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = where(v() >= r.zero, v.propagate(g), v.propagate(-g))
 }
 
 // this may be unnecessary because it can be replaced with pow(x, 1/2)
@@ -142,15 +142,15 @@ class sqrt[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     // FIXME
     val v_val = v()
-    val half = r.zeroMul / r.zeroMul + r.zeroMul
-    val minus_half = half - r.zeroMul
+    val half = r.one / r.one + r.one
+    val minus_half = half - r.one
     v.deriv(wrt) * v_val * half / pow(v_val, minus_half)
   }
   override def propagate(g: Value[U, T]): Value[U, T] = {
     // FIXME
     val v_val = v()
-    val half = r.zeroMul / r.zeroMul + r.zeroMul
-    val minus_half = half - r.zeroMul
+    val half = r.one / r.one + r.one
+    val minus_half = half - r.one
     val gv = v_val * half / pow(v_val, minus_half)
     v.propagate(g * gv)
   }
@@ -162,7 +162,7 @@ class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val a_val = a()
     val b_val =  b()
-    val b_minus_one = b_val - r.zeroMul
+    val b_minus_one = b_val - r.one
 
     val lhs = a.deriv(wrt) * b_val * pow(a_val, b_minus_one)
     val rhs = b.deriv(wrt) * ln(a_val) * pow(a_val, b_val)
@@ -171,7 +171,7 @@ class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
   override def propagate(g: Value[U, T]): Value[U, T] = {
     val a_val = a()
     val b_val = b()
-    val b_minus_one = b_val - r.zeroMul
+    val b_minus_one = b_val - r.one
 
     val lhs = a.propagate(g * b_val * pow(a_val, b_minus_one))
     val rhs = b.propagate(g * ln(a_val) * pow(a_val, b_val))

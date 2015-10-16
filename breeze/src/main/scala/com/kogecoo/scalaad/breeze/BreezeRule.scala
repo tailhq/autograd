@@ -31,9 +31,15 @@ object BreezeRule {
   class DenseMatrixRule extends DenseMatrixValueRule with DenseMatrixMathRule
 
   trait DenseVectorValueRule extends ValueRule[DenseVector, T]{
-    override val zeroAdd: Value[DenseVector, T]    = toValue(0.0)
-    override val zeroMul: Value[DenseVector, T]    = toValue(1.0)
-    override val derivConst: Value[DenseVector, T] = toValue(0.0)
+
+    override def zeroM: T = 0.0
+    override def zeroS(shape: V): V = DenseVector.zeros[T](shape.data.size)
+    override def oneM: T = 1.0
+    override def oneS(shape: V): V = DenseVector.ones[T](shape.data.size)
+
+    override def derivConst(shape: V): Value[DenseVector, T] = zero(shape)
+
+    override def derivConst(shape: Value[DenseVector, T]): Value[DenseVector, T] = zero(shape)
 
     override def toValue(v: T): Value[DenseVector, T] = NonContainerValue[DenseVector, T](v)
     override def toValue(v: V)(implicit e: DummyImplicit): Value[DenseVector, T] = {
@@ -147,9 +153,14 @@ object BreezeRule {
   }
 
   trait DenseMatrixValueRule extends ValueRule[DenseMatrix, T] {
-    override val zeroAdd: Value[DenseMatrix, T]    = toValue(0.0)
-    override val zeroMul: Value[DenseMatrix, T]    = toValue(1.0)
-    override val derivConst: Value[DenseMatrix, T] = toValue(0.0)
+
+    override def zeroM: T = 0.0
+    override def zeroS(shape: M): M = DenseMatrix.zeros[T](shape.rows, shape.cols)
+    override def oneM: T = 1.0
+    override def oneS(shape: M): M = DenseMatrix.ones[T](shape.rows, shape.cols)
+
+    override def derivConst(shape: M): Value[DenseMatrix, T] = zero(shape)
+    override def derivConst(shape: Value[DenseMatrix, T]): Value[DenseMatrix, T] = zero(shape)
 
     override def toValue(v: T): Value[DenseMatrix, T] = NonContainerValue[DenseMatrix, T](v)
     override def toValue(v: M)(implicit e: DummyImplicit): Value[DenseMatrix, T] = {
