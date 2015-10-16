@@ -3,6 +3,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(name := "scalaad-root")
   .settings(publish := { })
+  .settings(testSettings: _*)
 
 lazy val scalaad = project.in(file("scalaad"))
   .settings(commonSettings ++ commonPublishSettings:_*)
@@ -77,9 +78,15 @@ lazy val commonPomExtra = {
   </developers>
 }
 
+lazy val testSettings = Seq(
+  testOptions          += Tests.Argument(TestFrameworks.ScalaCheck, "-verbosity", "2"),
+  testOptions          += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
+)
+
 def choosePublishTo(v: String) = {
   if (v.trim.endsWith("SNAPSHOT"))
     Some(Resolver.file("file", new File(Path.userHome.absolutePath+"/temporary")))
   else
     Some(Resolver.file("file", new File(Path.userHome.absolutePath+"/temporary")))
 }
+
