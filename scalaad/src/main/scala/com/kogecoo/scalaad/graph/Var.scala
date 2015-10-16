@@ -12,13 +12,17 @@ class Var[U[_], T](val data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, 
   override def apply(): Value[U, T] = r.toValue(data)
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     if (wrt == this) {
-      r.one(data)
+      r.one(wrt())
     } else {
-      r.zero(data)
+      r.zero(wrt())
     }
   }
 
-  override def propagate(g: Value[U, T]): Value[U, T] = { gradient += g * r.one(g); g }
+  override def propagate(g: Value[U, T]): Value[U, T] = {
+    val v = g * r.one(g)
+    gradient += v
+    v
+  }
 }
 
 object Var {
