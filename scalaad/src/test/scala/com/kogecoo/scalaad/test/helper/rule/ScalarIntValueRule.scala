@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.test.helper.rule
 
 import com.kogecoo.scalaad.graph.Scalar
-import com.kogecoo.scalaad.rule.{NonContainerValue, Value, ValueRule}
+import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, Value, ValueRule}
 
 
 object ScalarIntValueRule {
@@ -17,13 +17,18 @@ object ScalarIntValueRule {
 
 class ScalarIntValueRule extends ValueRule[Scalar, Int]{
 
-  override val zero: Value[Scalar, Int] = toValue(0)
-  override val one: Value[Scalar, Int] = toValue(1)
-  override val derivConst: Value[Scalar, Int] = toValue(0)
+  override def zeroM: Int = 0
+  override def zeroS(shape: Scalar[Int]): Scalar[Int] = Scalar(0)
+  override def oneM: Int = 1
+  override def oneS(shape: Scalar[Int]): Scalar[Int] = Scalar(1)
+  override def derivConst(shape: Scalar[Int]): Value[Scalar, Int] = toValue(zeroS(shape))
+  override def derivConst(shape: Value[Scalar, Int]): Value[Scalar, Int] = shape match {
+    case _: NonContainerValue[Scalar, Int] => toValue(zeroM)
+    case s: ContainerValue[Scalar, Int] => toValue(zeroS(s.data))
+  }
 
   override def toValue(v: Int): Value[Scalar, Int] = NonContainerValue[Scalar, Int](v)
-
-  override def toValue(v: Scalar[Int])(implicit e: DummyImplicit): Value[Scalar, Int] = NonContainerValue[Scalar, Int](v.data)
+  override def toValue(v: Scalar[Int])(implicit e: DummyImplicit): Value[Scalar, Int] = ContainerValue[Scalar, Int](v)
 
   override def addSS(l: Scalar[Int], r: Scalar[Int]): Scalar[Int] = Scalar(l.data + r.data)
   override def subSS(l: Scalar[Int], r: Scalar[Int]): Scalar[Int] = Scalar(l.data - r.data)

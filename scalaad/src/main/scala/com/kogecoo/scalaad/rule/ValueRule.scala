@@ -10,14 +10,14 @@ trait ValueRule[U[_], T] {
   final def zero(shape: U[T]): Value[U, T] = toValue(zeroS(shape))
   final def zero(shape: Value[U, T]): Value[U, T] = shape match {
     case _: NonContainerValue[U, T] => zero
-    case s: ContainerValue[U, T]    => zero(shape)
+    case s: ContainerValue[U, T]    => zero(s.data)
   }
 
   final def one(implicit d: DummyImplicit): Value[U, T] = toValue(oneM)
   final def one(shape: U[T])(implicit d: DummyImplicit): Value[U, T] = toValue(oneS(shape))
   final def one(shape: Value[U, T]): Value[U, T] = shape match {
     case _: NonContainerValue[U, T] => one
-    case s: ContainerValue[U, T]    => one(shape)
+    case s: ContainerValue[U, T]    => one(s.data)
   }
 
   def zeroM: T

@@ -15,9 +15,15 @@ object SeqFloatValueRule {
 
 class SeqFloatValueRule extends ValueRule[Seq, Float] {
 
-  override val zero: Value[Seq, Float] = toValue(0)
-  override val one: Value[Seq, Float] = toValue(1)
-  override val derivConst: Value[Seq, Float] = toValue(0)
+  override def zeroM: Float = 0.0f
+  override def zeroS(shape: Seq[Float]): Seq[Float] = Seq.fill[Float](shape.size)(0)
+  override def oneM: Float = 1.0f
+  override def oneS(shape: Seq[Float]): Seq[Float] = Seq.fill[Float](shape.size)(0)
+  override def derivConst(shape: Seq[Float]): Value[Seq, Float] = toValue(zeroS(shape))
+  override def derivConst(shape: Value[Seq, Float]): Value[Seq, Float] = shape match {
+    case _: NonContainerValue[Seq, Float] => toValue(zeroM)
+    case s: ContainerValue[Seq, Float] => toValue(zeroS(s.data))
+  }
 
   override def toValue(v: Float): Value[Seq, Float] = NonContainerValue[Seq, Float](v)
 

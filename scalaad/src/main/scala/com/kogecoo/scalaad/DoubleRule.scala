@@ -34,7 +34,7 @@ object DoubleRule {
     override def derivConst(shape: Value[Scalar, Double]): Value[Scalar, Double] = zero(shape)
 
     override def toValue(v: Double): Value[Scalar, Double] = NonContainerValue[Scalar, Double](v)
-    override def toValue(v: Scalar[Double])(implicit e: DummyImplicit): Value[Scalar, Double] = NonContainerValue[Scalar, Double](v.data)
+    override def toValue(v: Scalar[Double])(implicit e: DummyImplicit): Value[Scalar, Double] = ContainerValue[Scalar, Double](v)
 
     override def addSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Double] = Scalar(l.data + r.data)
     override def subSS(l: Scalar[Double], r: Scalar[Double]): Scalar[Double] = Scalar(l.data - r.data)
