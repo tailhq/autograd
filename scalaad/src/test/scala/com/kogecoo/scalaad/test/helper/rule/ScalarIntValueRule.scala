@@ -21,11 +21,6 @@ class ScalarIntValueRule extends ValueRule[Scalar, Int]{
   override def zeroS(shape: Scalar[Int]): Scalar[Int] = Scalar(0)
   override def oneM: Int = 1
   override def oneS(shape: Scalar[Int]): Scalar[Int] = Scalar(1)
-  override def derivConst(shape: Scalar[Int]): Value[Scalar, Int] = toValue(zeroS(shape))
-  override def derivConst(shape: Value[Scalar, Int]): Value[Scalar, Int] = shape match {
-    case _: NonContainerValue[Scalar, Int] => toValue(zeroM)
-    case s: ContainerValue[Scalar, Int] => toValue(zeroS(s.data))
-  }
 
   override def toValue(v: Int): Value[Scalar, Int] = NonContainerValue[Scalar, Int](v)
   override def toValue(v: Scalar[Int])(implicit e: DummyImplicit): Value[Scalar, Int] = ContainerValue[Scalar, Int](v)

@@ -45,9 +45,6 @@ object Nd4jRule {
     override def oneM: T = 1.0
     override def oneS(shape: C): C = INDArray_[T](Nd4j.ones(shape.data.shape():_*))
 
-    override def derivConst(shape: C): Value[INDArray_, T] = zero(shape)
-    override def derivConst(shape: Value[INDArray_, T]): Value[INDArray_, T] = zero(shape)
-
     override def toValue(v: T): Value[INDArray_, T] = NonContainerValue[INDArray_, T](v)
     override def toValue(v: C)(implicit e: DummyImplicit): Value[INDArray_, T] = {
       ContainerValue[INDArray_, T](v)

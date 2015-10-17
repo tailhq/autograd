@@ -25,9 +25,6 @@ trait ValueRule[U[_], T] {
   def oneM: T
   def oneS(shape: U[T]): U[T]
 
-  def derivConst(shape: U[T]): Value[U, T]
-  def derivConst(shape: Value[U, T]): Value[U, T]
-
   def toValue(v: T): Value[U, T]   // FIXME
   def toValue(v: U[T])(implicit e: DummyImplicit): Value[U, T]   // FIXME
 
