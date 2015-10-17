@@ -22,9 +22,6 @@ class ScalarIntValueRule extends ValueRule[Scalar, Int]{
   override def oneM: Int = 1
   override def oneS(shape: Scalar[Int]): Scalar[Int] = Scalar(1)
 
-  override def toValue(v: Int): Value[Scalar, Int] = NonContainerValue[Scalar, Int](v)
-  override def toValue(v: Scalar[Int])(implicit e: DummyImplicit): Value[Scalar, Int] = ContainerValue[Scalar, Int](v)
-
   override def addSS(l: Scalar[Int], r: Scalar[Int]): Scalar[Int] = Scalar(l.data + r.data)
   override def subSS(l: Scalar[Int], r: Scalar[Int]): Scalar[Int] = Scalar(l.data - r.data)
   override def mulSS(l: Scalar[Int], r: Scalar[Int]): Scalar[Int] = Scalar(l.data * r.data)

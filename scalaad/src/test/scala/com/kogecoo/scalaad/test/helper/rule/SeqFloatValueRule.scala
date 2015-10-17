@@ -18,10 +18,7 @@ class SeqFloatValueRule extends ValueRule[Seq, Float] {
   override def zeroM: Float = 0.0f
   override def zeroS(shape: Seq[Float]): Seq[Float] = Seq.fill[Float](shape.size)(0)
   override def oneM: Float = 1.0f
-  override def oneS(shape: Seq[Float]): Seq[Float] = Seq.fill[Float](shape.size)(0)
-
-  override def toValue(v: Float): Value[Seq, Float] = NonContainerValue[Seq, Float](v)
-  override def toValue(v: Seq[Float])(implicit e: DummyImplicit): Value[Seq, Float] = ContainerValue[Seq, Float](v)
+  override def oneS(shape: Seq[Float]): Seq[Float] = Seq.fill[Float](shape.size)(1)
 
   override def addSS(l: Seq[Float], r: Seq[Float]): Seq[Float] = l.zip(r).map { case(a, b) => a + b }
   override def subSS(l: Seq[Float], r: Seq[Float]): Seq[Float] = l.zip(r).map { case(a, b) => a - b }

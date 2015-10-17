@@ -20,13 +20,14 @@ trait ValueRule[U[_], T] {
     case s: ContainerValue[U, T]    => one(s.data)
   }
 
+  final def toValue(v: T): Value[U, T] = NonContainerValue[U, T](v)
+  final def toValue(v: U[T])(implicit e: DummyImplicit): Value[U, T] = ContainerValue[U, T](v)
+
+
   def zeroM: T
   def zeroS(shape: U[T]): U[T]
   def oneM: T
   def oneS(shape: U[T]): U[T]
-
-  def toValue(v: T): Value[U, T]   // FIXME
-  def toValue(v: U[T])(implicit e: DummyImplicit): Value[U, T]   // FIXME
 
   // because of type erasure, we cannot every 'add' methods to be a same name
 

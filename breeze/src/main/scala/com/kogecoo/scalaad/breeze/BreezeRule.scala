@@ -37,11 +37,6 @@ object BreezeRule {
     override def oneM: T = 1.0
     override def oneS(shape: V): V = DenseVector.ones[T](shape.data.size)
 
-    override def toValue(v: T): Value[DenseVector, T] = NonContainerValue[DenseVector, T](v)
-    override def toValue(v: V)(implicit e: DummyImplicit): Value[DenseVector, T] = {
-      ContainerValue[DenseVector, T](v)
-    }
-
     override def addSS(l: V, r: V): V = l + r
     override def subSS(l: V, r: V): V = l - r
     override def mulSS(l: V, r: V): V = l :* r
@@ -154,11 +149,6 @@ object BreezeRule {
     override def zeroS(shape: M): M = DenseMatrix.zeros[T](shape.rows, shape.cols)
     override def oneM: T = 1.0
     override def oneS(shape: M): M = DenseMatrix.ones[T](shape.rows, shape.cols)
-
-    override def toValue(v: T): Value[DenseMatrix, T] = NonContainerValue[DenseMatrix, T](v)
-    override def toValue(v: M)(implicit e: DummyImplicit): Value[DenseMatrix, T] = {
-      ContainerValue[DenseMatrix, T](v)
-    }
 
     override def addSS(l: M, r: M): M = l + r
     override def subSS(l: M, r: M): M = l - r

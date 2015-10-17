@@ -45,11 +45,6 @@ object Nd4jRule {
     override def oneM: T = 1.0
     override def oneS(shape: C): C = INDArray_[T](Nd4j.ones(shape.data.shape():_*))
 
-    override def toValue(v: T): Value[INDArray_, T] = NonContainerValue[INDArray_, T](v)
-    override def toValue(v: C)(implicit e: DummyImplicit): Value[INDArray_, T] = {
-      ContainerValue[INDArray_, T](v)
-    }
-
     override def addSS(l: C, r: C): C = INDArray_(l.data.add(r.data))
     override def subSS(l: C, r: C): C = INDArray_(l.data.sub(r.data))
     override def mulSS(l: C, r: C): C = INDArray_(l.data.mul(r.data))
