@@ -14,9 +14,11 @@ abstract class BinaryOpSpecDef[U[_], T](implicit vr: ValueRule[U, T]) {
 
   def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T]
 
-  def derivSelfExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T]
+  def derivWrtLeftExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T]
 
-  def derivSelfSelfExpectation(a: Node[U, T]): Value[U, T]
+  def derivWrtRightExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T]
+
+  def derivWrtSelfExpectation(a: Node[U, T]): Value[U, T]
 
   def propagateExpectation(a: Node[U, T], b: Node[U, T], c: Value[U, T]): Value[U, T]
 

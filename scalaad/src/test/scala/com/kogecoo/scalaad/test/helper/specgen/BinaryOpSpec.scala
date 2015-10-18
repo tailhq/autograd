@@ -19,12 +19,16 @@ class BinaryOpSpec[U[_], T](d: BinaryOpSpecDef[U, T], nodes: GenNode[U, T], valu
     d.op(a, b).apply() shouldBe d.applyExpectation(a, b)
   }
 
-  def derivSelfSelf: Prop = forAll(n) { (a: Node[U, T]) =>
-    d.op(a, a).deriv(a + a) shouldBe d.derivSelfSelfExpectation(a)
+  def derivWrtSelf: Prop = forAll(n) { (a: Node[U, T]) =>
+    d.op(a, a).deriv(a) shouldBe d.derivWrtSelfExpectation(a)
   }
 
-  def derivSelf: Prop = forAll(n, n) { (a: Node[U, T], b: Node[U, T]) =>
-    d.op(a, b).deriv(a + b) shouldBe d.derivSelfExpectation(a, b)
+  def derivWrtLeft: Prop = forAll(n, n) { (a: Node[U, T], b: Node[U, T]) =>
+    d.op(a, b).deriv(a) shouldBe d.derivWrtLeftExpectation(a, b)
+  }
+
+  def derivWrtRight: Prop = forAll(n, n) { (a: Node[U, T], b: Node[U, T]) =>
+    d.op(a, b).deriv(b) shouldBe d.derivWrtRightExpectation(a, b)
   }
 
   def deriv: Prop = forAll(n, n, n) { (a: Node[U, T], b: Node[U, T], c: Node[U, T]) =>
