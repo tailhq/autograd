@@ -7,7 +7,7 @@ import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRu
 import org.scalatest.FunSuite
 
 
-class OpSuite extends FunSuite with DiagrammedAssertions {
+class OpSuite extends FunSuite {
 
   test("Add - Scalar[Int]") {
     implicit val vr = new ScalarIntValueRule
@@ -28,10 +28,10 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     a1.apply()              shouldBe 7
     a1.deriv(sc4)           shouldBe 0
     a1.deriv(sc3)           shouldBe 0
-    a1.deriv(cc31)          shouldBe 0
-    a1.deriv(cc72)          shouldBe 0
-    a1.deriv(var7)          shouldBe 0
-    a1.deriv(var13)         shouldBe 0
+    a1.deriv(cc31)          shouldBe Scalar(0)
+    a1.deriv(cc72)          shouldBe Scalar(0)
+    a1.deriv(var7)          shouldBe Scalar(0)
+    a1.deriv(var13)         shouldBe Scalar(0)
     a1.propagate(value42)   shouldBe 0
     a1.propagate(cValue211) shouldBe Scalar(0)
 
@@ -41,10 +41,10 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     a2.apply()              shouldBe Scalar(76)
     a2.deriv(sc4)           shouldBe 0
     a2.deriv(sc3)           shouldBe 0
-    a2.deriv(cc31)          shouldBe 0
-    a2.deriv(cc72)          shouldBe 0
-    a2.deriv(var7)          shouldBe 0
-    a2.deriv(var13)         shouldBe 0
+    a2.deriv(cc31)          shouldBe Scalar(0)
+    a2.deriv(cc72)          shouldBe Scalar(0)
+    a2.deriv(var7)          shouldBe Scalar(0)
+    a2.deriv(var13)         shouldBe Scalar(0)
     a2.propagate(value42)   shouldBe 0
     a2.propagate(cValue211) shouldBe Scalar(0)
 
@@ -54,10 +54,10 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     a3.apply()              shouldBe Scalar(34)
     a3.deriv(sc4)           shouldBe 0
     a3.deriv(sc3)           shouldBe 0
-    a3.deriv(cc31)          shouldBe 0
-    a3.deriv(cc72)          shouldBe 0
-    a3.deriv(var7)          shouldBe 0
-    a3.deriv(var13)         shouldBe 0
+    a3.deriv(cc31)          shouldBe Scalar(0)
+    a3.deriv(cc72)          shouldBe Scalar(0)
+    a3.deriv(var7)          shouldBe Scalar(0)
+    a3.deriv(var13)         shouldBe Scalar(0)
     a3.propagate(value42)   shouldBe 0
     a3.propagate(cValue211) shouldBe Scalar(0)
 
@@ -67,10 +67,10 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     a4.apply()              shouldBe Scalar(103)
     a4.deriv(sc4)           shouldBe 0
     a4.deriv(sc3)           shouldBe 0
-    a4.deriv(cc31)          shouldBe 0
-    a4.deriv(cc72)          shouldBe 0
-    a4.deriv(var7)          shouldBe 0
-    a4.deriv(var13)         shouldBe 0
+    a4.deriv(cc31)          shouldBe Scalar(0)
+    a4.deriv(cc72)          shouldBe Scalar(0)
+    a4.deriv(var7)          shouldBe Scalar(0)
+    a4.deriv(var13)         shouldBe Scalar(0)
     a4.propagate(value42)   shouldBe 0
     a4.propagate(cValue211) shouldBe Scalar(0)
 
@@ -79,8 +79,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     // Var + ScalarConst
     val a5 = Add(var7, sc3)
 
-    a5.apply()              shouldBe 10
-    a5.deriv(var7)          shouldBe 1
+    a5.apply()              shouldBe Scalar(10)
+    a5.deriv(var7)          shouldBe Scalar(1)
     a5.deriv(sc3)           shouldBe 0
     a5.propagate(value42)   shouldBe 42
     a5.propagate(cValue211) shouldBe Scalar(211)
@@ -88,18 +88,18 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     // ScalarConst + Var
     val a6 = Add(sc4, var13)
 
-    a6.apply()              shouldBe 17
+    a6.apply()              shouldBe Scalar(17)
     a6.deriv(sc4)           shouldBe 0
-    a6.deriv(var13)         shouldBe 1
+    a6.deriv(var13)         shouldBe Scalar(1)
     a6.propagate(value42)   shouldBe 42
     a6.propagate(cValue211) shouldBe Scalar(211)
 
     // Var + Var
     val a7 = Add(var7, var13)
 
-    a7.apply()              shouldBe 20
-    a7.deriv(var7)          shouldBe 1
-    a7.deriv(var13)         shouldBe 1
+    a7.apply()              shouldBe Scalar(20)
+    a7.deriv(var7)          shouldBe Scalar(1)
+    a7.deriv(var13)         shouldBe Scalar(1)
     a7.propagate(value42)   shouldBe 84
     a7.propagate(cValue211) shouldBe Scalar(422)
 
@@ -107,9 +107,9 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     // ((x + 3) + y), x = 7, y = 13
     val a8 = Add(Add(var7, sc3), var13)
 
-    a8.apply()              shouldBe 23
-    a8.deriv(var7)          shouldBe 1
-    a8.deriv(var13)         shouldBe 1
+    a8.apply()              shouldBe Scalar(23)
+    a8.deriv(var7)          shouldBe Scalar(1)
+    a8.deriv(var13)         shouldBe Scalar(1)
     a8.deriv(sc3)           shouldBe 0
     a8.propagate(value42)   shouldBe 84
     a8.propagate(cValue211) shouldBe Scalar(422)
@@ -132,8 +132,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a1 = Add(c12_42, c63_21)
 
     a1.apply()            shouldBe Seq(75.0f, 63.0f)
-    a1.deriv(c12_42)      shouldBe 0
-    a1.deriv(c63_21)      shouldBe 0
+    a1.deriv(c12_42)      shouldBe Seq(0f, 0f)
+    a1.deriv(c63_21)      shouldBe Seq(0f, 0f)
     a1.propagate(value15) shouldBe 0
     a1.propagate(cValue8) shouldBe Seq(0.0f, 0.0f)
 
@@ -143,8 +143,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a2 = Add(var71_3, c63_21)
 
     a2.apply()            shouldBe Seq(134f, 24f)
-    a2.deriv(var71_3)     shouldBe 1
-    a2.deriv(c63_21)      shouldBe 0
+    a2.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a2.deriv(c63_21)      shouldBe Seq(0f, 0f)
     a2.propagate(value15) shouldBe 15
     a2.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
@@ -152,8 +152,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a3 = Add(c12_42, var33_51)
 
     a3.apply()            shouldBe Seq(45f, 93f)
-    a3.deriv(c12_42)      shouldBe 0
-    a3.deriv(var33_51)    shouldBe 1
+    a3.deriv(c12_42)      shouldBe Seq(0f, 0f)
+    a3.deriv(var33_51)    shouldBe Seq(1f, 1f)
     a3.propagate(value15) shouldBe 15
     a3.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
@@ -161,8 +161,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a4 = Add(var71_3, var33_51)
 
     a4.apply()            shouldBe Seq(104f, 54f)
-    a4.deriv(var71_3)     shouldBe 1
-    a4.deriv(var33_51)    shouldBe 1
+    a4.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a4.deriv(var33_51)    shouldBe Seq(1f, 1f)
     a4.propagate(value15) shouldBe 30f
     a4.propagate(cValue8) shouldBe Seq(6.0f, 10.0f)
 
@@ -170,8 +170,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     // ((x + 2) + y), x = [71, 3], y = [33, 51]
     val a5 = Add(Add(var71_3, sc2), var33_51)
     a5.apply()            shouldBe Seq(106f, 56f)
-    a5.deriv(var71_3)     shouldBe 1
-    a5.deriv(var33_51)    shouldBe 1
+    a5.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a5.deriv(var33_51)    shouldBe Seq(1f, 1f)
     a5.propagate(value15) shouldBe 30f
     a5.propagate(cValue8) shouldBe Seq(6.0f, 10.0f)
   }
@@ -192,8 +192,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a1 = Sub(c12_42, c63_21)
 
     a1.apply()            shouldBe Seq(12f - 63f, 42f - 21f)
-    a1.deriv(c12_42)      shouldBe 0f
-    a1.deriv(c63_21)      shouldBe 0f
+    a1.deriv(c12_42)      shouldBe Seq(0f, 0f)
+    a1.deriv(c63_21)      shouldBe Seq(0f, 0f)
     a1.propagate(value15) shouldBe 0f
     a1.propagate(cValue8) shouldBe Seq(0.0f, 0.0f)
 
@@ -201,8 +201,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a2 = Sub(var71_3, c63_21)
 
     a2.apply()            shouldBe Seq(71f - 63f, 3f - 21f)
-    a2.deriv(var71_3)     shouldBe 1f
-    a2.deriv(c63_21)      shouldBe 0f
+    a2.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a2.deriv(c63_21)      shouldBe Seq(0f, 0f)
     a2.propagate(value15) shouldBe 15f
     a2.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
@@ -210,8 +210,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a3 = Sub(c12_42, var33_51)
 
     a3.apply()            shouldBe Seq(12f - 33f, 42f - 51f)
-    a3.deriv(c12_42)      shouldBe 0f
-    a3.deriv(var33_51)    shouldBe -1f
+    a3.deriv(c12_42)      shouldBe Seq(0f, 0f)
+    a3.deriv(var33_51)    shouldBe Seq(-1f, -1f)
     a3.propagate(value15) shouldBe -15f
     a3.propagate(cValue8) shouldBe Seq(-3.0f, -5.0f)
 
@@ -219,8 +219,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a4 = Sub(var71_3, var33_51)
 
     a4.apply()            shouldBe Seq(71f - 33f, 3f - 51f)
-    a4.deriv(var71_3)     shouldBe 1
-    a4.deriv(var33_51)    shouldBe -1
+    a4.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a4.deriv(var33_51)    shouldBe Seq(-1f, -1f)
     a4.propagate(value15) shouldBe 0f
     a4.propagate(cValue8) shouldBe Seq(0f, 0f)
 
@@ -228,8 +228,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     // ((x - 2) - y), x = [71, 3], y = [33, 51]
     val a5 = Sub(Sub(var71_3, sc2), var33_51)
     a5.apply()            shouldBe Seq(71f - 2f - 33f, 3f - 2f - 51f)
-    a5.deriv(var71_3)     shouldBe 1
-    a5.deriv(var33_51)    shouldBe -1
+    a5.deriv(var71_3)     shouldBe Seq(1f, 1f)
+    a5.deriv(var33_51)    shouldBe Seq(-1f, -1f)
     a5.propagate(value15) shouldBe 0f
     a5.propagate(cValue8) shouldBe Seq(0f, 0f)
   }
@@ -366,8 +366,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a1 = Pos(c12_42)
 
     a1.apply()              shouldBe Seq(12f , 42f)
-    a1.deriv(var71_3)       shouldBe 0f
-    a1.deriv(c12_42)        shouldBe 0f
+    a1.deriv(var71_3)       shouldBe Seq(0f, 0f)
+    a1.deriv(c12_42)        shouldBe Seq(0f, 0f)
     a1.propagate(value15)   shouldBe 0f
     a1.propagate(cValue3_5) shouldBe Seq(0.0f, 0.0f)
 
@@ -375,8 +375,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a2 = Pos(var71_3)
 
     a2.apply()              shouldBe Seq(71f , 3f)
-    a2.deriv(var71_3)       shouldBe 1f
-    a2.deriv(c12_42)        shouldBe 0f
+    a2.deriv(var71_3)       shouldBe Seq(1f, 1f)
+    a2.deriv(c12_42)        shouldBe Seq(0f, 0f)
     a2.propagate(value15)   shouldBe 15f
     a2.propagate(cValue3_5) shouldBe Seq(3.0f, 5f)
 
@@ -396,8 +396,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a1 = Neg(c12_42)
 
     a1.apply()              shouldBe Seq(-12f , -42f)
-    a1.deriv(var71_3)       shouldBe 0f
-    a1.deriv(c12_42)        shouldBe 0f
+    a1.deriv(var71_3)       shouldBe Seq(0f, 0f)
+    a1.deriv(c12_42)        shouldBe Seq(0f, 0f)
     a1.propagate(value15)   shouldBe 0f
     a1.propagate(cValue3_5) shouldBe Seq(0.0f, 0.0f)
 
@@ -405,8 +405,8 @@ class OpSuite extends FunSuite with DiagrammedAssertions {
     val a2 = Neg(var71_3)
 
     a2.apply()              shouldBe Seq(-71f , -3f)
-    a2.deriv(var71_3)       shouldBe -1f
-    a2.deriv(c12_42)        shouldBe 0f
+    a2.deriv(var71_3)       shouldBe Seq(-1f, -1f)
+    a2.deriv(c12_42)        shouldBe Seq(0f, 0f)
     a2.propagate(value15)   shouldBe -15f
     a2.propagate(cValue3_5) shouldBe Seq(-3.0f, -5f)
 
