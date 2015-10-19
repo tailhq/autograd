@@ -1,10 +1,11 @@
 package com.kogecoo.scalaad.test.graph.op
 
 import com.kogecoo.scalaad.graph.{Var, Neg, Node, Scalar}
-import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
-import ScalarIntValueRule.Implicits._
-import SeqFloatValueRule.Implicits._
 import com.kogecoo.scalaad.test.helper.gen._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpSpecDef}
 import com.kogecoo.scalaad.rule._
 import org.scalacheck.Properties
@@ -42,26 +43,26 @@ class NegSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
     case x: ContainerValue[U, T]    => ContainerValue[U, T](vr.negS(x.data))
   }
 
-  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(b())
+  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = -vr.zero(b())
 
   override def derivSelfExpectation(a: Node[U, T]): Value[U, T] = {
     a match {
       case x: Var[U, T] => -vr.one(a())
-      case x            => vr.zero(a())
+      case x            => -vr.zero(a())
     }
   }
 
   override def propagateExpectation(a: Node[U, T], b: Value[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => -vr.one(b) * b
-      case x            => vr.zero(b)
+      case x: Var[U, T] => -b * vr.one(b)
+      case x            => -b * vr.zero(b)
     }
   }
 
   override def gradExpectation(a: Node[U, T]): Value[U, T] = {
     a match {
       case x: Var[U, T] => -vr.one
-      case x            => vr.zero
+      case x            => -vr.zero
     }
   }
 

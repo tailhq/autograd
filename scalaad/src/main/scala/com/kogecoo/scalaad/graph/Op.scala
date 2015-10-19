@@ -51,7 +51,7 @@ case class Pos[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends Unar
   override def toString: String = s"+(${ v })"
   override def apply(): Value[U, T] = +v()
   override def deriv(wrt: Node[U, T]): Value[U, T] = +v.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g)
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(+g)
 }
 
 case class Neg[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends UnaryOp[U, T] {

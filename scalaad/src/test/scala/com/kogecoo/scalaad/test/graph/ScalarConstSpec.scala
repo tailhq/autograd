@@ -2,12 +2,14 @@ package com.kogecoo.scalaad.test.graph
 
 import com.kogecoo.scalaad.graph.Scalar
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp
-import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.CompareRule
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 import ValueMatcherProp._
 import com.kogecoo.scalaad.test.helper.gen._
 import com.kogecoo.scalaad.rule.ValueRule
-import ScalarIntValueRule.Implicits._
-import SeqFloatValueRule.Implicits._
 
 import org.scalacheck.{Properties, Prop}
 import org.scalacheck.Prop.forAll
@@ -36,7 +38,7 @@ object ScalarConstSpec extends Properties("ScalarConst") {
 }
 
 
-class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T]){
+class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], compare: CompareRule[U, T]){
 
   def apply: Prop = forAll(nodes.genScalarConst) {
     c => c.apply() shouldBe c.data

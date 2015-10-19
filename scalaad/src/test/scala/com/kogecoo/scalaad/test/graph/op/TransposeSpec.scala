@@ -1,8 +1,11 @@
 package com.kogecoo.scalaad.test.graph.op
 
 import com.kogecoo.scalaad.graph.{Var, Transpose, Node, Scalar}
-import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
 import com.kogecoo.scalaad.test.helper.gen._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
 import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpSpecDef}
 import com.kogecoo.scalaad.rule._
 
@@ -15,12 +18,10 @@ import scala.language.higherKinds
 // TODO: fruitful test
 object TransposeSpec extends Properties("TransposeSpec") {
 
-  implicit val scalarIntValueRule = new ScalarIntValueRule
   val scalarIntNodeGen = new ScalarIntNodeGen
   val scalarIntValueGen = new ScalarIntValueGen
   val scalarIntSpecGen = new UnaryOpSpec[Scalar, Int](new TransposeSpecDef[Scalar, Int], scalarIntNodeGen, scalarIntValueGen)
 
-  implicit val seqFloatValueRule = new SeqFloatValueRule
   val seqFloatNodeGen = new SeqFloatNodeGen
   val seqFloatValueGen = new SeqFloatValueGen
   val seqFloatSpecGen = new UnaryOpSpec[Seq, Float](new TransposeSpecDef[Seq, Float], seqFloatNodeGen, seqFloatValueGen)

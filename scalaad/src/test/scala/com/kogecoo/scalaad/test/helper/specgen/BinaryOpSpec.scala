@@ -4,13 +4,14 @@ import com.kogecoo.scalaad.graph.Node
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
 import com.kogecoo.scalaad.test.helper.gen.{GenNode, GenValue}
 import com.kogecoo.scalaad.rule.{Value, ValueRule}
+import com.kogecoo.scalaad.test.helper.rule.CompareRule
 
 import org.scalacheck.Prop
 import org.scalacheck.Prop.forAll
 import scala.language.higherKinds
 
 
-class BinaryOpSpec[U[_], T](d: BinaryOpSpecDef[U, T], nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T]) {
+class BinaryOpSpec[U[_], T](d: BinaryOpSpecDef[U, T], nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], compare: CompareRule[U, T]) {
 
   def n = nodes.genNode
   def v = values.genValue

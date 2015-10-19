@@ -3,14 +3,16 @@ package com.kogecoo.scalaad.graph.op
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
 import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
-import com.kogecoo.scalaad.test.helper.rule.{SeqFloatValueRule, ScalarIntValueRule}
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
 import org.scalatest.FunSuite
 
 
 class OpSuite extends FunSuite {
 
   test("Add - Scalar[Int]") {
-    implicit val vr = new ScalarIntValueRule
 
     val value42 = NonContainerValue[Scalar, Int](42)
     val cValue211 = ContainerValue[Scalar, Int](Scalar(211))
@@ -116,7 +118,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Add - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var(Seq(71.0f, 3f))
     val var33_51 = Var(Seq(33.0f, 51.0f))
@@ -177,7 +178,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Sub - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var(Seq(71.0f, 3f))
     val var33_51 = Var(Seq(33.0f, 51.0f))
@@ -235,7 +235,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Mul - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val var33_51 = Var[Seq, Float](Seq(33.0f, 51.0f))
@@ -295,7 +294,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Div - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val var33_51 = Var[Seq, Float](Seq(33.0f, 51.0f))
@@ -353,7 +351,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Pos - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val c12_42 = ContainerConst[Seq, Float](Seq(12.0f, 42.0f))
@@ -383,7 +380,6 @@ class OpSuite extends FunSuite {
   }
 
   test("Neg - Seq[Float]") {
-    implicit val vr = new SeqFloatValueRule
 
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val c12_42 = ContainerConst[Seq, Float](Seq(12.0f, 42.0f))
