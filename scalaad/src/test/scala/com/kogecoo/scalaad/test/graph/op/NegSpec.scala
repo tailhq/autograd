@@ -19,17 +19,17 @@ object NegSpec extends Properties("NegSpec") {
 
   val seqFloatSpecGen = new UnaryOpSpec[Seq, Float](new NegSpecDef[Seq, Float], new SeqFloatNodeGen, new SeqFloatValueGen)
 
-  property("[Scalar, Int] - apply")             = scalarIntSpecGen.apply
-  property("[Scalar, Int] - -a deriv w.r.t. b") = scalarIntSpecGen.deriv
-  property("[Scalar, Int] - -a deriv w.r.t. a") = scalarIntSpecGen.derivSelf
-  property("[Scalar, Int] - propagate")         = scalarIntSpecGen.propagate
-  property("[Scalar, Int] - grad")              = scalarIntSpecGen.grad
+  property("[Scalar, Int] - apply")             = scalarIntSpecGen.apply()
+  property("[Scalar, Int] - -a deriv w.r.t. b") = scalarIntSpecGen.deriv()
+  property("[Scalar, Int] - -a deriv w.r.t. a") = scalarIntSpecGen.derivSelf()
+  property("[Scalar, Int] - propagate")         = scalarIntSpecGen.propagate()
+  property("[Scalar, Int] - grad")              = scalarIntSpecGen.grad()
 
-  property("[Seq, Float]  - apply")             = seqFloatSpecGen.apply
-  property("[Seq, Float]  - -a deriv w.r.t. b") = seqFloatSpecGen.deriv
-  property("[Seq, Float]  - -a deriv w.r.t. a") = seqFloatSpecGen.derivSelf
-  property("[Seq, Float]  - propagate")         = seqFloatSpecGen.propagate
-  property("[Seq, Float]  - grad")              = seqFloatSpecGen.grad
+  property("[Seq, Float]  - apply")             = seqFloatSpecGen.apply()
+  property("[Seq, Float]  - -a deriv w.r.t. b") = seqFloatSpecGen.deriv()
+  property("[Seq, Float]  - -a deriv w.r.t. a") = seqFloatSpecGen.derivSelf()
+  property("[Seq, Float]  - propagate")         = seqFloatSpecGen.propagate()
+  property("[Seq, Float]  - grad")              = seqFloatSpecGen.grad()
 
 }
 

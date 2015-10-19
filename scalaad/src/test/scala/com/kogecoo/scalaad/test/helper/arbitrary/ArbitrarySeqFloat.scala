@@ -17,31 +17,31 @@ object ArbitrarySeqFloat {
   object Implicits {
 
     implicit def arbNode(implicit a: Arbitrary[Node[Seq, Float]]): Arbitrary[Node[Seq, Float]] = Arbitrary {
-      nodeGen.genNode
+      nodeGen.genNode()
     }
 
     implicit def arbVar(implicit a: Arbitrary[Var[Seq, Float]]): Arbitrary[Var[Seq, Float]] = Arbitrary {
-      nodeGen.genVar
+      nodeGen.genVar()
     }
 
     implicit def arbScalarConst(implicit a: Arbitrary[ScalarConst[Seq, Float]]): Arbitrary[ScalarConst[Seq, Float]] = Arbitrary {
-      nodeGen.genScalarConst
+      nodeGen.genScalarConst()
     }
 
     implicit def arbContainerConst(implicit a: Arbitrary[ContainerConst[Seq, Float]]): Arbitrary[ContainerConst[Seq, Float]] = Arbitrary {
-      nodeGen.genContainerConst
+      nodeGen.genContainerConst()
     }
 
     implicit def arbValue(implicit a: Arbitrary[Value[Seq, Float]]): Arbitrary[Value[Seq, Float]] = Arbitrary {
-      valueGen.genValue
+      valueGen.genValue()
     }
 
     implicit def arbNonContainerValue(implicit a: Arbitrary[Value[Seq, Float]]): Arbitrary[NonContainerValue[Seq, Float]] = Arbitrary {
-      valueGen.genNonContainerValue
+      valueGen.genNonContainerValue()
     }
 
     implicit def arbContainerValue(implicit a: Arbitrary[Value[Seq, Float]]): Arbitrary[ContainerValue[Seq, Float]] = Arbitrary {
-      valueGen.genContainerValue
+      valueGen.genContainerValue()
     }
   }
 

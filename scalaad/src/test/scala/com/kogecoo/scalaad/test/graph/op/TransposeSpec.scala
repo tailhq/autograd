@@ -28,22 +28,22 @@ object TransposeSpec extends Properties("TransposeSpec") {
 
   import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
 
-  property("[Scalar, Int] - apply")              = scalarIntSpecGen.apply
-  property("[Scalar, Int] - a.T deriv w.r.t. b") = scalarIntSpecGen.deriv
-  property("[Scalar, Int] - a.T deriv w.r.t. a") = scalarIntSpecGen.derivSelf
-  property("[Scalar, Int] - propagate")          = scalarIntSpecGen.propagate
-  property("[Scalar, Int] - grad")               = scalarIntSpecGen.grad
-  property("[Scalar, Int] - a.T deriv w.r.t. a.T") = forAll(scalarIntNodeGen.genVar) { (c: Var[Scalar, Int]) =>
+  property("[Scalar, Int] - apply")              = scalarIntSpecGen.apply()
+  property("[Scalar, Int] - a.T deriv w.r.t. b") = scalarIntSpecGen.deriv()
+  property("[Scalar, Int] - a.T deriv w.r.t. a") = scalarIntSpecGen.derivSelf()
+  property("[Scalar, Int] - propagate")          = scalarIntSpecGen.propagate()
+  property("[Scalar, Int] - grad")               = scalarIntSpecGen.grad()
+  property("[Scalar, Int] - a.T deriv w.r.t. a.T") = forAll(scalarIntNodeGen.genVar()) { (c: Var[Scalar, Int]) =>
     // FIXME: c.T.deriv(c.T) is not satisfy following condition
     val cT = c.T
     cT.deriv(cT) shouldBe scalarIntValueRule.zero(cT.apply())
   }
 
-  property("[Seq, Float]  - apply")              = seqFloatSpecGen.apply
-  property("[Seq, Float]  - a.T deriv w.r.t. b") = seqFloatSpecGen.deriv
-  property("[Seq, Float]  - a.T deriv w.r.t. a") = seqFloatSpecGen.derivSelf
-  property("[Seq, Float]  - propagate")          = seqFloatSpecGen.propagate
-  property("[Seq, Float]  - grad")               = seqFloatSpecGen.grad
+  property("[Seq, Float]  - apply")              = seqFloatSpecGen.apply()
+  property("[Seq, Float]  - a.T deriv w.r.t. b") = seqFloatSpecGen.deriv()
+  property("[Seq, Float]  - a.T deriv w.r.t. a") = seqFloatSpecGen.derivSelf()
+  property("[Seq, Float]  - propagate")          = seqFloatSpecGen.propagate()
+  property("[Seq, Float]  - grad")               = seqFloatSpecGen.grad()
 
 }
 

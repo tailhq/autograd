@@ -40,23 +40,23 @@ object ScalarConstSpec extends Properties("ScalarConst") {
 
 class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], compare: CompareRule[U, T]){
 
-  def apply: Prop = forAll(nodes.genScalarConst) {
+  def apply: Prop = forAll(nodes.genScalarConst()) {
     c => c.apply() shouldBe c.data
   }
 
-  def derivSelf = forAll(nodes.genScalarConst) {
+  def derivSelf = forAll(nodes.genScalarConst()) {
     c => c.deriv(c) shouldBe rule.zero(c())
   }
 
-  def deriv = forAll(nodes.genScalarConst, nodes.genNode) {
+  def deriv = forAll(nodes.genScalarConst(), nodes.genNode()) {
     (c, v) => c.deriv(v) shouldBe rule.zero(v())
   }
 
-  def propagate = forAll(nodes.genScalarConst, values.genValue) {
+  def propagate = forAll(nodes.genScalarConst(), values.genValue()) {
     (c, v) => c.propagate(v) shouldBe rule.zero(v) * v
   }
 
-  def grad = forAll(nodes.genScalarConst) {
+  def grad = forAll(nodes.genScalarConst()) {
     c => c.grad() shouldBe rule.zero
   }
 

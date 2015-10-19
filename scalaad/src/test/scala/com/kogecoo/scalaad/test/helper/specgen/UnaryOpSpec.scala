@@ -13,27 +13,41 @@ import scala.language.higherKinds
 
 class UnaryOpSpec[U[_], T](d: UnaryOpSpecDef[U, T], nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], comparator: CompareRule[U, T]) {
 
-  def n = nodes.genNode
-  def v = values.genValue
+  type Restriction = T => Boolean
 
-  def apply: Prop = forAll(n) { a: Node[U, T] =>
-    d.op(a).apply() shouldBe d.applyExpectation(a)
+  val default = (_: T) => true
+
+  def n(r: Restriction) = nodes.genNode(r)
+  def v(r: Restriction) = values.genValue(r)
+
+  def apply(restriction: Restriction = default): Prop = {
+    forAll(n(restriction)) { a: Node[U, T] =>
+      d.op(a).apply() shouldBe d.applyExpectation(a)
+    }
   }
 
-  def deriv: Prop = forAll(n, n) { (a: Node[U, T], b: Node[U, T]) =>
-    d.op(a).deriv(b) shouldBe d.derivExpectation(a, b)
+  def deriv(restrictionLeft: Restriction = default, restrictionRight: Restriction = default): Prop = {
+    forAll(n(restrictionLeft), n(restrictionRight)) { (a: Node[U, T], b: Node[U, T]) =>
+      d.op(a).deriv(b) shouldBe d.derivExpectation(a, b)
+    }
   }
 
-  def derivSelf: Prop = forAll(n) { a: Node[U, T] =>
-    d.op(a).deriv(a) shouldBe d.derivSelfExpectation(a)
+  def derivSelf(restriction: Restriction = default): Prop = {
+    forAll(n(restriction)) { a: Node[U, T] =>
+      d.op(a).deriv(a) shouldBe d.derivSelfExpectation(a)
+    }
   }
 
-  def propagate: Prop = forAll(n, v) { (a: Node[U, T], c: Value[U, T]) =>
-    d.op(a).propagate(c) shouldBe d.propagateExpectation(a, c)
+  def propagate(restrictionNode: Restriction = default, restrictionValue: Restriction = default): Prop = {
+    forAll(n(restrictionNode), v(restrictionValue)) { (a: Node[U, T], b: Value[U, T]) =>
+      d.op(a).propagate(b) shouldBe d.propagateExpectation(a, b)
+    }
   }
 
-  def grad: Prop = forAll(n) { a: Node[U, T] =>
-    d.op(a).grad() shouldBe d.gradExpectation(a)
+  def grad(restriction: Restriction = default): Prop = {
+    forAll(n(restriction)) { a: Node[U, T] =>
+      d.op(a).grad() shouldBe d.gradExpectation(a)
+    }
   }
 
 }

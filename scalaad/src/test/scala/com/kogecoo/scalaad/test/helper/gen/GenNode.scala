@@ -8,12 +8,14 @@ import scala.language.higherKinds
 
 abstract class GenNode[U[_], T] {
 
-  def genNode: Gen[Node[U, T]]
+  lazy val defaultRestriction = (_: T) => true
 
-  def genVar: Gen[Var[U, T]]
+  def genNode(restrict: T => Boolean = defaultRestriction): Gen[Node[U, T]]
 
-  def genScalarConst: Gen[ScalarConst[U, T]]
+  def genVar(restrict: T => Boolean = defaultRestriction): Gen[Var[U, T]]
 
-  def genContainerConst: Gen[ContainerConst[U, T]]
+  def genScalarConst(restrict: T => Boolean = defaultRestriction): Gen[ScalarConst[U, T]]
+
+  def genContainerConst(restrict: T => Boolean = defaultRestriction): Gen[ContainerConst[U, T]]
 
 }

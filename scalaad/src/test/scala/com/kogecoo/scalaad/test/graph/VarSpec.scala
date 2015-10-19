@@ -39,23 +39,23 @@ object VarSpec extends Properties("Var") {
 
 class VarSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], compare: CompareRule[U, T]) {
 
-  def apply: Prop = forAll(nodes.genVar) {
+  def apply: Prop = forAll(nodes.genVar()) {
     c => c.apply () shouldBe c.data
   }
 
-  def derivSelf = forAll(nodes.genVar) {
+  def derivSelf = forAll(nodes.genVar()) {
     c => c.deriv(c) shouldBe rule.one(c())
   }
 
-  def deriv = forAll(nodes.genVar, nodes.genNode) {
+  def deriv = forAll(nodes.genVar(), nodes.genNode()) {
     (c, v) => c.deriv(v) shouldBe rule.zero(v())
   }
 
-  def propagate = forAll(nodes.genVar, values.genValue) {
+  def propagate = forAll(nodes.genVar(), values.genValue()) {
     (c, v) => c.propagate(v) shouldBe rule.one(v) * v
   }
 
-  def grad = forAll(nodes.genVar) {
+  def grad = forAll(nodes.genVar()) {
     c => c.grad() shouldBe rule.one
   }
 

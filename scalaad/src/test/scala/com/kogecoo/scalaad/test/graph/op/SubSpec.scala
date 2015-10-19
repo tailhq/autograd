@@ -18,21 +18,21 @@ object SubSpec extends Properties("SubSpec") {
 
   val seqFloatSpecGen = new BinaryOpSpec[Seq, Float](new SubSpecDef[Seq, Float], new SeqFloatNodeGen, new SeqFloatValueGen)
 
-  property("[Scalar, Int] - apply")                  = scalarIntSpecGen.apply
-  property("[Scalar, Int] - (a - b) deriv w.r.t. c") = scalarIntSpecGen.deriv
-  property("[Scalar, Int] - (a - b) deriv w.r.t. a") = scalarIntSpecGen.derivWrtLeft
-  property("[Scalar, Int] - (a - b) deriv w.r.t. b") = scalarIntSpecGen.derivWrtRight
-  property("[Scalar, Int] - (a - a) deriv w.r.t. a") = scalarIntSpecGen.derivWrtSelf
-  property("[Scalar, Int] - propagate value")        = scalarIntSpecGen.propagate
-  property("[Scalar, Int] - grad")                   = scalarIntSpecGen.grad
+  property("[Scalar, Int] - apply")                  = scalarIntSpecGen.apply()
+  property("[Scalar, Int] - (a - b) deriv w.r.t. c") = scalarIntSpecGen.deriv()
+  property("[Scalar, Int] - (a - b) deriv w.r.t. a") = scalarIntSpecGen.derivWrtLeft()
+  property("[Scalar, Int] - (a - b) deriv w.r.t. b") = scalarIntSpecGen.derivWrtRight()
+  property("[Scalar, Int] - (a - a) deriv w.r.t. a") = scalarIntSpecGen.derivWrtSelf()
+  property("[Scalar, Int] - propagate value")        = scalarIntSpecGen.propagate()
+  property("[Scalar, Int] - grad")                   = scalarIntSpecGen.grad()
 
-  property("[Seq, Float]  - apply")                  = seqFloatSpecGen.apply
-  property("[Seq, Float]  - (a - b) deriv w.r.t. c") = seqFloatSpecGen.deriv
-  property("[Seq, Float]  - (a - b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtLeft
-  property("[Seq, Float]  - (a - b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtRight
-  property("[Seq, Float]  - (a - a) deriv w.r.t. a") = seqFloatSpecGen.derivWrtSelf
-  property("[Seq, Float]  - propagate")              = seqFloatSpecGen.propagate
-  property("[Seq, Float]  - grad")                   = seqFloatSpecGen.grad
+  property("[Seq, Float]  - apply")                  = seqFloatSpecGen.apply()
+  property("[Seq, Float]  - (a - b) deriv w.r.t. c") = seqFloatSpecGen.deriv()
+  property("[Seq, Float]  - (a - b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtLeft()
+  property("[Seq, Float]  - (a - b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtRight()
+  property("[Seq, Float]  - (a - a) deriv w.r.t. a") = seqFloatSpecGen.derivWrtSelf()
+  property("[Seq, Float]  - propagate")              = seqFloatSpecGen.propagate()
+  property("[Seq, Float]  - grad")                   = seqFloatSpecGen.grad()
 
 }
 

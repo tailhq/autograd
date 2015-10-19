@@ -19,31 +19,31 @@ object ArbitraryScalarInt {
   object Implicits {
 
     implicit def arbNode(implicit a: Arbitrary[Node[Scalar, Int]]): Arbitrary[Node[Scalar, Int]] = Arbitrary {
-      nodeGen.genNode
+      nodeGen.genNode()
     }
 
     implicit def arbVar(implicit a: Arbitrary[Var[Scalar, Int]]): Arbitrary[Var[Scalar, Int]] = Arbitrary {
-      nodeGen.genVar
+      nodeGen.genVar()
     }
 
     implicit def arbScalarConst(implicit a: Arbitrary[ScalarConst[Scalar, Int]]): Arbitrary[ScalarConst[Scalar, Int]] = Arbitrary {
-      nodeGen.genScalarConst
+      nodeGen.genScalarConst()
     }
 
     implicit def arbContainerConst(implicit a: Arbitrary[ContainerConst[Scalar, Int]]): Arbitrary[ContainerConst[Scalar, Int]] = Arbitrary {
-      nodeGen.genContainerConst
+      nodeGen.genContainerConst()
     }
 
     implicit def arbValue(implicit a: Arbitrary[Value[Scalar, Int]]): Arbitrary[Value[Scalar, Int]] = Arbitrary {
-      valueGen.genValue
+      valueGen.genValue()
     }
 
     implicit def arbNonContainerValue(implicit a: Arbitrary[Value[Scalar, Int]]): Arbitrary[NonContainerValue[Scalar, Int]] = Arbitrary {
-      valueGen.genNonContainerValue
+      valueGen.genNonContainerValue()
     }
 
     implicit def arbContainerValue(implicit a: Arbitrary[Value[Scalar, Int]]): Arbitrary[ContainerValue[Scalar, Int]] = Arbitrary {
-      valueGen.genContainerValue
+      valueGen.genContainerValue()
     }
   }
 

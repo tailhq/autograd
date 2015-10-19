@@ -39,23 +39,23 @@ object ContainerConstSpec extends Properties("ContainerConst") {
 
 class ContainerConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit rule: ValueRule[U, T], compare: CompareRule[U, T]) {
 
-  def apply: Prop = forAll(nodes.genContainerConst) {
+  def apply: Prop = forAll(nodes.genContainerConst()) {
     c => c.apply() shouldBe c.data
   }
 
-  def derivSelf = forAll(nodes.genContainerConst) {
+  def derivSelf = forAll(nodes.genContainerConst()) {
     c => c.deriv(c) shouldBe rule.zero(c())
   }
 
-  def deriv = forAll(nodes.genContainerConst, nodes.genNode) {
+  def deriv = forAll(nodes.genContainerConst(), nodes.genNode()) {
     (c, v) => c.deriv(v) shouldBe rule.zero(v())
   }
 
-  def propagate = forAll(nodes.genContainerConst, values.genValue) {
+  def propagate = forAll(nodes.genContainerConst(), values.genValue()) {
     (c, v) => c.propagate(v) shouldBe rule.zero(v) * v
   }
 
-  def grad = forAll(nodes.genContainerConst) {
+  def grad = forAll(nodes.genContainerConst()) {
     c => c.grad() shouldBe rule.zero
   }
 
