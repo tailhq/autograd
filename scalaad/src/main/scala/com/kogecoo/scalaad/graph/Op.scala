@@ -36,9 +36,7 @@ case class Div[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit r: ValueRule[
   override def apply(): Value[U, T] = lhs() / rhs()
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     val rhs_val: Value[U, T] = rhs()
-    val num: Value[U, T] = lhs.deriv(wrt) * rhs_val - lhs() * rhs.deriv(wrt)
-    val den: Value[U, T] = rhs_val * rhs_val
-    num / den
+    lhs.deriv(wrt) / rhs_val  - rhs.deriv(wrt) * lhs() / rhs_val / rhs_val
   }
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
