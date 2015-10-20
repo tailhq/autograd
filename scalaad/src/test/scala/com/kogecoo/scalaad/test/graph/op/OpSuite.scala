@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.graph.op
+package com.kogecoo.scalaad.test.graph.op
 
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
@@ -84,37 +84,58 @@ class OpSuite extends FunSuite {
     a5.apply()              shouldBe Scalar(10)
     a5.deriv(var7)          shouldBe Scalar(1)
     a5.deriv(sc3)           shouldBe 0
+    a5.deriv(cc31)          shouldBe Scalar(0)
     a5.propagate(value42)   shouldBe 42
     a5.propagate(cValue211) shouldBe Scalar(211)
 
-    // ScalarConst + Var
-    val a6 = Add(sc4, var13)
+    // Var + ContainerConst
+    val a6 = Add(var7, cc31)
 
-    a6.apply()              shouldBe Scalar(17)
-    a6.deriv(sc4)           shouldBe 0
-    a6.deriv(var13)         shouldBe Scalar(1)
+    a6.apply()              shouldBe Scalar(7 + 31)
+    a6.deriv(var7)          shouldBe Scalar(1)
+    a6.deriv(sc3)           shouldBe 0
+    a6.deriv(cc72)          shouldBe Scalar(0)
+    a6.propagate(value42)   shouldBe 42
+    a6.propagate(cValue211) shouldBe Scalar(211)
+
+    // ScalarConst + Var
+    val a7 = Add(sc4, var13)
+
+    a7.apply()              shouldBe Scalar(17)
+    a7.deriv(sc4)           shouldBe 0
+    a7.deriv(var13)         shouldBe Scalar(1)
+    a7.propagate(value42)   shouldBe 42
+    a7.propagate(cValue211) shouldBe Scalar(211)
+
+    // Var + ContainerConst
+    val a8 = Add(cc31, var7)
+
+    a6.apply()              shouldBe Scalar(7 + 31)
+    a6.deriv(var7)          shouldBe Scalar(1)
+    a6.deriv(sc3)           shouldBe 0
+    a6.deriv(cc72)          shouldBe Scalar(0)
     a6.propagate(value42)   shouldBe 42
     a6.propagate(cValue211) shouldBe Scalar(211)
 
     // Var + Var
-    val a7 = Add(var7, var13)
+    val a9 = Add(var7, var13)
 
-    a7.apply()              shouldBe Scalar(20)
-    a7.deriv(var7)          shouldBe Scalar(1)
-    a7.deriv(var13)         shouldBe Scalar(1)
-    a7.propagate(value42)   shouldBe 84
-    a7.propagate(cValue211) shouldBe Scalar(422)
+    a9.apply()              shouldBe Scalar(20)
+    a9.deriv(var7)          shouldBe Scalar(1)
+    a9.deriv(var13)         shouldBe Scalar(1)
+    a9.propagate(value42)   shouldBe 84
+    a9.propagate(cValue211) shouldBe Scalar(422)
 
     // more complex one
     // ((x + 3) + y), x = 7, y = 13
-    val a8 = Add(Add(var7, sc3), var13)
+    val a10 = Add(Add(var7, sc3), var13)
 
-    a8.apply()              shouldBe Scalar(23)
-    a8.deriv(var7)          shouldBe Scalar(1)
-    a8.deriv(var13)         shouldBe Scalar(1)
-    a8.deriv(sc3)           shouldBe 0
-    a8.propagate(value42)   shouldBe 84
-    a8.propagate(cValue211) shouldBe Scalar(422)
+    a10.apply()              shouldBe Scalar(23)
+    a10.deriv(var7)          shouldBe Scalar(1)
+    a10.deriv(var13)         shouldBe Scalar(1)
+    a10.deriv(sc3)           shouldBe 0
+    a10.propagate(value42)   shouldBe 84
+    a10.propagate(cValue211) shouldBe Scalar(422)
   }
 
   test("Add - Seq[Float]") {
