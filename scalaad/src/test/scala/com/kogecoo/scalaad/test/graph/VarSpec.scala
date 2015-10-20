@@ -52,11 +52,11 @@ class VarSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit
   }
 
   def propagate = forAll(nodes.genVar(), values.genValue()) {
-    (c, v) => c.propagate(v) shouldBe rule.one(v) * v
+    (c, v) => c.propagate(v) shouldBe rule.one(c()) * v
   }
 
   def grad = forAll(nodes.genVar()) {
-    c => c.grad() shouldBe rule.one
+    c => c.grad() shouldBe rule.one(c())
   }
 
 }

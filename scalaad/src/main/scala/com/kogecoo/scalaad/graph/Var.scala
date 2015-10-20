@@ -19,7 +19,7 @@ class Var[U[_], T](val data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, 
   }
 
   override def propagate(g: Value[U, T]): Value[U, T] = {
-    val v = g * r.one(g)
+    val v = g * r.one(data)
     gradient += v
     v
   }

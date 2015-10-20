@@ -2,7 +2,7 @@ package com.kogecoo.scalaad.test.graph
 
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
-import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherDiagrammedAssert._
+import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 
@@ -27,7 +27,7 @@ class VarSuite extends FunSuite {
     a1.deriv(c45_6)           shouldBe Seq(0f, 0f)
     a1.deriv(a1)              shouldBe Seq(1f, 1f)
     a1.deriv(var12_3)         shouldBe Seq(0f, 0f)
-    a1.propagate(value89)     shouldBe 89f
+    a1.propagate(value89)     shouldBe Seq(89f, 89f)
     a1.propagate(cValue10_11) shouldBe Seq(10f, 11f)
 
   }

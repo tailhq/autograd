@@ -47,7 +47,7 @@ class AddSuite extends FunSuite {
     a2.deriv(cc72)          shouldBe Scalar(0)
     a2.deriv(var7)          shouldBe Scalar(0)
     a2.deriv(var13)         shouldBe Scalar(0)
-    a2.propagate(value42)   shouldBe 0
+    a2.propagate(value42)   shouldBe Scalar(0)
     a2.propagate(cValue211) shouldBe Scalar(0)
 
     // ContaoinerConst + ScalarConst
@@ -60,7 +60,7 @@ class AddSuite extends FunSuite {
     a3.deriv(cc72)          shouldBe Scalar(0)
     a3.deriv(var7)          shouldBe Scalar(0)
     a3.deriv(var13)         shouldBe Scalar(0)
-    a3.propagate(value42)   shouldBe 0
+    a3.propagate(value42)   shouldBe Scalar(0)
     a3.propagate(cValue211) shouldBe Scalar(0)
 
     // ContainerConst + ContainerConst
@@ -73,7 +73,7 @@ class AddSuite extends FunSuite {
     a4.deriv(cc72)          shouldBe Scalar(0)
     a4.deriv(var7)          shouldBe Scalar(0)
     a4.deriv(var13)         shouldBe Scalar(0)
-    a4.propagate(value42)   shouldBe 0
+    a4.propagate(value42)   shouldBe Scalar(0)
     a4.propagate(cValue211) shouldBe Scalar(0)
 
     // above a1 - a4 is may be redundant
@@ -85,7 +85,7 @@ class AddSuite extends FunSuite {
     a5.deriv(var7)          shouldBe Scalar(1)
     a5.deriv(sc3)           shouldBe 0
     a5.deriv(cc31)          shouldBe Scalar(0)
-    a5.propagate(value42)   shouldBe 42
+    a5.propagate(value42)   shouldBe Scalar(42)
     a5.propagate(cValue211) shouldBe Scalar(211)
 
     // Var + ContainerConst
@@ -95,7 +95,7 @@ class AddSuite extends FunSuite {
     a6.deriv(var7)          shouldBe Scalar(1)
     a6.deriv(sc3)           shouldBe 0
     a6.deriv(cc72)          shouldBe Scalar(0)
-    a6.propagate(value42)   shouldBe 42
+    a6.propagate(value42)   shouldBe Scalar(42)
     a6.propagate(cValue211) shouldBe Scalar(211)
 
     // ScalarConst + Var
@@ -104,7 +104,7 @@ class AddSuite extends FunSuite {
     a7.apply()              shouldBe Scalar(17)
     a7.deriv(sc4)           shouldBe 0
     a7.deriv(var13)         shouldBe Scalar(1)
-    a7.propagate(value42)   shouldBe 42
+    a7.propagate(value42)   shouldBe Scalar(42)
     a7.propagate(cValue211) shouldBe Scalar(211)
 
     // Var + ContainerConst
@@ -114,7 +114,7 @@ class AddSuite extends FunSuite {
     a6.deriv(var7)          shouldBe Scalar(1)
     a6.deriv(sc3)           shouldBe 0
     a6.deriv(cc72)          shouldBe Scalar(0)
-    a6.propagate(value42)   shouldBe 42
+    a6.propagate(value42)   shouldBe Scalar(42)
     a6.propagate(cValue211) shouldBe Scalar(211)
 
     // Var + Var
@@ -123,7 +123,7 @@ class AddSuite extends FunSuite {
     a9.apply()              shouldBe Scalar(20)
     a9.deriv(var7)          shouldBe Scalar(1)
     a9.deriv(var13)         shouldBe Scalar(1)
-    a9.propagate(value42)   shouldBe 84
+    a9.propagate(value42)   shouldBe Scalar(84)
     a9.propagate(cValue211) shouldBe Scalar(422)
 
     // more complex one
@@ -134,7 +134,7 @@ class AddSuite extends FunSuite {
     a10.deriv(var7)          shouldBe Scalar(1)
     a10.deriv(var13)         shouldBe Scalar(1)
     a10.deriv(sc3)           shouldBe 0
-    a10.propagate(value42)   shouldBe 84
+    a10.propagate(value42)   shouldBe Scalar(84)
     a10.propagate(cValue211) shouldBe Scalar(422)
   }
 
@@ -156,7 +156,7 @@ class AddSuite extends FunSuite {
     a1.apply()            shouldBe Seq(75.0f, 63.0f)
     a1.deriv(c12_42)      shouldBe Seq(0f, 0f)
     a1.deriv(c63_21)      shouldBe Seq(0f, 0f)
-    a1.propagate(value15) shouldBe 0
+    a1.propagate(value15) shouldBe Seq(0f, 0f)
     a1.propagate(cValue8) shouldBe Seq(0.0f, 0.0f)
 
     // above a1 - a4 is may be redundant
@@ -167,7 +167,7 @@ class AddSuite extends FunSuite {
     a2.apply()            shouldBe Seq(134f, 24f)
     a2.deriv(var71_3)     shouldBe Seq(1f, 1f)
     a2.deriv(c63_21)      shouldBe Seq(0f, 0f)
-    a2.propagate(value15) shouldBe 15
+    a2.propagate(value15) shouldBe Seq(15f, 15f)
     a2.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
     // ContainerConst + Var
@@ -176,7 +176,7 @@ class AddSuite extends FunSuite {
     a3.apply()            shouldBe Seq(45f, 93f)
     a3.deriv(c12_42)      shouldBe Seq(0f, 0f)
     a3.deriv(var33_51)    shouldBe Seq(1f, 1f)
-    a3.propagate(value15) shouldBe 15
+    a3.propagate(value15) shouldBe Seq(15f, 15f)
     a3.propagate(cValue8) shouldBe Seq(3.0f, 5.0f)
 
     // Var + Var
@@ -185,7 +185,7 @@ class AddSuite extends FunSuite {
     a4.apply()            shouldBe Seq(104f, 54f)
     a4.deriv(var71_3)     shouldBe Seq(1f, 1f)
     a4.deriv(var33_51)    shouldBe Seq(1f, 1f)
-    a4.propagate(value15) shouldBe 30f
+    a4.propagate(value15) shouldBe Seq(30f, 30f)
     a4.propagate(cValue8) shouldBe Seq(6.0f, 10.0f)
 
     // more complex one
@@ -194,7 +194,7 @@ class AddSuite extends FunSuite {
     a5.apply()            shouldBe Seq(106f, 56f)
     a5.deriv(var71_3)     shouldBe Seq(1f, 1f)
     a5.deriv(var33_51)    shouldBe Seq(1f, 1f)
-    a5.propagate(value15) shouldBe 30f
+    a5.propagate(value15) shouldBe Seq(30f, 30f)
     a5.propagate(cValue8) shouldBe Seq(6.0f, 10.0f)
   }
 

@@ -25,7 +25,7 @@ class PosSuite extends FunSuite {
     a1.apply()              shouldBe Seq(12f , 42f)
     a1.deriv(var71_3)       shouldBe Seq(0f, 0f)
     a1.deriv(c12_42)        shouldBe Seq(0f, 0f)
-    a1.propagate(value15)   shouldBe 0f
+    a1.propagate(value15)   shouldBe Seq(0f, 0f)
     a1.propagate(cValue3_5) shouldBe Seq(0.0f, 0.0f)
 
     // +Var
@@ -34,7 +34,7 @@ class PosSuite extends FunSuite {
     a2.apply()              shouldBe Seq(71f , 3f)
     a2.deriv(var71_3)       shouldBe Seq(1f, 1f)
     a2.deriv(c12_42)        shouldBe Seq(0f, 0f)
-    a2.propagate(value15)   shouldBe 15f
+    a2.propagate(value15)   shouldBe Seq(15f, 15f)
     a2.propagate(cValue3_5) shouldBe Seq(3.0f, 5f)
 
   }

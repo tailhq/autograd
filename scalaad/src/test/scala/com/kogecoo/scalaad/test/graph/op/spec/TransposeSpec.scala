@@ -67,15 +67,15 @@ class TransposeSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) e
 
   override def propagateExpectation(a: Node[U, T], b: Value[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => vr.one(b) * b
-      case x            => vr.zero(b)
+      case x: Var[U, T] => vr.one(a()) * b
+      case x            => vr.zero(a()) * b
     }
   }
 
   override def gradExpectation(a: Node[U, T]): Value[U, T] = {
     a match {
-      case _: Var[U, T] => vr.one
-      case _            => vr.zero
+      case _: Var[U, T] => vr.one(a())
+      case _            => vr.zero(a())
     }
   }
 

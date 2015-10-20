@@ -73,24 +73,24 @@ class SubSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
 
   override def propagateExpectation(a: Node[U, T], b: Node[U, T], c: Value[U, T]): Value[U, T] = {
     val ag = a match {
-      case x: Var[U, T] => vr.one(c) * c
-      case _            => vr.zero(c)
+      case x: Var[U, T] => vr.one(a()) * c
+      case _            => vr.zero(a()) * c
     }
     val bg = b match {
-      case y: Var[U, T] => -vr.one(c) * c
-      case _            => vr.zero(c)
+      case y: Var[U, T] => -vr.one(b()) * c
+      case _            => vr.zero(b()) * c
     }
     ag + bg
   }
 
   override def gradExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
     val ag = a match {
-      case x: Var[U, T] => vr.one
-      case _            => vr.zero
+      case x: Var[U, T] => vr.one(a())
+      case _            => vr.zero(a())
     }
     val bg = b match {
-      case y: Var[U, T] => -vr.one
-      case _            => vr.zero
+      case y: Var[U, T] => -vr.one(b())
+      case _            => vr.zero(b())
     }
     ag + bg
   }

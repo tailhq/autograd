@@ -53,15 +53,15 @@ class PosSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
 
   override def propagateExpectation(a: Node[U, T], b: Value[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => +vr.one(b) * b
-      case x            => +vr.zero(b) * b
+      case x: Var[U, T] => +vr.one(a()) * b
+      case x            => +vr.zero(a()) * b
     }
   }
 
   override def gradExpectation(a: Node[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => +vr.one
-      case x            => vr.zero
+      case x: Var[U, T] => +vr.one(x())
+      case x            => vr.zero(x())
     }
   }
 
