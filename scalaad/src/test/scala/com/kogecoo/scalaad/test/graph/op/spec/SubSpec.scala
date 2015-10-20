@@ -1,13 +1,13 @@
-package com.kogecoo.scalaad.test.graph.op
+package com.kogecoo.scalaad.test.graph.op.spec
 
-import com.kogecoo.scalaad.graph.{Var, Sub, Node, Scalar}
-import com.kogecoo.scalaad.test.helper.gen._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
-import com.kogecoo.scalaad.test.helper.specgen.{BinaryOpSpec, BinaryOpSpecDef}
+import com.kogecoo.scalaad.graph.{Node, Scalar, Sub, Var}
 import com.kogecoo.scalaad.rule._
+import com.kogecoo.scalaad.test.helper.gen._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.specgen.{BinaryOpSpec, BinaryOpSpecDef}
 import org.scalacheck.Properties
 
 import scala.language.higherKinds

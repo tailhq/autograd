@@ -1,14 +1,13 @@
-package com.kogecoo.scalaad.test.graph.op
+package com.kogecoo.scalaad.test.graph.op.spec
 
-import com.kogecoo.scalaad.graph.{Var, Transpose, Node, Scalar}
-import com.kogecoo.scalaad.test.helper.gen._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
-import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpSpecDef}
+import com.kogecoo.scalaad.graph.{Node, Scalar, Transpose, Var}
 import com.kogecoo.scalaad.rule._
-
+import com.kogecoo.scalaad.test.helper.gen._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpSpecDef}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 
