@@ -12,9 +12,9 @@ class Var[U[_], T](val data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, 
   override def apply(): Value[U, T] = r.toValue(data)
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
     if (wrt == this) {
-      r.one(wrt())
+      r.one(data)
     } else {
-      r.zero(wrt())
+      r.zero(data)
     }
   }
 

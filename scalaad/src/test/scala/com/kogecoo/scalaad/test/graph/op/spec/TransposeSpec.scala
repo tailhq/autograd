@@ -56,7 +56,7 @@ class TransposeSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) e
     case x: ContainerValue[U, T]    => ContainerValue[U, T](vr.transposeS(x.data))
   }
 
-  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(b())
+  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(a())
 
   override def derivSelfExpectation(a: Node[U, T]): Value[U, T] = {
     a match {

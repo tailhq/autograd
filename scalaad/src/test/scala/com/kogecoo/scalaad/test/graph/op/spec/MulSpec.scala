@@ -49,20 +49,20 @@ class MulSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
   }
 
   override def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T] = {
-    vr.zero(c()) * a() + vr.zero(c()) * b()
+    vr.zero(a()) * a() + vr.zero(b()) * b()
   }
 
   override def derivWrtLeftExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => vr.one(a()) * b()
-      case _            => vr.zero(a()) * b()
+      case x: Var[U, T] => vr.one(a()) * b() + vr.zero(b()) * a()
+      case _            => vr.zero(a()) + vr.zero(b())
     }
   }
 
   override def derivWrtRightExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
     b match {
-      case x: Var[U, T] => vr.one(b()) * a()
-      case _            => vr.zero(b()) * a()
+      case x: Var[U, T] => vr.zero(a()) * b() + vr.one(b()) * a()
+      case _            => vr.zero(a()) + vr.zero(b())
     }
   }
 

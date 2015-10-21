@@ -42,7 +42,7 @@ class PosSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
     case x: NonContainerValue[U, T] => NonContainerValue[U, T](vr.posM(x.data))
     case x: ContainerValue[U, T]    => ContainerValue[U, T](vr.posS(x.data))
   }
-  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(b())
+  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(a())
 
   override def derivSelfExpectation(a: Node[U, T]): Value[U, T] = {
     a match {

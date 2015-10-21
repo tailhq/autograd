@@ -22,7 +22,7 @@ class ContainerConstSuite extends FunSuite {
     val a1 = ContainerConst[Seq, Float](Seq(3.1f, 41.5f))
 
     a1.apply()                shouldBe Seq(3.1f, 41.5f)
-    a1.deriv(sc7)             shouldBe 0f
+    a1.deriv(sc7)             shouldBe Seq(0f, 0f)
     a1.deriv(c45_6)           shouldBe Seq(0f, 0f)
     a1.deriv(a1)              shouldBe Seq(0f, 0f)
     a1.deriv(var12_3)         shouldBe Seq(0f, 0f)

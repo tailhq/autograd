@@ -48,7 +48,7 @@ class VarSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(implicit
   }
 
   def deriv = forAll(nodes.genVar(), nodes.genNode()) {
-    (c, v) => c.deriv(v) shouldBe rule.zero(v())
+    (c, v) => c.deriv(v) shouldBe rule.zero(c())
   }
 
   def propagate = forAll(nodes.genVar(), values.genValue()) {

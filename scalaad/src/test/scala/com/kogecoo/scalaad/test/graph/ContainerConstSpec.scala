@@ -48,7 +48,7 @@ class ContainerConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T
   }
 
   def deriv = forAll(nodes.genContainerConst(), nodes.genNode()) {
-    (c, v) => c.deriv(v) shouldBe rule.zero(v())
+    (c, v) => c.deriv(v) shouldBe rule.zero(c())
   }
 
   def propagate = forAll(nodes.genContainerConst(), values.genValue()) {

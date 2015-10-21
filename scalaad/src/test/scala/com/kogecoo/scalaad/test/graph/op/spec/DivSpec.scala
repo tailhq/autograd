@@ -56,7 +56,7 @@ class DivSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
 
   override def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T] = {
     val bval = b()
-    vr.zero(c()) / bval - vr.zero(c()) * a() / bval / bval
+    vr.zero(a()) / bval - vr.zero(b()) * a() / bval / bval
   }
 
   override def derivWrtLeftExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {

@@ -30,10 +30,10 @@ class AddSuite extends FunSuite {
     a1.apply()              shouldBe 7
     a1.deriv(sc4)           shouldBe 0
     a1.deriv(sc3)           shouldBe 0
-    a1.deriv(cc31)          shouldBe Scalar(0)
-    a1.deriv(cc72)          shouldBe Scalar(0)
-    a1.deriv(var7)          shouldBe Scalar(0)
-    a1.deriv(var13)         shouldBe Scalar(0)
+    a1.deriv(cc31)          shouldBe 0
+    a1.deriv(cc72)          shouldBe 0
+    a1.deriv(var7)          shouldBe 0
+    a1.deriv(var13)         shouldBe 0
     a1.propagate(value42)   shouldBe 0
     a1.propagate(cValue211) shouldBe Scalar(0)
 
@@ -41,8 +41,8 @@ class AddSuite extends FunSuite {
     val a2 = Add(sc4, cc72)
 
     a2.apply()              shouldBe Scalar(76)
-    a2.deriv(sc4)           shouldBe 0
-    a2.deriv(sc3)           shouldBe 0
+    a2.deriv(sc4)           shouldBe Scalar(0)
+    a2.deriv(sc3)           shouldBe Scalar(0)
     a2.deriv(cc31)          shouldBe Scalar(0)
     a2.deriv(cc72)          shouldBe Scalar(0)
     a2.deriv(var7)          shouldBe Scalar(0)
@@ -54,8 +54,8 @@ class AddSuite extends FunSuite {
     val a3 = Add(cc31, sc3)
 
     a3.apply()              shouldBe Scalar(34)
-    a3.deriv(sc4)           shouldBe 0
-    a3.deriv(sc3)           shouldBe 0
+    a3.deriv(sc4)           shouldBe Scalar(0)
+    a3.deriv(sc3)           shouldBe Scalar(0)
     a3.deriv(cc31)          shouldBe Scalar(0)
     a3.deriv(cc72)          shouldBe Scalar(0)
     a3.deriv(var7)          shouldBe Scalar(0)
@@ -67,8 +67,8 @@ class AddSuite extends FunSuite {
     val a4 = Add(cc31, cc72)
 
     a4.apply()              shouldBe Scalar(103)
-    a4.deriv(sc4)           shouldBe 0
-    a4.deriv(sc3)           shouldBe 0
+    a4.deriv(sc4)           shouldBe Scalar(0)
+    a4.deriv(sc3)           shouldBe Scalar(0)
     a4.deriv(cc31)          shouldBe Scalar(0)
     a4.deriv(cc72)          shouldBe Scalar(0)
     a4.deriv(var7)          shouldBe Scalar(0)
@@ -83,7 +83,7 @@ class AddSuite extends FunSuite {
 
     a5.apply()              shouldBe Scalar(10)
     a5.deriv(var7)          shouldBe Scalar(1)
-    a5.deriv(sc3)           shouldBe 0
+    a5.deriv(sc3)           shouldBe Scalar(0)
     a5.deriv(cc31)          shouldBe Scalar(0)
     a5.propagate(value42)   shouldBe Scalar(42)
     a5.propagate(cValue211) shouldBe Scalar(211)
@@ -93,7 +93,7 @@ class AddSuite extends FunSuite {
 
     a6.apply()              shouldBe Scalar(7 + 31)
     a6.deriv(var7)          shouldBe Scalar(1)
-    a6.deriv(sc3)           shouldBe 0
+    a6.deriv(sc3)           shouldBe Scalar(0)
     a6.deriv(cc72)          shouldBe Scalar(0)
     a6.propagate(value42)   shouldBe Scalar(42)
     a6.propagate(cValue211) shouldBe Scalar(211)
@@ -102,7 +102,7 @@ class AddSuite extends FunSuite {
     val a7 = Add(sc4, var13)
 
     a7.apply()              shouldBe Scalar(17)
-    a7.deriv(sc4)           shouldBe 0
+    a7.deriv(sc4)           shouldBe Scalar(0)
     a7.deriv(var13)         shouldBe Scalar(1)
     a7.propagate(value42)   shouldBe Scalar(42)
     a7.propagate(cValue211) shouldBe Scalar(211)
@@ -112,7 +112,7 @@ class AddSuite extends FunSuite {
 
     a6.apply()              shouldBe Scalar(7 + 31)
     a6.deriv(var7)          shouldBe Scalar(1)
-    a6.deriv(sc3)           shouldBe 0
+    a6.deriv(sc3)           shouldBe Scalar(0)
     a6.deriv(cc72)          shouldBe Scalar(0)
     a6.propagate(value42)   shouldBe Scalar(42)
     a6.propagate(cValue211) shouldBe Scalar(211)
@@ -133,7 +133,7 @@ class AddSuite extends FunSuite {
     a10.apply()              shouldBe Scalar(23)
     a10.deriv(var7)          shouldBe Scalar(1)
     a10.deriv(var13)         shouldBe Scalar(1)
-    a10.deriv(sc3)           shouldBe 0
+    a10.deriv(sc3)           shouldBe Scalar(0)
     a10.propagate(value42)   shouldBe Scalar(84)
     a10.propagate(cValue211) shouldBe Scalar(422)
   }

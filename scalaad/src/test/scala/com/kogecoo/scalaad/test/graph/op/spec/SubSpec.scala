@@ -48,26 +48,26 @@ class SubSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
     case (x: ContainerValue[U, T],    y: ContainerValue[U, T])    => ContainerValue[U, T](vr.subSS(x.data, y.data))
   }
 
-  override def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T] = vr.zero(c())
+  override def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T] = vr.zero(a()) + vr.zero(b())
 
   override def derivWrtLeftExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
     a match {
-      case x: Var[U, T] => vr.one(a())
-      case _            => vr.zero(a())
+      case x: Var[U, T] => vr.one(a()) - vr.zero(b())
+      case _            => vr.zero(a()) - vr.zero(b())
     }
   }
 
   override def derivWrtRightExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
     b match {
-      case x: Var[U, T] => -vr.one(b())
-      case _            => vr.zero(b())
+      case x: Var[U, T] => vr.zero(a()) - vr.one(b())
+      case _            => vr.zero(a()) - vr.zero(b())
     }
   }
 
   override def derivWrtSelfExpectation(a: Node[U, T]): Value[U, T] = {
     a match {
       case x: Var[U, T] => vr.one(a()) - vr.one(a())
-      case _            => vr.zero(a())
+      case _            => vr.zero(a()) - vr.zero(a())
     }
   }
 
@@ -78,7 +78,7 @@ class SubSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
     }
     val bg = b match {
       case y: Var[U, T] => -vr.one(b()) * c
-      case _            => vr.zero(b()) * c
+      case _            => -vr.zero(b()) * c
     }
     ag + bg
   }
@@ -90,7 +90,7 @@ class SubSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends
     }
     val bg = b match {
       case y: Var[U, T] => -vr.one(b())
-      case _            => vr.zero(b())
+      case _            => -vr.zero(b())
     }
     ag + bg
   }
