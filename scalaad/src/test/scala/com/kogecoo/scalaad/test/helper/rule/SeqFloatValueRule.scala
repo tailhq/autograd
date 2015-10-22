@@ -1,12 +1,13 @@
 package com.kogecoo.scalaad.test.helper.rule
 
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, Value, ValueRule}
+import com.kogecoo.scalaad.rule._
 
 object SeqFloatValueRule {
 
   object Implicits {
 
     implicit val seqFloatValueRule = new SeqFloatValueRule
+    implicit val seqFloatMathRule = new SeqFloatValueRule with SeqFloatMathRule
 
   }
 
@@ -119,6 +120,48 @@ class SeqFloatValueRule extends ValueRule[Seq, Float] {
   override def whereMMM(cond: Boolean, a: Float, b: Float): Float = {
     if (cond) a else b
   }
+
+}
+
+trait SeqFloatMathRule extends MathRule[Seq, Float] {
+
+  override def sinS(v: Seq[Float]): Seq[Float] = v.map(scala.math.sin(_).toFloat)
+  override def cosS(v: Seq[Float]): Seq[Float] = v.map(scala.math.cos(_).toFloat)
+  override def tanS(v: Seq[Float]): Seq[Float] = v.map(scala.math.tan(_).toFloat)
+  override def asinS(v: Seq[Float]): Seq[Float] = v.map(scala.math.asin(_).toFloat)
+  override def acosS(v: Seq[Float]): Seq[Float] = v.map(scala.math.acos(_).toFloat)
+  override def atanS(v: Seq[Float]): Seq[Float] = v.map(scala.math.atan(_).toFloat)
+  override def sinhS(v: Seq[Float]): Seq[Float] = v.map(scala.math.sinh(_).toFloat)
+  override def coshS(v: Seq[Float]): Seq[Float] = v.map(scala.math.cosh(_).toFloat)
+  override def tanhS(v: Seq[Float]): Seq[Float] = v.map(scala.math.tanh(_).toFloat)
+  override def lnS(v: Seq[Float]):  Seq[Float] = v.map(scala.math.log(_).toFloat)
+  override def expS(v: Seq[Float]):  Seq[Float] = v.map(scala.math.exp(_).toFloat)
+  override def absS(v: Seq[Float]):  Seq[Float] = v.map(scala.math.abs(_))
+  override def sqrtS(v: Seq[Float]):  Seq[Float] = v.map(scala.math.sqrt(_).toFloat)
+
+  override def sinM(v: Float): Float = scala.math.sin(v.toDouble).toFloat
+  override def cosM(v: Float): Float = scala.math.cos(v.toDouble).toFloat
+  override def tanM(v: Float): Float = scala.math.tan(v.toDouble).toFloat
+  override def asinM(v: Float): Float = scala.math.asin(v.toDouble).toFloat
+  override def acosM(v: Float): Float = scala.math.acos(v.toDouble).toFloat
+  override def atanM(v: Float): Float = scala.math.atan(v.toDouble).toFloat
+  override def sinhM(v: Float): Float = scala.math.sinh(v.toDouble).toFloat
+  override def coshM(v: Float): Float = scala.math.cosh(v.toDouble).toFloat
+  override def tanhM(v: Float): Float = scala.math.tanh(v.toDouble).toFloat
+  override def lnM(v: Float):  Float = scala.math.log(v.toDouble).toFloat
+  override def expM(v: Float):  Float = scala.math.exp(v.toDouble).toFloat
+  override def absM(v: Float):  Float = scala.math.abs(v)
+  override def sqrtM(v: Float):  Float = scala.math.sqrt(v.toDouble).toFloat
+
+  override def powSS(v: Seq[Float], p: Seq[Float]): Seq[Float] = v.zip(p).map { case (a, b) => scala.math.pow(a, b).toFloat }
+  override def powSM(v: Seq[Float], p: Float): Seq[Float] = v.map { a => scala.math.pow(a, p).toFloat }
+  override def powMS(v: Float, p: Seq[Float]): Seq[Float] = p.map { b => scala.math.pow(v, b).toFloat }
+  override def powMM(v: Float, p: Float): Float = scala.math.pow(v, p).toFloat
+
+  override def dotSS(a: Seq[Float], b: Seq[Float]): Seq[Float] = Seq(a.zip(b).map({ case (x, y) => x * y}).fold(0f)(_ + _))
+  override def dotSM(a: Seq[Float], b: Float): Seq[Float] = Seq(a.map(_ * b).fold(0f)(_ + _))
+  override def dotMS(a: Float, b: Seq[Float]): Seq[Float] = Seq(b.map(a * _).fold(0f)(_ + _))
+  override def dotMM(a: Float, b: Float): Float = a * b
 
 }
 
