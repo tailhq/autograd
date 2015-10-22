@@ -14,6 +14,7 @@ abstract class Value[U[_], T] {
   def <=(rhs: Value[U, T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
   def >=(rhs: Value[U, T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
   def ==(rhs: Value[U, T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
+  def close(rhs: Value[U, T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean]
 
   def +(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, T]
   def -(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, T]
@@ -24,6 +25,7 @@ abstract class Value[U[_], T] {
   def <=(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
   def >=(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
   def ==(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, Boolean]
+  def close(rhs: U[T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean]
 
   def unary_+()(implicit vr: ValueRule[U, T]): Value[U, T]
   def unary_-()(implicit vr: ValueRule[U, T]): Value[U, T]
@@ -133,6 +135,17 @@ case class NonContainerValue[U[_], T](data: T) extends Value[U, T] {
 
   def ==(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
      ContainerValue[U, Boolean](vr.eqMS(data, rhs))
+  }
+
+  def close(rhs: Value[U, T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
+    rhs match {
+      case r: C => ContainerValue[U, Boolean] (vr.closeMS(data, r.data, eps) )
+      case r: NC => NonContainerValue[U, Boolean] (vr.closeMM(data, r.data, eps) )
+    }
+  }
+
+  def close(rhs: U[T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
+    ContainerValue[U, Boolean](vr.closeMS(data, rhs, eps))
   }
 
   def unary_+()(implicit vr: ValueRule[U, T]): Value[U, T] = NonContainerValue[U, T](vr.posM(data))
@@ -245,6 +258,17 @@ case class ContainerValue[U[_], T](data: U[T]) extends Value[U, T] {
 
   def ==(rhs: U[T])(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
     ContainerValue[U, Boolean](vr.eqSS(data, rhs))
+  }
+
+  def close(rhs: Value[U, T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
+    rhs match {
+      case r: C => ContainerValue[U, Boolean] (vr.closeSS(data, r.data, eps) )
+      case r: NC => ContainerValue[U, Boolean] (vr.closeSM(data, r.data, eps) )
+    }
+  }
+
+  def close(rhs: U[T], eps: T)(implicit vr: ValueRule[U, T]): Value[U, Boolean] = {
+    ContainerValue[U, Boolean](vr.closeSS(data, rhs, eps))
   }
 
   def unary_+()(implicit vr: ValueRule[U, T]): Value[U, T] = ContainerValue[U, T](vr.posS(data))

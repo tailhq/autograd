@@ -98,6 +98,24 @@ object Nd4jRule {
     override def transposeS(v: C): C = INDArray_(v.data.transpose())
     override def transposeM(v: T): T = v
 
+    override def closeSS (l: C, r: C, eps: T = 1e-4): INDArray_[Boolean] = {
+      val t = INDArray_[T](subSS(l, r).data.map(scala.math.abs))
+      lteSM(t, eps)
+    }
+    override def closeSM (l: C, r: T, eps: T = 1e-4): INDArray_[Boolean] = {
+      val t = INDArray_[T](subSM(l, r).data.map(scala.math.abs))
+      lteSM(t, eps)
+    }
+    override def closeMS (l: T, r: C, eps: T = 1e-4): INDArray_[Boolean] = {
+      val t = INDArray_[T](subMS(l, r).data.map(scala.math.abs))
+      lteSM(t, eps)
+    }
+
+    override def closeMM (l: T, r: T, eps: T = 1e-4): Boolean = {
+      val t = scala.math.abs(l - r)
+      t < eps
+    }
+
     // FIXME: maybe we need to implement Custom executioner which suports 3 args for
     //  remove folloing (UNEFFICIENT) trick.
     override def whereSSS(cond: INDArray_[Boolean], a: C, b: C): C = INDArray_(Nd4jUtil.where(cond.data, a.data, b.data))

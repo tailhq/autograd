@@ -90,6 +90,20 @@ object BreezeRule {
     override def transposeS(v: V): V = v
     override def transposeM(v: T): T = v
 
+    override def closeSS (l: V, r: V, eps: T = 1e-4): DenseVector[Boolean] = {
+      (breeze.numerics.abs(subSS(l, r)) :<= eps).map(b => b)
+    }
+    override def closeSM (l: V, r: T, eps: T = 1e-4): DenseVector[Boolean] = {
+      (breeze.numerics.abs(subSM(l, r)) :<= eps).map(b => b)
+    }
+    override def closeMS (l: T, r: V, eps: T = 1e-4): DenseVector[Boolean] = {
+      (breeze.numerics.abs(subMS(l, r)) :<= eps).map(b => b)
+    }
+
+    override def closeMM (l: T, r: T, eps: T = 1e-4): Boolean = {
+      breeze.numerics.abs(subMM(l, r)) <= eps
+    }
+
     override def whereSSS(cond: DenseVector[Boolean], a: V, b: V): V = breeze.linalg.where(cond, a, b)
     override def whereSSM(cond: DenseVector[Boolean], a: V, b: T): V = breeze.linalg.where(cond, a, fillLike(b, cond))
     override def whereSMS(cond: DenseVector[Boolean], a: T, b: V): V = breeze.linalg.where(cond, fillLike(a, cond), b)
@@ -202,6 +216,19 @@ object BreezeRule {
 
     override def transposeS(v: M): M = v.t
     override def transposeM(v: T): T = v
+
+    override def closeSS (l: M, r: M, eps: T = 1e-4): DenseMatrix[Boolean] = {
+      (breeze.numerics.abs(subSS(l, r)) :<= eps).map(b => b)
+    }
+    override def closeSM (l: M, r: T, eps: T = 1e-4): DenseMatrix[Boolean] = {
+      (breeze.numerics.abs(subSM(l, r)) :<= eps).map(b => b)
+    }
+    override def closeMS (l: T, r: M, eps: T = 1e-4): DenseMatrix[Boolean] = {
+      (breeze.numerics.abs(subMS(l, r)) :<= eps).map(b => b)
+    }
+    override def closeMM (l: T, r: T, eps: T = 1e-4): Boolean = {
+      breeze.numerics.abs(subMM(l, r)) <= eps
+    }
 
     override def whereSSS(cond: DenseMatrix[Boolean], a: M, b: M): M = breeze.linalg.where(cond, a, b)
     override def whereSSM(cond: DenseMatrix[Boolean], a: M, b: T): M = breeze.linalg.where(cond, a, fillLike(b, cond))

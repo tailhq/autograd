@@ -90,6 +90,11 @@ trait ValueRule[U[_], T] {
   def transposeS(v: U[T]): U[T]
   def transposeM(v: T): T
 
+  def closeSS (l: U[T], r: U[T], eps: T): U[Boolean]
+  def closeSM (l: U[T], r: T, eps: T): U[Boolean]
+  def closeMS (l: T, r: U[T], eps: T): U[Boolean]
+  def closeMM (l: T, r: T, eps: T): Boolean
+
   def whereSSS(cond: U[Boolean], a: U[T], b: U[T]): U[T]
   def whereSSM(cond: U[Boolean], a: U[T], b: T):    U[T]
   def whereSMS(cond: U[Boolean], a: T,    b: U[T]): U[T]

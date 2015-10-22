@@ -83,6 +83,19 @@ object DoubleRule {
     override def transposeS(v: Scalar[Double]): Scalar[Double] = v
     override def transposeM(v: Double): Double = v
 
+    override def closeSS (l: Scalar[Double], r: Scalar[Double], eps: Double = 1e-4): Scalar[Boolean] = {
+      Scalar[Boolean](scala.math.abs(l.data - r.data) <= eps)
+    }
+    override def closeSM (l: Scalar[Double], r: Double, eps: Double = 1e-4): Scalar[Boolean] = {
+      Scalar[Boolean](scala.math.abs(l.data - r) <= eps)
+    }
+    override def closeMS (l: Double, r: Scalar[Double], eps: Double = 1e-4): Scalar[Boolean] = {
+      Scalar[Boolean](scala.math.abs(l - r.data) <= eps)
+    }
+    override def closeMM (l: Double, r: Double, eps: Double = 1e-4): Boolean = {
+      scala.math.abs(l - r) <= eps
+    }
+
     override def whereSSS(cond: Scalar[Boolean], a: Scalar[Double], b: Scalar[Double]): Scalar[Double] = if (cond.data) a else b
     override def whereSSM(cond: Scalar[Boolean], a: Scalar[Double], b: Double):         Scalar[Double] = if (cond.data) a else Scalar(b)
     override def whereSMS(cond: Scalar[Boolean], a: Double,         b: Scalar[Double]): Scalar[Double] = if (cond.data) Scalar(a) else b

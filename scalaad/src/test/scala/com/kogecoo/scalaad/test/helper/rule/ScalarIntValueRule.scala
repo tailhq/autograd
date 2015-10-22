@@ -75,6 +75,19 @@ class ScalarIntValueRule extends ValueRule[Scalar, Int]{
   override def transposeS(v: Scalar[Int]): Scalar[Int] = v
   override def transposeM(v: Int): Int = v
 
+  override def closeSS (l: Scalar[Int], r: Scalar[Int], eps: Int = 0): Scalar[Boolean] = {
+    Scalar(l.data == r.data)
+  }
+  override def closeSM (l: Scalar[Int], r: Int, eps: Int = 0): Scalar[Boolean] = {
+    Scalar(l.data == r)
+  }
+  override def closeMS (l: Int, r: Scalar[Int], eps: Int = 0): Scalar[Boolean] = {
+    Scalar(l== r.data)
+  }
+  override def closeMM (l: Int, r: Int, eps: Int = 0): Boolean = {
+    l == r
+  }
+
   override def whereSSS(cond: Scalar[Boolean], a: Scalar[Int], b: Scalar[Int]): Scalar[Int] = if (cond.data) a else b
   override def whereSSM(cond: Scalar[Boolean], a: Scalar[Int], b: Int):         Scalar[Int] = if (cond.data) a else Scalar(b)
   override def whereSMS(cond: Scalar[Boolean], a: Int,         b: Scalar[Int]): Scalar[Int] = if (cond.data) Scalar(a) else b
