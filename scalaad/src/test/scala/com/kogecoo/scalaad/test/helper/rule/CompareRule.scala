@@ -5,8 +5,8 @@ import scala.language.higherKinds
 
 trait CompareRule[U[_], T] {
 
-  def eq(a: U[T], b: U[T])(implicit d: DummyImplicit): Boolean
+  def compare(a: U[T], b: U[T])(implicit d: DummyImplicit): Boolean
 
-  def eq(a: T, b: T): Boolean
+  def compare(a: T, b: T): Boolean
 
 }
