@@ -10,28 +10,39 @@ object ValueMatcher {
 
   implicit class ValueOpsForTest[U[_], T](val self: Value[U, T]) extends AnyVal {
     def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Boolean = {
-      val cond = (x: T) => compare.compare(x, v)
+      val cond = (x: T) => compare.eq(x, v)
       assumeNonContainerValue(self, cond)
     }
 
     def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Boolean = {
-      val cond = (x: U[T]) => compare.compare(x, v)
+      val cond = (x: U[T]) => compare.eq(x, v)
       assumeContainerValue(self, cond)
     }
 
     def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Boolean = {
       (self, v) match {
-        case (a: ContainerValue[U, T], b: ContainerValue[U, T])       => compare.compare(a.data, b.data)
-        case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.compare(a.data, b.data)
+        case (a: ContainerValue[U, T], b: ContainerValue[U, T])       => compare.eq(a.data, b.data)
+        case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.eq(a.data, b.data)
         case _ => false
       }
     }
-  }
 
-  implicit class ValueOpsForTest2[U[_]](val self: Value[U, Float]) extends AnyVal {
-    def closeTo(v: Float, eps: Float = 1e-4f)(implicit compare: CompareRule[U, Float]): Boolean = {
-      val f = (x: Float) => v - eps <= x && v + eps >= x || compare.compare(v, x)
-      assumeNonContainerValue(self, f)
+    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Boolean = {
+      val cond = (x: T) => compare.closeTo(x, v)
+      assumeNonContainerValue(self, cond)
+    }
+
+    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Boolean = {
+      val cond = (x: U[T]) => compare.closeTo(x, v)
+      assumeContainerValue(self, cond)
+    }
+
+    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Boolean = {
+      (self, v) match {
+        case (a: ContainerValue[U, T], b: ContainerValue[U, T])       => compare.closeTo(a.data, b.data)
+        case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.closeTo(a.data, b.data)
+        case _ => false
+      }
     }
   }
 

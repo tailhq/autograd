@@ -13,29 +13,35 @@ object ValueMatcherProp {
   implicit class ValueOpsForTest[U[_], T](val self: Value[U, T]) extends AnyVal {
 
     def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Prop = self match {
-      case a: NonContainerValue[U, T] => compare.compare(a.data, v) :| s"${a.data} shouldBe ${v}"
-      case _                          => false                      :| s"expects NonContainerValue but ${self}"
+      case a: NonContainerValue[U, T] => compare.eq(a.data, v) :| s"${a.data} shouldBe ${v}"
+      case _                          => false                 :| s"expects NonContainerValue but ${self}"
     }
 
     def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Prop = self match {
-      case a: ContainerValue[U, T] => compare.compare(a.data, v) :| s"${a.data} shouldBe ${v}"
-      case _                       => false                      :| s"expects ContaienrValue but ${self}"
+      case a: ContainerValue[U, T] => compare.eq(a.data, v) :| s"${a.data} shouldBe ${v}"
+      case _                       => false                 :| s"expects ContaienrValue but ${self}"
     }
 
     def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Prop = (self, v) match {
-      case (a: ContainerValue[U, T],    b: ContainerValue[U, T])    => compare.compare(a.data, b.data) :| s"expects ${a.data} shouldBe ${b.data}"
-      case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.compare(a.data, b.data) :| s"expects ${a.data} shouldBe ${b.data}"
-      case _                                                        => false                           :| s"expects same Value type but ${self}, ${v}"
+      case (a: ContainerValue[U, T],    b: ContainerValue[U, T])    => compare.eq(a.data, b.data) :| s"expects ${a.data} shouldBe ${b.data}"
+      case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.eq(a.data, b.data) :| s"expects ${a.data} shouldBe ${b.data}"
+      case _                                                        => false                      :| s"expects same Value type but ${self}, ${v}"
     }
-  }
 
-  implicit class ValueOpsForTest2[U[_]](val self: Value[U, Float]) extends AnyVal {
-    def shouldBeLike(v: Float, eps: Float = 1e-3f)(implicit compare: CompareRule[U, Float]): Prop = {
-      val f = (x: Float) => (v - eps <= x && v + eps >= x) || compare.compare(x, v)
-      self match {
-        case a: NonContainerValue[U, Float] => f(a.data) :| s"expects ${v - eps} <= ${a.data} <= ${v + eps}"
-        case _                              => false     :| s"expects NonContainerValue but ${self}"
-      }
+    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Prop = self match {
+      case a: NonContainerValue[U, T] => compare.closeTo(a.data, v) :| s"${a.data} closeTo ${v}"
+      case _                          => false                      :| s"expects NonContainerValue but ${self}"
+    }
+
+    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Prop = self match {
+      case a: ContainerValue[U, T] => compare.closeTo(a.data, v) :| s"${a.data} closeTo ${v}"
+      case _                       => false                      :| s"expects ContaienrValue but ${self}"
+    }
+
+    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Prop = (self, v) match {
+      case (a: ContainerValue[U, T],    b: ContainerValue[U, T])    => compare.closeTo(a.data, b.data) :| s"expects ${a.data} closeTo ${b.data}"
+      case (a: NonContainerValue[U, T], b: NonContainerValue[U, T]) => compare.closeTo(a.data, b.data) :| s"expects ${a.data} closeTo ${b.data}"
+      case _                                                        => false                           :| s"expects same Value type but ${self}, ${v}"
     }
   }
 

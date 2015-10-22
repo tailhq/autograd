@@ -4,18 +4,21 @@ import com.kogecoo.scalaad.graph.Scalar
 
 
 class ScalarIntCompareRule extends CompareRule[Scalar, Int] {
-  override def compare(a: Scalar[Int], b: Scalar[Int])(implicit d: DummyImplicit): Boolean = {
+
+  override val defaultEPS = 0
+
+  override def eq(a: Scalar[Int], b: Scalar[Int])(implicit d: DummyImplicit): Boolean = {
     a.data == b.data
   }
 
-  override def compare(a: Int, b: Int): Boolean = a == b
+  override def eq(a: Int, b: Int): Boolean = a == b
 
-  override def closeTo(a: Scalar[Int], b: Scalar[Int], eps: Int = 0)(implicit d: DummyImplicit): Boolean = {
-    a == b
+  override def closeTo(a: Scalar[Int], b: Scalar[Int], eps: Int)(implicit d: DummyImplicit): Boolean = {
+    scala.math.abs((a.data - b.data).toDouble) <= eps
   }
 
-  override def closeTo(a: Int, b: Int, eps: Int = 0): Boolean = {
-    a == b
+  override def closeTo(a: Int, b: Int, eps: Int): Boolean = {
+    scala.math.abs((a - b).toDouble) <= eps
   }
 }
 

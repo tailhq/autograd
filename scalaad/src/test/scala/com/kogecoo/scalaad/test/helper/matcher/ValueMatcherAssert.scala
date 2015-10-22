@@ -10,38 +10,60 @@ object ValueMatcherAssert {
 
   implicit class ValueOpsForTest[U[_], T](val self: Value[U, T]) extends AnyVal {
 
-    def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-    def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-    def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
-  }
+    def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-  implicit class ValueOpsForTest2[U[_]](val self: Value[U, Float]) extends AnyVal {
+    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
+    }
 
-    def shouldBeLike(v: Float, eps: Float = 1e-3f)(implicit compare: CompareRule[U, Float]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest2(self).shouldBeLike(v, eps))
+    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
+    }
+
+    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
     }
   }
-
 }
 
 object ValueMatcherDiagrammedAssert {
+
   import org.scalatest.DiagrammedAssertions._
 
   implicit class ValueOpsForTest[U[_], T](val self: Value[U, T]) extends AnyVal {
 
-    def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    def shouldBe(v: T)(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-    def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    def shouldBe(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-    def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
-  }
+    def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
+    }
 
-  implicit class ValueOpsForTest2[U[_]](val self: Value[U, Float]) extends AnyVal {
+    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
+    }
 
-    def shouldBeLike(v: Float, eps: Float = 1e-3f)(implicit compare: CompareRule[U, Float]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest2(self).shouldBeLike(v, eps))
+    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
+    }
+
+    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
+      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
     }
   }
 

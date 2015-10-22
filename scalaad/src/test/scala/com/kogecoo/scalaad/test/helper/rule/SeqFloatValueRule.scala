@@ -74,17 +74,17 @@ class SeqFloatValueRule extends ValueRule[Seq, Float] {
   override def transposeM(v: Float): Float = v
 
 
-  override def closeSS (l: Seq[Float], r: Seq[Float], eps: Float = 1e-4): Seq[Boolean] = {
+  override def closeSS (l: Seq[Float], r: Seq[Float], eps: Float = 1e-4f): Seq[Boolean] = {
     lteSM(subSS(l, r), eps)
   }
 
-  override def closeSM (l: Seq[Float], r: Float, eps: Float = 1e-4): Seq[Boolean] = {
+  override def closeSM (l: Seq[Float], r: Float, eps: Float = 1e-4f): Seq[Boolean] = {
     lteSM(subSM(l, r), eps)
   }
-  override def closeMS (l: Float, r: Seq[Float], eps: Float = 1e-4): Seq[Boolean] = {
+  override def closeMS (l: Float, r: Seq[Float], eps: Float = 1e-4f): Seq[Boolean] = {
     lteSM(subMS(l, r), eps)
   }
-  override def closeMM (l: Float, r: Float, eps: Float = 1e-4): Boolean = {
+  override def closeMM (l: Float, r: Float, eps: Float = 1e-4f): Boolean = {
     lteMM(subMM(l, r), eps)
   }
 
