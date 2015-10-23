@@ -12,48 +12,41 @@ class SeqFloatNodeGen extends GenNode[Seq, Float] {
 
   implicit private[this] val r = new SeqFloatValueRule
 
-  override def genNode(restrict: Float => Boolean): Gen[Node[Seq, Float]]= {
-    oneOf(genScalarConst(restrict), genContainerConst(restrict), genVar(restrict))
-  }
-
-  override def genVar(restrict: Float => Boolean): Gen[Var[Seq, Float]] = {
+  override def genVarWithSource(restrict: Float => Boolean): Gen[(Var[Seq, Float], Seq[Float])] = {
     for {
       v <- arbitrary[Seq[Float]] suchThat { a => a.nonEmpty && a.forall(restrict) }
-    } yield Var[Seq, Float](v)
+    } yield (Var[Seq, Float](v), v)
   }
 
-  override def genScalarConst(restrict: Float => Boolean): Gen[ScalarConst[Seq, Float]] = {
+  override def genScalarConstWithSource(restrict: Float => Boolean): Gen[(ScalarConst[Seq, Float], Float)] = {
     for {
       v <- arbitrary[Float] suchThat restrict
-    } yield ScalarConst[Seq, Float](v)
+    } yield (ScalarConst[Seq, Float](v), v)
   }
 
-  override def genContainerConst(restrict: Float => Boolean): Gen[ContainerConst[Seq, Float]] = {
+  override def genContainerConstWithSource(restrict: Float => Boolean): Gen[(ContainerConst[Seq, Float], Seq[Float])] = {
     for {
       v <- arbitrary[Seq[Float]] suchThat(_.nonEmpty)
-    } yield ContainerConst[Seq, Float](v)
+    } yield (ContainerConst[Seq, Float](v), v)
   }
 
 }
+
 
 class SeqFloatValueGen extends GenValue[Seq, Float] {
 
   implicit private[this] val r = new SeqFloatValueRule
 
-  override def genValue(restrict: Float => Boolean): Gen[Value[Seq, Float]] = {
-    oneOf(genNonContainerValue(restrict), genContainerValue(restrict))
-  }
-
-  override def genNonContainerValue(restrict: Float => Boolean): Gen[NonContainerValue[Seq, Float]] = {
+  override def genNonContainerValueWithSource(restrict: Float => Boolean): Gen[(NonContainerValue[Seq, Float], Float)] = {
     for {
       v <- arbitrary[Float] suchThat restrict
-    } yield NonContainerValue[Seq, Float](v)
+    } yield (NonContainerValue[Seq, Float](v), v)
   }
 
-  override def genContainerValue(restrict: Float => Boolean): Gen[ContainerValue[Seq, Float]] = {
+  override def genContainerValueWithSource(restrict: Float => Boolean): Gen[(ContainerValue[Seq, Float], Seq[Float])] = {
     for {
       v <- arbitrary[Seq[Float]] suchThat { a => a.nonEmpty && a.forall(restrict) }
-    } yield ContainerValue[Seq, Float](v)
+    } yield (ContainerValue[Seq, Float](v), v)
   }
 
 }

@@ -1,10 +1,9 @@
 package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.rule.{Value, NonContainerValue, ContainerValue}
+import com.kogecoo.scalaad.rule.{NonContainerValue, ContainerValue}
 import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule
 import org.scalacheck.Gen
-import org.scalacheck.Gen.oneOf
 import org.scalacheck.Arbitrary.arbitrary
 
 
@@ -12,48 +11,41 @@ class ScalarIntNodeGen extends GenNode[Scalar, Int] {
 
   implicit private[this] val r = new ScalarIntValueRule
 
-  override def genNode(restrict: Int => Boolean): Gen[Node[Scalar, Int]] = {
-    oneOf(genScalarConst(restrict), genContainerConst(restrict), genVar(restrict))
-  }
 
-  override def genVar(restrict: Int => Boolean): Gen[Var[Scalar, Int]] = {
+  override def genVarWithSource(restrict: Int => Boolean): Gen[(Var[Scalar, Int], Scalar[Int])] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield Var[Scalar, Int](Scalar(v))
+    } yield (Var[Scalar, Int](Scalar(v)), Scalar(v))
   }
 
-  override def genScalarConst(restrict: Int => Boolean): Gen[ScalarConst[Scalar, Int]] = {
+  override def genScalarConstWithSource(restrict: Int => Boolean): Gen[(ScalarConst[Scalar, Int], Int)] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield ScalarConst[Scalar, Int](v)
+    } yield (ScalarConst[Scalar, Int](v), v)
   }
 
-  override def genContainerConst(restrict: Int => Boolean): Gen[ContainerConst[Scalar, Int]] = {
+  override def genContainerConstWithSource(restrict: Int => Boolean): Gen[(ContainerConst[Scalar, Int], Scalar[Int])] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield ContainerConst[Scalar, Int](Scalar(v))
+    } yield (ContainerConst[Scalar, Int](Scalar(v)), Scalar[Int](v))
   }
-
 }
 
 class ScalarIntValueGen extends GenValue[Scalar, Int] {
 
   implicit private[this] val r = new ScalarIntValueRule
 
-  override def genValue(restrict: Int => Boolean): Gen[Value[Scalar, Int]] = {
-    oneOf(genNonContainerValue(restrict), genContainerValue(restrict))
-  }
 
-  override def genNonContainerValue(restrict: Int => Boolean): Gen[NonContainerValue[Scalar, Int]] = {
+  override def genNonContainerValueWithSource(restrict: Int => Boolean): Gen[(NonContainerValue[Scalar, Int], Int)] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield NonContainerValue[Scalar, Int](v)
+    } yield (NonContainerValue[Scalar, Int](v), v)
   }
 
-  override def genContainerValue(restrict: Int => Boolean): Gen[ContainerValue[Scalar, Int]] = {
+  override def genContainerValueWithSource(restrict: Int => Boolean): Gen[(ContainerValue[Scalar, Int], Scalar[Int])] = {
     for {
       v <- arbitrary[Int] suchThat(restrict)
-    } yield ContainerValue[Scalar, Int](Scalar(v))
+    } yield (ContainerValue[Scalar, Int](Scalar(v)), Scalar(v))
   }
 
 }
