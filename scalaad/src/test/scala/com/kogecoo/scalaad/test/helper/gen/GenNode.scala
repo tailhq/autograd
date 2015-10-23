@@ -16,21 +16,28 @@ abstract class GenNode[U[_], T] {
   }
 
   final def genVar(restrict: T => Boolean = defaultRestriction): Gen[Var[U, T]] = {
-    genVarWithSource(restrict).map(_._1)
+    genVarWithSource(restrict).map(_.node)
   }
 
   final def genScalarConst(restrict: T => Boolean = defaultRestriction): Gen[ScalarConst[U, T]] = {
-    genScalarConstWithSource(restrict).map(_._1)
+    genScalarConstWithSource(restrict).map(_.node)
   }
 
   final def genContainerConst(restrict: T => Boolean = defaultRestriction): Gen[ContainerConst[U, T]] = {
-    genContainerConstWithSource(restrict).map(_._1)
+    genContainerConstWithSource(restrict).map(_.node)
   }
 
-  def genVarWithSource(restrict: T => Boolean = defaultRestriction): Gen[(Var[U, T], U[T])]
+  def genVarWithSource(restrict: T => Boolean = defaultRestriction): Gen[VarSample[U, T]]
 
-  def genScalarConstWithSource(restrict: T => Boolean = defaultRestriction): Gen[(ScalarConst[U, T], T)]
+  def genScalarConstWithSource(restrict: T => Boolean = defaultRestriction): Gen[ScalarConstSample[U, T]]
 
-  def genContainerConstWithSource(restrict: T => Boolean = defaultRestriction): Gen[(ContainerConst[U, T], U[T])]
+  def genContainerConstWithSource(restrict: T => Boolean = defaultRestriction): Gen[ContainerConstSample[U, T]]
 
 }
+
+class VarSample[U[_], T](val node: Var[U, T], val src: U[T])
+
+class ScalarConstSample[U[_], T](val node: ScalarConst[U, T], val src: T)
+
+class ContainerConstSample[U[_], T](val node: ContainerConst[U, T], val src: U[T])
+

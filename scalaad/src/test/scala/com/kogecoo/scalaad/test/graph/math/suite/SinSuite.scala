@@ -3,7 +3,7 @@ package com.kogecoo.scalaad.test.graph.math.suite
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatSoftCompareRule
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 
 import scala.util.Random
@@ -11,6 +11,8 @@ import org.scalatest.FunSuite
 
 
 class SinSuite extends FunSuite {
+
+  implicit val seqFloatCompareRule = new SeqFloatSoftCompareRule
 
   test("Sin - Seq[Float]") {
 
@@ -32,32 +34,32 @@ class SinSuite extends FunSuite {
       // ScalarConst
       val scSin= sin(ccNode)
 
-      scSin.apply()               closeTo ccSeq.map(scala.math.sin(_).toFloat)
-      scSin.deriv(varNode)        closeTo Seq.fill(n)(0f)
-      scSin.deriv(ccNode)         closeTo Seq.fill(n)(0f)
-      scSin.deriv(scNode)         closeTo Seq.fill(n)(0f)
-      scSin.propagate(valueRand)  closeTo Seq.fill(n)(0f)
-      scSin.propagate(cValueRand) closeTo Seq.fill(n)(0f)
+      scSin.apply()               shouldBe ccSeq.map(scala.math.sin(_).toFloat)
+      scSin.deriv(varNode)        shouldBe Seq.fill(n)(0f)
+      scSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
+      scSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
+      scSin.propagate(valueRand)  shouldBe Seq.fill(n)(0f)
+      scSin.propagate(cValueRand) shouldBe Seq.fill(n)(0f)
 
       // ContainerConst
       val ccSin = sin(ccNode)
 
-      ccSin.apply()               closeTo ccSeq.map(scala.math.sin(_).toFloat)
-      ccSin.deriv(varNode)        closeTo Seq.fill(n)(0f)
-      ccSin.deriv(ccNode)         closeTo Seq.fill(n)(0f)
-      ccSin.deriv(scNode)         closeTo Seq.fill(n)(0f)
-      ccSin.propagate(valueRand)  closeTo Seq.fill(n)(0f)
-      ccSin.propagate(cValueRand) closeTo Seq.fill(n)(0f)
+      ccSin.apply()               shouldBe ccSeq.map(scala.math.sin(_).toFloat)
+      ccSin.deriv(varNode)        shouldBe Seq.fill(n)(0f)
+      ccSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
+      ccSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
+      ccSin.propagate(valueRand)  shouldBe Seq.fill(n)(0f)
+      ccSin.propagate(cValueRand) shouldBe Seq.fill(n)(0f)
 
       // Var
       val varSin = sin(varNode)
 
-      varSin.apply()               closeTo varSeq.map(scala.math.sin(_).toFloat)
-      varSin.deriv(varNode)        closeTo varSeq.map { v => (scala.math.cos(v)).toFloat }
-      varSin.deriv(ccNode)         closeTo Seq.fill(n)(0f)
-      varSin.deriv(scNode)         closeTo Seq.fill(n)(0f)
-      varSin.propagate(valueRand)  closeTo varSeq.map { v => (value * scala.math.cos(v)).toFloat }
-      varSin.propagate(cValueRand) closeTo varSeq.map({ v => scala.math.cos(v) }).zip(cValue).map { case (a, b) => (a * b).toFloat }
+      varSin.apply()               shouldBe varSeq.map(scala.math.sin(_).toFloat)
+      varSin.deriv(varNode)        shouldBe varSeq.map { v => (scala.math.cos(v)).toFloat }
+      varSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
+      varSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
+      varSin.propagate(valueRand)  shouldBe varSeq.map { v => (value * scala.math.cos(v)).toFloat }
+      varSin.propagate(cValueRand) shouldBe varSeq.map({ v => scala.math.cos(v) }).zip(cValue).map { case (a, b) => (a * b).toFloat }
 
     }
 

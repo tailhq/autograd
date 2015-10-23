@@ -1,13 +1,11 @@
 package com.kogecoo.scalaad.test.graph
 
 import com.kogecoo.scalaad.graph.Scalar
-import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
-import com.kogecoo.scalaad.test.helper.rule.CompareRule
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 import com.kogecoo.scalaad.test.helper.gen._
+import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
+import com.kogecoo.scalaad.test.helper.rule.{SeqFloatExactCompareRule, ScalarIntCompareRule, CompareRule}
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 import com.kogecoo.scalaad.rule.ValueRule
 
 import org.scalacheck.{Properties, Prop}
@@ -17,6 +15,10 @@ import scala.language.higherKinds
 
 
 object VarSpec extends Properties("Var") {
+
+  implicit val scalarIntCompareRule = new ScalarIntCompareRule
+
+  implicit val seqFloatCompareRule = new SeqFloatExactCompareRule
 
   val genScalarIntType = new VarSpecGen[Scalar, Int](new ScalarIntNodeGen, new ScalarIntValueGen)
 

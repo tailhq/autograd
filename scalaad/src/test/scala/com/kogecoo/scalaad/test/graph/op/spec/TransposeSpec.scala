@@ -1,83 +1,93 @@
 package com.kogecoo.scalaad.test.graph.op.spec
 
-import com.kogecoo.scalaad.graph.{Node, Scalar, Transpose, Var}
+import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._
 import com.kogecoo.scalaad.test.helper.gen._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatSoftCompareRule
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpSpecDef}
+import com.kogecoo.scalaad.test.helper.specgen.{UnaryOpSpec, UnaryOpExpectedBehaviorDef}
+
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 
 import scala.language.higherKinds
 
 
-// TODO: fruitful test
-object TransposeSpec extends Properties("TransposeSpec") {
+object TransposeSpecSeqFloat extends Properties("TransposeSpec - Seq[Float]") {
 
-  val scalarIntNodeGen = new ScalarIntNodeGen
-  val scalarIntValueGen = new ScalarIntValueGen
-  val scalarIntSpecGen = new UnaryOpSpec[Scalar, Int](new TransposeSpecDef[Scalar, Int], scalarIntNodeGen, scalarIntValueGen)
 
-  val seqFloatNodeGen = new SeqFloatNodeGen
-  val seqFloatValueGen = new SeqFloatValueGen
-  val seqFloatSpecGen = new UnaryOpSpec[Seq, Float](new TransposeSpecDef[Seq, Float], seqFloatNodeGen, seqFloatValueGen)
+  implicit val compareRule = new SeqFloatSoftCompareRule
+
+  val nodeGen  = new SeqFloatNodeGen
+  val valueGen = new SeqFloatValueGen
+  val expects  = new TransposeSeqFloatExpectedBehavior
+
+  val seqFloatSpecGen = new UnaryOpSpec[Seq, Float](expects, nodeGen, valueGen)
+
+  property("a.T apply") = seqFloatSpecGen.applyScalar()
+  property("a.T apply") = seqFloatSpecGen.applyContainer()
+  property("a.T apply") = seqFloatSpecGen.applyVar()
+
+  property("a.T (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
+  property("a.T (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
+  property("a.T (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
+  property("a.T (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("a.T (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
+  property("a.T (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+
+  property("a.T (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
+  property("a.T (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
+  property("a.T (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
+  property("a.T (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
+  property("a.T (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
+  property("a.T (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+
+  property("a.T grad")              = seqFloatSpecGen.gradScalar()
+  property("a.T grad")              = seqFloatSpecGen.gradContainer()
+  property("a.T grad")              = seqFloatSpecGen.gradVar()
 
   import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
 
-  property("[Scalar, Int] - apply")              = scalarIntSpecGen.apply()
-  property("[Scalar, Int] - a.T deriv w.r.t. b") = scalarIntSpecGen.deriv()
-  property("[Scalar, Int] - a.T deriv w.r.t. a") = scalarIntSpecGen.derivSelf()
-  property("[Scalar, Int] - propagate")          = scalarIntSpecGen.propagate()
-  property("[Scalar, Int] - grad")               = scalarIntSpecGen.grad()
-  property("[Scalar, Int] - a.T deriv w.r.t. a.T") = forAll(scalarIntNodeGen.genVar()) { (c: Var[Scalar, Int]) =>
-    // FIXME: c.T.deriv(c.T) is not satisfy following condition
-    val cT = c.T
-    cT.deriv(cT) shouldBe scalarIntValueRule.zero(cT.apply())
+  property("a.T (scalar) deriv w.r.t. a.T") = forAll(nodeGen.genScalarConstWithSource()) {
+    case a: ScalarConstSample[Seq, Float] =>
+    val aT = a.node.T
+    aT.deriv(aT) shouldBe 0f
   }
 
-  property("[Seq, Float]  - apply")              = seqFloatSpecGen.apply()
-  property("[Seq, Float]  - a.T deriv w.r.t. b") = seqFloatSpecGen.deriv()
-  property("[Seq, Float]  - a.T deriv w.r.t. a") = seqFloatSpecGen.derivSelf()
-  property("[Seq, Float]  - propagate")          = seqFloatSpecGen.propagate()
-  property("[Seq, Float]  - grad")               = seqFloatSpecGen.grad()
-
-}
-
-
-class TransposeSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends UnaryOpSpecDef[U, T] {
-
-  override def op(node: Node[U, T]): Node[U, T] = Transpose(node)
-
-  override def applyExpectation(a: Node[U, T]): Value[U, T] = a() match {
-    case x: NonContainerValue[U, T] => NonContainerValue[U, T](vr.transposeM(x.data))
-    case x: ContainerValue[U, T]    => ContainerValue[U, T](vr.transposeS(x.data))
+  property("a.T (container) deriv w.r.t. a.T") = forAll(nodeGen.genContainerConstWithSource()) {
+    case a: ContainerConstSample[Seq, Float] =>
+    val aT = a.node.T
+    aT.deriv(aT) shouldBe Seq.fill(a.src.size)(0f)
   }
 
-  override def derivExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = vr.zero(a())
-
-  override def derivSelfExpectation(a: Node[U, T]): Value[U, T] = {
-    a match {
-      case x: Var[U, T] => vr.one(a())
-      case x => vr.zero(a())
-    }
-  }
-
-  override def propagateExpectation(a: Node[U, T], b: Value[U, T]): Value[U, T] = {
-    a match {
-      case x: Var[U, T] => vr.one(a()) * b
-      case x            => vr.zero(a()) * b
-    }
-  }
-
-  override def gradExpectation(a: Node[U, T]): Value[U, T] = {
-    a match {
-      case _: Var[U, T] => vr.one(a())
-      case _            => vr.zero(a())
-    }
+  property("a.T (var) deriv w.r.t. a.T") = forAll(nodeGen.genVarWithSource()) {
+    case a: VarSample[Seq, Float] =>
+    val aT = a.node.T
+    aT.deriv(aT) shouldBe Seq.fill(a.src.size)(0f)
   }
 
 }
+
+
+class TransposeSeqFloatExpectedBehavior(implicit vr: ValueRule[Seq, Float]) extends UnaryOpExpectedBehaviorDef[Seq, Float] {
+
+  override val zero: Float = 0f
+
+  override def zero(shape: Seq[Float]): Seq[Float] = Seq.fill(shape.size)(0f)
+
+  override def op(node: Node[Seq, Float]): Node[Seq, Float] = Transpose(node)
+
+  override def applyScalar(a: Float): Float              = a
+  override def applyContainer(a: Seq[Float]): Seq[Float] = a
+  override def applyVar(a: Seq[Float]): Seq[Float]       = a
+
+  override def derivVarWrtSelf(a: Seq[Float]): Seq[Float] = Seq.fill(a.size)(1f)
+
+  override def propagateVarWithNCValue(a: Seq[Float], b: Float): Seq[Float] = Seq.fill(a.size)(1f * b)
+  override def propagateVarWithCValue(a: Seq[Float], b: Seq[Float]): Seq[Float] = a.zip(b).map { case (_, y) => y }
+
+  override def gradVar(a: Seq[Float]): Seq[Float] = Seq.fill(a.size)(1f)
+
+}
+
 

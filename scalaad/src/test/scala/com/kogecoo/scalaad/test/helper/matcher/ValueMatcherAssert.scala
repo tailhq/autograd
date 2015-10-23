@@ -21,18 +21,6 @@ object ValueMatcherAssert {
     def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
       assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
     }
-
-    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
-    }
-
-    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
-    }
-
-    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
-    }
   }
 }
 
@@ -52,18 +40,6 @@ object ValueMatcherDiagrammedAssert {
 
     def shouldBe(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
       assert(ValueMatcher.ValueOpsForTest(self).shouldBe(v))
-    }
-
-    def closeTo(v: T)(implicit compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
-    }
-
-    def closeTo(v: U[T])(implicit d: DummyImplicit, compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
-    }
-
-    def closeTo(v: Value[U, T])(implicit compare: CompareRule[U, T]): Unit = {
-      assert(ValueMatcher.ValueOpsForTest(self).closeTo(v))
     }
   }
 

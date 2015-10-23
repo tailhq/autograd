@@ -1,98 +1,147 @@
 package com.kogecoo.scalaad.test.graph.op.spec
 
-import com.kogecoo.scalaad.graph.{Add, Node, Scalar, Var}
+import com.kogecoo.scalaad.graph.{Node, Add}
 import com.kogecoo.scalaad.rule._
 import com.kogecoo.scalaad.test.helper.gen._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatSoftCompareRule
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.specgen.{BinaryOpSpec, BinaryOpSpecDef}
+import com.kogecoo.scalaad.test.helper.specgen.{BinaryOpExpectedBehaviorDef, BinaryOpSpec}
 import org.scalacheck.Properties
 
 import scala.language.higherKinds
 
-object AddSpec extends Properties("AddSpec") {
 
-  val scalarIntSpecGen = new BinaryOpSpec[Scalar, Int](new AddSpecDef[Scalar, Int], new ScalarIntNodeGen, new ScalarIntValueGen)
+object AddSpecSeqFloat extends Properties("Add - Seq[Float]") {
 
-  val seqFloatSpecGen = new BinaryOpSpec[Seq, Float](new AddSpecDef[Seq, Float], new SeqFloatNodeGen, new SeqFloatValueGen)
+  val nodeGen = new SeqFloatNodeGen
+  val valueGen = new SeqFloatValueGen
+  val expects = new AddSeqFloatExpectedBehavior
+  implicit val compareRule = new SeqFloatSoftCompareRule
 
-  property("[Scalar, Int] - apply")                  = scalarIntSpecGen.apply()
-  property("[Scalar, Int] - (a + b) deriv w.r.t. c") = scalarIntSpecGen.deriv()
-  property("[Scalar, Int] - (a + b) deriv w.r.t. a") = scalarIntSpecGen.derivWrtLeft()
-  property("[Scalar, Int] - (a + b) deriv w.r.t. b") = scalarIntSpecGen.derivWrtRight()
-  property("[Scalar, Int] - (a + a) deriv w.r.t. a") = scalarIntSpecGen.derivWrtSelf()
-  property("[Scalar, Int] - propagate value")        = scalarIntSpecGen.propagate()
-  property("[Scalar, Int] - grad")                   = scalarIntSpecGen.grad()
+  val specGen = new BinaryOpSpec[Seq, Float](expects, nodeGen, valueGen)
 
-  property("[Seq, Float]  - apply")                  = seqFloatSpecGen.apply()
-  property("[Seq, Float]  - (a + b) deriv w.r.t. c") = seqFloatSpecGen.deriv()
-  property("[Seq, Float]  - (a + b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtLeft()
-  property("[Seq, Float]  - (a + b) deriv w.r.t. a") = seqFloatSpecGen.derivWrtRight()
-  property("[Seq, Float]  - (a + a) deriv w.r.t. a") = seqFloatSpecGen.derivWrtSelf()
-  property("[Seq, Float]  - propagate")              = seqFloatSpecGen.propagate()
-  property("[Seq, Float]  - grad")                   = seqFloatSpecGen.grad()
+  property("scalar + scalar       apply") = specGen.applyScalarScalar()
+  property("scalar + container    apply") = specGen.applyScalarContainer()
+  property("scalar + var          apply") = specGen.applyScalarVar()
+  property("container + scalar    apply") = specGen.applyContainerScalar()
+  property("container + container apply") = specGen.applyContainerContainer()
+  property("container + var       apply") = specGen.applyContainerVar()
+  property("var + scalar          apply") = specGen.applyVarScalar()
+  property("var + container       apply") = specGen.applyVarContainer()
+  property("var + var             apply") = specGen.applyVarVar()
+
+  property("scalar + scalar       deriv w.r.t. left")    = specGen.derivScalarScalarWrtLeft()
+  property("scalar + scalar       deriv w.r.t. right")   = specGen.derivScalarScalarWrtRight()
+  property("scalar + scalar       deriv w.r.t. unknown") = specGen.derivScalarScalarWrtUnknown()
+  property("scalar + scalar       deriv w.r.t. self")    = specGen.derivScalarScalarWrtSelf()
+  property("scalar + container    deriv w.r.t. left")    = specGen.derivScalarContainerWrtLeft()
+  property("scalar + container    deriv w.r.t. right")   = specGen.derivScalarContainerWrtRight()
+  property("scalar + container    deriv w.r.t. unknown") = specGen.derivScalarContainerWrtUnknown()
+  property("scalar + var          deriv w.r.t. left")    = specGen.derivScalarVarWrtLeft()
+  property("scalar + var          deriv w.r.t. right")   = specGen.derivScalarVarWrtRight()
+  property("scalar + var          deriv w.r.t. unknown") = specGen.derivScalarVarWrtUnknown()
+  property("container + scalar    deriv w.r.t. left")    = specGen.derivContainerScalarWrtLeft()
+  property("container + scalar    deriv w.r.t. right")   = specGen.derivContainerScalarWrtRight()
+  property("container + scalar    deriv w.r.t. unknown") = specGen.derivContainerScalarWrtUnknown()
+  property("container + container deriv w.r.t. left")    = specGen.derivContainerContainerWrtLeft()
+  property("container + container deriv w.r.t. right")   = specGen.derivContainerContainerWrtRight()
+  property("container + container deriv w.r.t. unknown") = specGen.derivContainerContainerWrtUnknown()
+  property("container + container deriv w.r.t. self")    = specGen.derivContainerContainerWrtSelf()
+  property("container + var       deriv w.r.t. left")    = specGen.derivContainerVarWrtLeft()
+  property("container + var       deriv w.r.t. right")   = specGen.derivContainerVarWrtRight()
+  property("container + var       deriv w.r.t. unknown") = specGen.derivContainerVarWrtUnknown()
+  property("var + scalar          deriv w.r.t. left")    = specGen.derivVarScalarWrtLeft()
+  property("var + scalar          deriv w.r.t. right")   = specGen.derivVarScalarWrtRight()
+  property("var + scalar          deriv w.r.t. unknown") = specGen.derivVarScalarWrtUnknown()
+  property("var + container       deriv w.r.t. left")    = specGen.derivVarContainerWrtLeft()
+  property("var + container       deriv w.r.t. right")   = specGen.derivVarContainerWrtRight()
+  property("var + container       deriv w.r.t. unknown") = specGen.derivVarContainerWrtUnknown()
+  property("var + var             deriv w.r.t. left")    = specGen.derivVarVarWrtLeft()
+  property("var + var             deriv w.r.t. right")   = specGen.derivVarVarWrtRight()
+  property("var + var             deriv w.r.t. unknown") = specGen.derivVarVarWrtUnknown()
+  property("var + var             deriv w.r.t. self")    = specGen.derivVarVarWrtSelf()
+
+  property("scalar + scalar       propagete value")     = specGen.propagateScalarScalarWithNCValue()
+  property("scalar + scalar       propagete container") = specGen.propagateScalarScalarWithCValue()
+  property("scalar + container    propagete value")     = specGen.propagateScalarContainerWithNCValue()
+  property("scalar + container    propagete container") = specGen.propagateScalarContainerWithCValue()
+  property("scalar + var          propagete value")     = specGen.propagateScalarVarWithNCValue()
+  property("scalar + var          propagete container") = specGen.propagateScalarVarWithCValue()
+  property("container + scalar    propagete value")     = specGen.propagateContainerScalarWithNCValue()
+  property("container + scalar    propagete container") = specGen.propagateContainerScalarWithCValue()
+  property("container + container propagete value")     = specGen.propagateContainerContainerWithNCValue()
+  property("container + container propagete container") = specGen.propagateContainerContainerWithCValue()
+  property("container + var       propagete value")     = specGen.propagateContainerVarWithNCValue()
+  property("container + var       propagete container") = specGen.propagateContainerVarWithCValue()
+  property("var + scalar          propagete value")     = specGen.propagateVarScalarWithNCValue()
+  property("var + scalar          propagete container") = specGen.propagateVarScalarWithCValue()
+  property("var + container       propagete value")     = specGen.propagateVarContainerWithNCValue()
+  property("var + container       propagete container") = specGen.propagateVarContainerWithCValue()
+  property("var + var             propagete value")     = specGen.propagateVarVarWithNCValue()
+  property("var + var             propagete container") = specGen.propagateVarVarWithCValue()
+
+  property("scalar + scalar       grad") = specGen.gradScalarScalar()
+  property("scalar + container    grad") = specGen.gradScalarContainer()
+  property("scalar + var          grad") = specGen.gradScalarVar()
+  property("container + scalar    grad") = specGen.gradContainerScalar()
+  property("container + container grad") = specGen.gradContainerContainer()
+  property("container + var       grad") = specGen.gradContainerVar()
+  property("var + scalar          grad") = specGen.gradVarScalar()
+  property("var + container       grad") = specGen.gradVarContainer()
+  property("var + var             grad") = specGen.gradVarVar()
 
 }
 
 
-class AddSpecDef[U[_], T](implicit vr: ValueRule[U, T], num: Numeric[T]) extends BinaryOpSpecDef[U, T] {
+class AddSeqFloatExpectedBehavior(implicit vr: ValueRule[Seq, Float]) extends BinaryOpExpectedBehaviorDef[Seq, Float] {
 
-  override def op(node: Node[U, T], other: Node[U, T]): Node[U, T] = Add(node, other)
+  val zero = 0f
 
-  override def applyExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = (a(), b()) match {
-    case (x: NonContainerValue[U, T], y: NonContainerValue[U, T]) => NonContainerValue[U, T](vr.addMM(x.data, y.data))
-    case (x: NonContainerValue[U, T], y: ContainerValue[U, T])    => ContainerValue[U, T](vr.addMS(x.data, y.data))
-    case (x: ContainerValue[U, T],    y: NonContainerValue[U, T]) => ContainerValue[U, T](vr.addSM(x.data, y.data))
-    case (x: ContainerValue[U, T],    y: ContainerValue[U, T])    => ContainerValue[U, T](vr.addSS(x.data, y.data))
-  }
+  val one = 1f
 
-  override def derivExpectation(a: Node[U, T], b: Node[U, T], c: Node[U, T]): Value[U, T] = vr.zero(a()) + vr.zero(b())
+  def zero(shape: Seq[Float]): Seq[Float] = Seq.fill(shape.size)(0f)
 
-  override def derivWrtLeftExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
-    a match {
-      case x: Var[U, T] => vr.one(a()) + vr.zero(b())
-      case _            => vr.zero(a()) + vr.zero(b())
-    }
-  }
+  def one(shape: Seq[Float]): Seq[Float] = Seq.fill(shape.size)(1f)
 
-  override def derivWrtRightExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
-    b match {
-      case x: Var[U, T] => vr.zero(a()) + vr.one(b())
-      case _            => vr.zero(a()) + vr.zero(b())
-    }
-  }
 
-  override def derivWrtSelfExpectation(a: Node[U, T]): Value[U, T] = {
-    a match {
-      case x: Var[U, T] => vr.one(a()) + vr.one(a())
-      case _            => vr.zero(a())
-    }
-  }
+  override def op(a: Node[Seq, Float], b: Node[Seq, Float]): Node[Seq, Float] = Add(a, b)
 
-  override def propagateExpectation(a: Node[U, T], b: Node[U, T], c: Value[U, T]): Value[U, T] = {
-    val ag = a match {
-      case x: Var[U, T] => vr.one(a()) * c
-      case _            => vr.zero(a()) * c
-    }
-    val bg = b match {
-      case y: Var[U, T] => vr.one(b()) * c
-      case _            => vr.zero(b()) * c
-    }
-    ag + bg
-  }
+  override def applyScalarScalar(a: Float, b: Float): Float                      = a + b
+  override def applyScalarContainer(a: Float, b: Seq[Float]): Seq[Float]         = b.map(a + _)
+  override def applyScalarVar(a: Float, b: Seq[Float]): Seq[Float]               = b.map(a + _)
+  override def applyContainerScalar(a: Seq[Float], b: Float): Seq[Float]         = a.map(_ + b)
+  override def applyContainerContainer(a: Seq[Float], b: Seq[Float]): Seq[Float] = a.zip(b).map { case (x, y) => x + y }
+  override def applyContainerVar(a: Seq[Float], b: Seq[Float]): Seq[Float]       = a.zip(b).map { case (x, y) => x + y }
+  override def applyVarScalar(a: Seq[Float], b: Float): Seq[Float]               = a.map(_ + b)
+  override def applyVarContainer(a: Seq[Float], b: Seq[Float]): Seq[Float]       = a.zip(b).map { case (x, y) => x + y }
+  override def applyVarVar(a: Seq[Float], b: Seq[Float]): Seq[Float]             = a.zip(b).map { case (x, y) => x + y }
 
-  override def gradExpectation(a: Node[U, T], b: Node[U, T]): Value[U, T] = {
-    val ag = a match {
-      case x: Var[U, T] => vr.one(a())
-      case _            => vr.zero(a())
-    }
-    val bg = b match {
-      case y: Var[U, T] => vr.one(b())
-      case _            => vr.zero(b())
-    }
-    ag + bg
-  }
+
+  override def derivScalarVarWrtRight(a: Float, b: Seq[Float]): Seq[Float]         = one(b)
+  override def derivContainerVarWrtRight(a: Seq[Float], b: Seq[Float]): Seq[Float] = one(b)
+  override def derivVarContainerWrtLeft(a: Seq[Float], b: Seq[Float]): Seq[Float]  = one(a)
+  override def derivVarScalarWrtLeft(a: Seq[Float], b: Float): Seq[Float]          = one(a)
+  override def derivVarVarWrtLeft(a: Seq[Float], b: Seq[Float]): Seq[Float]        = one(a)
+  override def derivVarVarWrtRight(a: Seq[Float], b: Seq[Float]): Seq[Float]       = one(a)
+  override def derivVarVarWrtSelf(a: Seq[Float]): Seq[Float]                       = a.map(_ => 2f)
+
+
+  override def propagateScalarVarWithNCValue(a: Float, b: Seq[Float], c: Float): Seq[Float]             = Seq.fill(b.size)(c)
+  override def propagateScalarVarWithCValue(a: Float, b: Seq[Float], c: Seq[Float]): Seq[Float]         = c
+  override def propagateContainerVarWithNCValue(a: Seq[Float], b: Seq[Float], c: Float): Seq[Float]     = Seq.fill(b.size)(c)
+  override def propagateContainerVarWithCValue(a: Seq[Float], b: Seq[Float], c: Seq[Float]): Seq[Float] = c
+  override def propagateVarScalarWithCValue(a: Seq[Float], b: Float, c: Seq[Float]): Seq[Float]         = c
+  override def propagateVarScalarWithNCValue(a: Seq[Float], b: Float, c: Float): Seq[Float]             = Seq.fill(a.size)(c)
+  override def propagateVarContainerWithNCValue(a: Seq[Float], b: Seq[Float], c: Float): Seq[Float]     = Seq.fill(a.size)(c)
+  override def propagateVarContainerWithCValue(a: Seq[Float], b: Seq[Float], c: Seq[Float]): Seq[Float] = c
+  override def propagateVarVarWithNCValue(a: Seq[Float], b: Seq[Float], c: Float): Seq[Float]           = Seq.fill(a.size)(2f * c)
+  override def propagateVarVarWithCValue(a: Seq[Float], b: Seq[Float], c: Seq[Float]): Seq[Float]       = c.map(2f * _)
+
+
+  override def gradScalarVar(a: Float, b: Seq[Float]): Seq[Float]         = one(b)
+  override def gradContainerVar(a: Seq[Float], b: Seq[Float]): Seq[Float] = one(b)
+  override def gradVarScalar(a: Seq[Float], b: Float): Seq[Float]         = one(a)
+  override def gradVarContainer(a: Seq[Float], b: Seq[Float]): Seq[Float] = one(a)
+  override def gradVarVar(a: Seq[Float], b: Seq[Float]): Seq[Float]       = Seq.fill(a.size)(2f)
 
 }

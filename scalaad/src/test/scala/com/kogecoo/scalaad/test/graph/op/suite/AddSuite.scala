@@ -3,14 +3,19 @@ package com.kogecoo.scalaad.test.graph.op.suite
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
-import com.kogecoo.scalaad.test.helper.rule.ScalarIntComparerRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.ScalarIntCompareRule
 import com.kogecoo.scalaad.test.helper.rule.ScalarIntValueRule.Implicits._
-import com.kogecoo.scalaad.test.helper.rule.SeqFloatCompareRule.Implicits._
+import com.kogecoo.scalaad.test.helper.rule.SeqFloatExactCompareRule
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
 import org.scalatest.FunSuite
 
 
 class AddSuite extends FunSuite {
+
+  implicit val scalarIntCompareRule = new ScalarIntCompareRule
+
+  implicit val seqFloatCompareRule = new SeqFloatExactCompareRule
+
 
   test("Add - Scalar[Int]") {
 

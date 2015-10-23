@@ -12,22 +12,22 @@ class ScalarIntNodeGen extends GenNode[Scalar, Int] {
   implicit private[this] val r = new ScalarIntValueRule
 
 
-  override def genVarWithSource(restrict: Int => Boolean): Gen[(Var[Scalar, Int], Scalar[Int])] = {
+  override def genVarWithSource(restrict: Int => Boolean): Gen[VarSample[Scalar, Int]] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield (Var[Scalar, Int](Scalar(v)), Scalar(v))
+    } yield new VarSample[Scalar, Int](Var[Scalar, Int](Scalar(v)), Scalar(v))
   }
 
-  override def genScalarConstWithSource(restrict: Int => Boolean): Gen[(ScalarConst[Scalar, Int], Int)] = {
+  override def genScalarConstWithSource(restrict: Int => Boolean): Gen[ScalarConstSample[Scalar, Int]] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield (ScalarConst[Scalar, Int](v), v)
+    } yield new ScalarConstSample[Scalar, Int](ScalarConst[Scalar, Int](v), v)
   }
 
-  override def genContainerConstWithSource(restrict: Int => Boolean): Gen[(ContainerConst[Scalar, Int], Scalar[Int])] = {
+  override def genContainerConstWithSource(restrict: Int => Boolean): Gen[ContainerConstSample[Scalar, Int]] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield (ContainerConst[Scalar, Int](Scalar(v)), Scalar[Int](v))
+    } yield new ContainerConstSample[Scalar, Int](ContainerConst[Scalar, Int](Scalar(v)), Scalar[Int](v))
   }
 }
 
@@ -36,16 +36,16 @@ class ScalarIntValueGen extends GenValue[Scalar, Int] {
   implicit private[this] val r = new ScalarIntValueRule
 
 
-  override def genNonContainerValueWithSource(restrict: Int => Boolean): Gen[(NonContainerValue[Scalar, Int], Int)] = {
+  override def genNonContainerValueWithSource(restrict: Int => Boolean): Gen[NonContainerValueSample[Scalar, Int]] = {
     for {
       v <- arbitrary[Int] suchThat restrict
-    } yield (NonContainerValue[Scalar, Int](v), v)
+    } yield new NonContainerValueSample(NonContainerValue[Scalar, Int](v), v)
   }
 
-  override def genContainerValueWithSource(restrict: Int => Boolean): Gen[(ContainerValue[Scalar, Int], Scalar[Int])] = {
+  override def genContainerValueWithSource(restrict: Int => Boolean): Gen[ContainerValueSample[Scalar, Int]] = {
     for {
       v <- arbitrary[Int] suchThat(restrict)
-    } yield (ContainerValue[Scalar, Int](Scalar(v)), Scalar(v))
+    } yield new ContainerValueSample[Scalar, Int](ContainerValue[Scalar, Int](Scalar(v)), Scalar(v))
   }
 
 }
