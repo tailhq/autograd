@@ -3,7 +3,7 @@ package com.kogecoo.scalaad.test.helper.rule
 
 class SeqFloatSoftCompareRule extends CompareRule[Seq, Float] {
 
-  val eps = (x: Float) => scala.math.abs(x) * 1e-4f
+  val eps = (x: Float) => scala.math.abs(x) * 1e-3f
 
   def shouldBe(a: Seq[Float], b: Seq[Float])(implicit d: DummyImplicit): Boolean = {
     a.zip(b).map({ case (x, y) =>
