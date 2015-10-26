@@ -11,7 +11,7 @@ import org.scalacheck.Properties
 import scala.language.higherKinds
 
 
-object NegSpecSeqFloat extends Properties("NegSpec - Seq[Float]") {
+object NegSpecSeqFloat extends Properties("Neg - Seq[Float]") {
 
   implicit val compareRule = new SeqFloatSoftCompareRule
 

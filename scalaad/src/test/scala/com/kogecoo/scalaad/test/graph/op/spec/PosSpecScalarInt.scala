@@ -11,7 +11,7 @@ import org.scalacheck.Properties
 import scala.language.higherKinds
 
 
-object PosSpecScalarInt extends Properties("PosSpec - Scalar[Int]") {
+object PosSpecScalarInt extends Properties("Pos - Scalar[Int]") {
 
   implicit val compareRule = new ScalarIntCompareRule
 

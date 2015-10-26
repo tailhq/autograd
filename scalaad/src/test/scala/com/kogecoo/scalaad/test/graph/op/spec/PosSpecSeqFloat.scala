@@ -11,7 +11,7 @@ import org.scalacheck.Properties
 import scala.language.higherKinds
 
 
-object PosSpecSeqFloat extends Properties("PosSpec - Seq[Float]") {
+object PosSpecSeqFloat extends Properties("Pos - Seq[Float]") {
 
   implicit val compareRule = new SeqFloatSoftCompareRule
 

@@ -13,7 +13,7 @@ import org.scalacheck.Properties
 import scala.language.higherKinds
 
 
-object TransposeSpecSeqFloat extends Properties("TransposeSpec - Seq[Float]") {
+object TransposeSpecSeqFloat extends Properties("Transpose - Seq[Float]") {
 
 
   implicit val compareRule = new SeqFloatSoftCompareRule
