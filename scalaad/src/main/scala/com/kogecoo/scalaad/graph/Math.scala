@@ -124,8 +124,8 @@ class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, 
 class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"exp(${ v })"
   override def apply(): Value[U, T] = exp(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = v.deriv(wrt) * v()
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * v())
+  override def deriv(wrt: Node[U, T]): Value[U, T] = v.deriv(wrt) * exp(v())
+  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * exp(v()))
 }
 
 class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
