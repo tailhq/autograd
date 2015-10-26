@@ -36,12 +36,12 @@ object AsinSpecSeqFloat extends Properties("Asin - Seq[Float]") {
   property("asin(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
   property("asin(a) (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
   property("asin(a) (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
-  property("asin(a) (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
-  property("asin(a) (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+  property("asin(a) (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
+  property("asin(a) (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("asin(a) grad")              = seqFloatSpecGen.gradScalar()
-  property("asin(a) grad")              = seqFloatSpecGen.gradContainer()
-  property("asin(a) grad")              = seqFloatSpecGen.gradVar()
+  property("asin(a) (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("asin(a) (container) grad") = seqFloatSpecGen.gradContainer()
+  property("asin(a) (var) grad")       = seqFloatSpecGen.gradVar()
 
 }
 

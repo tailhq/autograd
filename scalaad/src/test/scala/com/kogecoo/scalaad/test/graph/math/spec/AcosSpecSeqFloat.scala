@@ -36,12 +36,12 @@ object AcosSpecSeqFloat extends Properties("Acos - Seq[Float]") {
   property("acos(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
   property("acos(a) (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
   property("acos(a) (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
-  property("acos(a) (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
-  property("acos(a) (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+  property("acos(a) (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
+  property("acos(a) (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("acos(a) grad")              = seqFloatSpecGen.gradScalar()
-  property("acos(a) grad")              = seqFloatSpecGen.gradContainer()
-  property("acos(a) grad")              = seqFloatSpecGen.gradVar()
+  property("acos(a) (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("acos(a) (container) grad") = seqFloatSpecGen.gradContainer()
+  property("acos(a) (var) grad")       = seqFloatSpecGen.gradVar()
 
 }
 

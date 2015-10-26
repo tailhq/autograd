@@ -36,12 +36,12 @@ object PosSpecScalarInt extends Properties("Pos - Scalar[Int]") {
   property("+a (scalar) propagate with container")    = scalarIntSpecGen.propagateScalarWithCValue()
   property("+a (container) propagete with value")     = scalarIntSpecGen.propagateContainerWithNCValue()
   property("+a (container) propagate with container") = scalarIntSpecGen.propagateContainerWithCValue()
-  property("+a (container) propagete with value")     = scalarIntSpecGen.propagateVarWithNCValue()
-  property("+a (container) propagate with container") = scalarIntSpecGen.propagateVarWithCValue()
+  property("+a (var) propagete with value")           = scalarIntSpecGen.propagateVarWithNCValue()
+  property("+a (var) propagate with container")       = scalarIntSpecGen.propagateVarWithCValue()
 
-  property("+a grad")              = scalarIntSpecGen.gradScalar()
-  property("+a grad")              = scalarIntSpecGen.gradContainer()
-  property("+a grad")              = scalarIntSpecGen.gradVar()
+  property("+a (scalar) grad")    = scalarIntSpecGen.gradScalar()
+  property("+a (container) grad") = scalarIntSpecGen.gradContainer()
+  property("+a (var) grad")       = scalarIntSpecGen.gradVar()
 
 }
 

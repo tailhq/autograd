@@ -39,9 +39,9 @@ object NegSpecSeqFloat extends Properties("Neg - Seq[Float]") {
   property("-a (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
   property("-a (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("-a grad")              = seqFloatSpecGen.gradScalar()
-  property("-a grad")              = seqFloatSpecGen.gradContainer()
-  property("-a grad")              = seqFloatSpecGen.gradVar()
+  property("-a (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("-a (container) grad") = seqFloatSpecGen.gradContainer()
+  property("-a (var)      grad")  = seqFloatSpecGen.gradVar()
 
 }
 

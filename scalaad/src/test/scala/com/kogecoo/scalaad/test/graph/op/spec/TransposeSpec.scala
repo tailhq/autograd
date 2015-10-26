@@ -39,12 +39,12 @@ object TransposeSpecSeqFloat extends Properties("Transpose - Seq[Float]") {
   property("a.T (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
   property("a.T (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
   property("a.T (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
-  property("a.T (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
-  property("a.T (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+  property("a.T (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
+  property("a.T (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("a.T grad")              = seqFloatSpecGen.gradScalar()
-  property("a.T grad")              = seqFloatSpecGen.gradContainer()
-  property("a.T grad")              = seqFloatSpecGen.gradVar()
+  property("a.T (scalar) grad")     = seqFloatSpecGen.gradScalar()
+  property("a.T (caontainer) grad") = seqFloatSpecGen.gradContainer()
+  property("a.T (var) grad")        = seqFloatSpecGen.gradVar()
 
   import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
 

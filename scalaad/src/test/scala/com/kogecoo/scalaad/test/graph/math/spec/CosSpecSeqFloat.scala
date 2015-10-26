@@ -36,12 +36,12 @@ object CosSpecSeqFloat extends Properties("Cos - Seq[Float]") {
   property("cos(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
   property("cos(a) (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
   property("cos(a) (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
-  property("cos(a) (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
-  property("cos(a) (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+  property("cos(a) (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
+  property("cos(a) (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("cos(a) grad")              = seqFloatSpecGen.gradScalar()
-  property("cos(a) grad")              = seqFloatSpecGen.gradContainer()
-  property("cos(a) grad")              = seqFloatSpecGen.gradVar()
+  property("cos(a) (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("cos(a) (container) grad") = seqFloatSpecGen.gradContainer()
+  property("cos(a) (var) grad")       = seqFloatSpecGen.gradVar()
 
 }
 

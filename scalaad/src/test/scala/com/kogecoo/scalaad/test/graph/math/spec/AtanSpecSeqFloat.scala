@@ -36,12 +36,12 @@ object ATanSpecSeqFloat extends Properties("ATan - Seq[Float]") {
   property("atan(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
   property("atan(a) (container) propagete with value")     = seqFloatSpecGen.propagateContainerWithNCValue()
   property("atan(a) (container) propagate with container") = seqFloatSpecGen.propagateContainerWithCValue()
-  property("atan(a) (container) propagete with value")     = seqFloatSpecGen.propagateVarWithNCValue()
-  property("atan(a) (container) propagate with container") = seqFloatSpecGen.propagateVarWithCValue()
+  property("atan(a) (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
+  property("atan(a) (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("atan(a) grad")              = seqFloatSpecGen.gradScalar()
-  property("atan(a) grad")              = seqFloatSpecGen.gradContainer()
-  property("atan(a) grad")              = seqFloatSpecGen.gradVar()
+  property("atan(a) (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("atan(a) (container) grad") = seqFloatSpecGen.gradContainer()
+  property("atan(a) (var) grad")       = seqFloatSpecGen.gradVar()
 
 }
 
