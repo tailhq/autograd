@@ -33,9 +33,10 @@ object BreezeRule {
   trait DenseVectorValueRule extends ValueRule[DenseVector, T]{
 
     override def zeroM: T = 0.0
-    override def zeroS(shape: V): V = DenseVector.zeros[T](shape.data.size)
+    override def zeroS(shape: V): V = DenseVector.zeros[T](shape.data.length)
+    override def zeroSS(shape: V): DenseVector[V] = DenseVector.fill(shape.data.length)(DenseVector.zeros[T](shape.data.size))
     override def oneM: T = 1.0
-    override def oneS(shape: V): V = DenseVector.ones[T](shape.data.size)
+    override def oneS(shape: V): V = DenseVector.ones[T](shape.data.length)
 
     override def addSS(l: V, r: V): V = l + r
     override def subSS(l: V, r: V): V = l - r

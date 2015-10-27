@@ -35,14 +35,3 @@ abstract class GenNode[U[_], T] {
 
 }
 
-class VarSample[U[_], T](val node: Var[U, T], val src: U[T]) {
-  override def toString = s"VarSample(${node}, ${src})"
-}
-
-class ScalarConstSample[U[_], T](val node: ScalarConst[U, T], val src: T) {
-  override def toString = s"ScalarConstSample(${node}), ${src})"
-}
-
-class ContainerConstSample[U[_], T](val node: ContainerConst[U, T], val src: U[T]) {
-  override def toString = s"ContainerConstSample(${node}, ${src})"
-}

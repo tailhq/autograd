@@ -3,14 +3,13 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(name := "scalaad-root")
   .settings(publish := { })
-  .settings(testSettings: _*)
 
 lazy val scalaad = project.in(file("scalaad"))
   .settings(commonSettings ++ commonPublishSettings:_*)
   .settings(name := "scalaad")
 
 lazy val breeze = project.in(file("breeze"))
-  .dependsOn(scalaad)
+  .dependsOn(scalaad % "test->test;compile->compile")
   .settings(commonSettings ++ commonPublishSettings:_*)
 
 lazy val nd4j = project.in(file("nd4j"))
@@ -32,7 +31,11 @@ lazy val commonSettings = Seq(
   scalacOptions           ++= commonScalacOptions,
   resolvers               ++= commonResolvers,
   libraryDependencies     ++= commonLibraryDependencies
+) ++ Seq(
+  testOptions          += Tests.Argument(TestFrameworks.ScalaCheck, "-verbosity", "2"),
+  testOptions          += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
 )
+
 
 lazy val commonPublishSettings = Seq(
   licenses                :=  Seq("Apache License Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
@@ -77,11 +80,6 @@ lazy val commonPomExtra = {
     </developer>
   </developers>
 }
-
-lazy val testSettings = Seq(
-  testOptions          += Tests.Argument(TestFrameworks.ScalaCheck, "-verbosity", "2"),
-  testOptions          += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
-)
 
 def choosePublishTo(v: String) = {
   if (v.trim.endsWith("SNAPSHOT"))

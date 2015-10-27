@@ -1,6 +1,5 @@
 package com.kogecoo.scalaad.test.helper.specgen
 
-import com.kogecoo.scalaad.graph.Node
 import com.kogecoo.scalaad.test.helper.gen._
 import com.kogecoo.scalaad.rule.ValueRule
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
@@ -15,11 +14,7 @@ class BinaryOpSpec[U[_], T](
   d: BinaryOpExpectedBehaviorDef[U, T],
   nodes: GenNode[U, T],
   values: GenValue[U, T]
-)(implicit rule: ValueRule[U, T], shouldBe: CompareRule[U, T]) {
-
-  type Restriction = T => Boolean
-
-  lazy val default: Restriction = (_: T) => true
+)(implicit rule: ValueRule[U, T], shouldBe: CompareRule[U, T]) extends BinaryOpSpecBase[U, T] {
 
   private[this] def node(r: Restriction) = nodes.genNode(r)
   private[this] def sc(r: Restriction) = nodes.genScalarConstWithSource(r)
@@ -93,7 +88,7 @@ class BinaryOpSpec[U[_], T](
 
   def derivScalarVarWrtUnknown(r1: Restriction = default, r2: Restriction = default, r3: Restriction = default): Prop = {
     forAll(sc(r1), varGen(r2), varGen(r3)) { case (a: ScalarConstSample[U, T], b: VarSample[U, T], c: VarSample[U, T]) =>
-      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivScalarVarWrtUnknown(a.src, b.src)
+      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivScalarVarWrtUnknown(a.src, b.src, c.src)
     }
   }
 
@@ -105,7 +100,7 @@ class BinaryOpSpec[U[_], T](
 
   def derivContainerVarWrtUnknown(r1: Restriction = default, r2: Restriction = default, r3: Restriction = default): Prop = {
     forAll(cc(r2), varGen(r2), varGen(r3)) { case (a: ContainerConstSample[U, T], b: VarSample[U, T], c: VarSample[U, T]) =>
-      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivContainerVarWrtUnknown(a.src, b.src)
+      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivContainerVarWrtUnknown(a.src, b.src, c.src)
     }
   }
 
@@ -117,7 +112,7 @@ class BinaryOpSpec[U[_], T](
 
   def derivVarScalarWrtUnknown(r1: Restriction = default, r2: Restriction = default, r3: Restriction = default): Prop = {
     forAll(varGen(r1), sc(r2), varGen(r3)) { case (a: VarSample[U, T], b: ScalarConstSample[U, T], c: VarSample[U, T]) =>
-      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarScalarWrtUnknown(a.src, b.src)
+      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarScalarWrtUnknown(a.src, b.src, c.src)
     }
   }
 
@@ -129,7 +124,7 @@ class BinaryOpSpec[U[_], T](
 
   def derivVarContainerWrtUnknown(r1: Restriction = default, r2: Restriction = default, r3: Restriction = default): Prop = {
     forAll(varGen(r1), cc(r2), varGen(r3)) { case (a: VarSample[U, T], b: ContainerConstSample[U, T], c: VarSample[U, T]) =>
-      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarContainerWrtUnknown(a.src, b.src)
+      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarContainerWrtUnknown(a.src, b.src, c.src)
     }
   }
 
@@ -147,7 +142,7 @@ class BinaryOpSpec[U[_], T](
 
   def derivVarVarWrtUnknown(r1: Restriction = default, r2: Restriction = default, r3: Restriction = default): Prop = {
     forAll(varGen(r1), varGen(r2), varGen(r3)) { case (a: VarSample[U, T], b: VarSample[U, T], c: VarSample[U, T]) =>
-      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarVarWrtUnknown(a.src, b.src)
+      d.op(a.node, b.node).deriv(c.node) shouldBe d.derivVarVarWrtUnknown(a.src, b.src, c.src)
     }
   }
 

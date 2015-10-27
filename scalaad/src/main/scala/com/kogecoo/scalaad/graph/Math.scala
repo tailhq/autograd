@@ -199,8 +199,8 @@ class min[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
 class dot[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"${ a }・${ b })"
   override def apply(): Value[U, T] = dot(a(), b())
-  override def deriv(wrt: Var[U, T]): Value[U, T] = dot(a.deriv(wrt), b().T) + dot(a().T, b.deriv(wrt))
-  override def propagate(g: Value[U, T]): Value[U, T] = a.propagate(dot(g, b().T)) + b.propagate(dot(a().T, g))
+  override def deriv(wrt: Var[U, T]): Value[U, T] = dot(a.deriv(wrt), b()) + dot(a(), b.deriv(wrt))
+  override def propagate(g: Value[U, T]): Value[U, T] = a.propagate(dot(g, b())) + b.propagate(dot(a(), g))
 }
 
 

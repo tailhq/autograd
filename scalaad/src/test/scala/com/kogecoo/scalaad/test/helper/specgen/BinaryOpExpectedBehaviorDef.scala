@@ -40,25 +40,25 @@ abstract class BinaryOpExpectedBehaviorDef[U[_], T](implicit vr: ValueRule[U, T]
 
   def derivScalarVarWrtRight(a: T, b: U[T]): U[T]
 
-  def derivScalarVarWrtUnknown(a: T, b: U[T]): U[T]       = zero(b)
+  def derivScalarVarWrtUnknown(a: T, b: U[T], c: U[T]): U[T] = zero(c)
 
   def derivContainerVarWrtRight(a: U[T], b: U[T]): U[T]
 
-  def derivContainerVarWrtUnknown(a: U[T], b: U[T]): U[T] = zero(a)
+  def derivContainerVarWrtUnknown(a: U[T], b: U[T], c: U[T]): U[T] = zero(c)
 
   def derivVarScalarWrtLeft(a: U[T], b: T): U[T]
 
-  def derivVarScalarWrtUnknown(a: U[T], b: T): U[T]       = zero(a)
+  def derivVarScalarWrtUnknown(a: U[T], b: T, c: U[T]): U[T] = zero(c)
 
   def derivVarContainerWrtLeft(a: U[T], b: U[T]): U[T]
 
-  def derivVarContainerWrtUnknown(a: U[T], b: U[T]): U[T] = zero(a)
+  def derivVarContainerWrtUnknown(a: U[T], b: U[T], c: U[T]): U[T] = zero(c)
 
   def derivVarVarWrtLeft(a: U[T], b: U[T]): U[T]
 
   def derivVarVarWrtRight(a: U[T], b: U[T]): U[T]
 
-  def derivVarVarWrtUnknown(a: U[T], b: U[T]): U[T]       = zero(a)
+  def derivVarVarWrtUnknown(a: U[T], b: U[T], c: U[T]): U[T] = zero(c)
 
   def derivVarVarWrtSelf(a: U[T]): U[T]
 
