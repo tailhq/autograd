@@ -1,8 +1,9 @@
 package com.kogecoo.scalaad.test.helper.gen
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.value.ContainerValue
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue}
 import org.scalacheck.Gen
 
 

@@ -1,10 +1,11 @@
 package com.kogecoo.scalaad.test.graph.op.suite
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.value.ContainerValue
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherAssert._
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatExactCompareRule
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule.Implicits._
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue}
 import org.scalatest.FunSuite
 
 

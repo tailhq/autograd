@@ -1,7 +1,8 @@
 package com.kogecoo.scalaad.test.helper.matcher
 
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, Value}
+import com.kogecoo.scalaad.value.ContainerValue
 import com.kogecoo.scalaad.test.helper.rule.CompareRule
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue, Value}
 
 import scala.language.higherKinds
 

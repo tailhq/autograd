@@ -1,5 +1,7 @@
 package com.kogecoo.scalaad.rule
 
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue, Value}
+
 import scala.language.higherKinds
 
 

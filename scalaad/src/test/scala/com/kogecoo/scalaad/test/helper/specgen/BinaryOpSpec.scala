@@ -2,7 +2,7 @@ package com.kogecoo.scalaad.test.helper.specgen
 
 import com.kogecoo.scalaad.graph.{ScalarConst, Node}
 import com.kogecoo.scalaad.test.helper.gen._
-import com.kogecoo.scalaad.rule.{ContainerValue, NonContainerValue, ValueRule}
+import com.kogecoo.scalaad.rule.ValueRule
 import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
 import com.kogecoo.scalaad.test.helper.rule.CompareRule
 

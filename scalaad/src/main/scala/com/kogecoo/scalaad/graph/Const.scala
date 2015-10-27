@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.rule.{NonContainerValue, ContainerValue, Value, ValueRule}
+import com.kogecoo.scalaad.rule.ValueRule
+import com.kogecoo.scalaad.value.{ContainerValue, Value}
 
 import scala.language.higherKinds
 

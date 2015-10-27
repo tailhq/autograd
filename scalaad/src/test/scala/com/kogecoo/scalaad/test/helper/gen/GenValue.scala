@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad.test.helper.gen
 
-import com.kogecoo.scalaad.rule.{Value, ContainerValue, NonContainerValue}
+import com.kogecoo.scalaad.value.ContainerValue
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue, Value}
 import org.scalacheck.Gen
 import org.scalacheck.Gen.oneOf
 

@@ -3,6 +3,7 @@ package com.kogecoo.scalaad.test.helper.gen
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.rule._
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatValueRule
+import com.kogecoo.scalaad.value.{ContainerValue, NonContainerValue}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 

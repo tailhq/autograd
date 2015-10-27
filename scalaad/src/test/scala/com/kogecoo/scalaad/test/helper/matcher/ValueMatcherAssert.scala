@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.test.helper.matcher
 
-import com.kogecoo.scalaad.rule.Value
 import com.kogecoo.scalaad.test.helper.rule.CompareRule
+import com.kogecoo.scalaad.value.Value
 
 import scala.language.higherKinds
 
