@@ -140,18 +140,14 @@ class sqrt[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U
   override def toString: String = s"sqrt(${ v })"
   override def apply(): Value[U, T] = sqrt(v())
   override def deriv(wrt: Node[U, T]): Value[U, T] = {
-    // FIXME
-    val v_val = v()
-    val half = r.one / r.one + r.one
+    val half = r.one / (r.one + r.one)
     val minus_half = half - r.one
-    v.deriv(wrt) * v_val * half / pow(v_val, minus_half)
+    v.deriv(wrt) * half * pow(v(), minus_half)
   }
   override def propagate(g: Value[U, T]): Value[U, T] = {
-    // FIXME
-    val v_val = v()
-    val half = r.one / r.one + r.one
+    val half = r.one / (r.one + r.one)
     val minus_half = half - r.one
-    val gv = v_val * half / pow(v_val, minus_half)
+    val gv = half * pow(v(), minus_half)
     v.propagate(g * gv)
   }
 }
