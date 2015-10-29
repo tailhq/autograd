@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.test.graph.math.spec
 
-import com.kogecoo.scalaad.graph.{cosh, cos, Node}
+import com.kogecoo.scalaad.graph.{cosh, Node}
 import com.kogecoo.scalaad.rule._
 import com.kogecoo.scalaad.test.helper.gen._
 import com.kogecoo.scalaad.test.helper.rule.SeqFloatSoftCompareRule
@@ -25,12 +25,10 @@ object CoshSpecSeqFloat extends Properties("Cosh - Seq[Float]") {
   property("cosh(a) apply") = seqFloatSpecGen.applyContainer()
   property("cosh(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("cosh(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("cosh(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("cosh(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("cosh(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("cosh(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("cosh(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("cosh(a) (scalar) w.r.t. unknown var")          = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("cosh(a) (container) w.r.t. unknown var")       = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("cosh(a) (var) w.r.t. a")                       = seqFloatSpecGen.derivVarWrtSelf()
+  property("cosh(a) (var) w.r.t. unknonw var")             = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("cosh(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("cosh(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

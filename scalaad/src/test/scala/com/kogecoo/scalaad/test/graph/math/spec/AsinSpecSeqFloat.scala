@@ -25,12 +25,10 @@ object AsinSpecSeqFloat extends Properties("Asin - Seq[Float]") {
   property("asin(a) apply") = seqFloatSpecGen.applyContainer()
   property("asin(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("asin(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("asin(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("asin(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("asin(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("asin(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("asin(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("asin(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("asin(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("asin(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("asin(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("asin(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("asin(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

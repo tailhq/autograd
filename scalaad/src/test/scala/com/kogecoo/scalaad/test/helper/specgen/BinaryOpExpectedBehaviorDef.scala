@@ -38,57 +38,19 @@ abstract class BinaryOpExpectedBehaviorDef[U[_], T](implicit vr: ValueRule[U, T]
 
 
 
-  def derivScalarScalarWrtLeft(a: T, b: T): T             = zero
-
-  def derivScalarScalarWrtRight(a: T, b: T): T            = zero
-
-  def derivScalarScalarWrtUnknown(a: T, b: T): T          = zero
-
-  def derivScalarScalarWrtSelf(a: T): T                   = zero
-
-  def derivScalarContainerWrtLeft(a: T, b: U[T]): U[T]    = zero(b)
-
-  def derivScalarContainerWrtRight(a: T, b: U[T]): U[T]   = zero(b)
-
-  def derivScalarContainerWrtUnknown(a: T, b: U[T]): U[T] = zero(b)
-
-  def derivScalarVarWrtLeft(a: T, b: U[T]): U[T]          = zero(b)
-
   def derivScalarVarWrtRight(a: T, b: U[T]): U[T]
 
   def derivScalarVarWrtUnknown(a: T, b: U[T]): U[T]       = zero(b)
 
-
-  def derivContainerScalarWrtLeft(a: U[T], b: T): U[T]          = zero(a)
-
-  def derivContainerScalarWrtRight(a: U[T], b: T): U[T]         = zero(a)
-
-  def derivContainerScalarWrtUnknown(a: U[T], b: T): U[T]       = zero(a)
-
-  def derivContainerContainerWrtLeft(a: U[T], b: U[T]): U[T]    = zero(a)
-
-  def derivContainerContainerWrtRight(a: U[T], b: U[T]): U[T]   = zero(a)
-
-  def derivContainerContainerWrtUnknown(a: U[T], b: U[T]): U[T] = zero(a)
-
-  def derivContainerContainerWrtSelf(a: U[T]): U[T]             = zero(a)
-
-  def derivContainerVarWrtLeft(a: U[T], b: U[T]): U[T]          = zero(a)
-
   def derivContainerVarWrtRight(a: U[T], b: U[T]): U[T]
 
-  def derivContainerVarWrtUnknown(a: U[T], b: U[T]): U[T]       = zero(a)
-
+  def derivContainerVarWrtUnknown(a: U[T], b: U[T]): U[T] = zero(a)
 
   def derivVarScalarWrtLeft(a: U[T], b: T): U[T]
-
-  def derivVarScalarWrtRight(a: U[T], b: T): U[T]         = zero(a)
 
   def derivVarScalarWrtUnknown(a: U[T], b: T): U[T]       = zero(a)
 
   def derivVarContainerWrtLeft(a: U[T], b: U[T]): U[T]
-
-  def derivVarContainerWrtRight(a: U[T], b: U[T]): U[T]   = zero(a)
 
   def derivVarContainerWrtUnknown(a: U[T], b: U[T]): U[T] = zero(a)
 
@@ -99,6 +61,7 @@ abstract class BinaryOpExpectedBehaviorDef[U[_], T](implicit vr: ValueRule[U, T]
   def derivVarVarWrtUnknown(a: U[T], b: U[T]): U[T]       = zero(a)
 
   def derivVarVarWrtSelf(a: U[T]): U[T]
+
 
 
   def propagateScalarScalarWithNCValue(a: T, b: T, c: T): T          = zero

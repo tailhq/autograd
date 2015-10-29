@@ -24,17 +24,15 @@ object ScalarConstSpec extends Properties("ScalarConst") {
 
   val genSeqFloatType = new ScalarConstSpecGen[Seq, Float](new SeqFloatNodeGen, new SeqFloatValueGen)
 
-  property("[Scalar, Int] - apply")                     = genScalarIntType.apply
-  property("[Scalar, Int] - deriv w.r.t. self")         = genScalarIntType.derivSelf
-  property("[Scalar, Int] - deriv w.r.t. unknown Node") = genScalarIntType.deriv
-  property("[Scalar, Int] - propagate value")           = genScalarIntType.propagate
-  property("[Scalar, Int] - grad")                      = genScalarIntType.grad
+  property("[Scalar, Int] - apply")                    = genScalarIntType.apply
+  property("[Scalar, Int] - deriv w.r.t. unknown var") = genScalarIntType.derivUnknownVar
+  property("[Scalar, Int] - propagate value")          = genScalarIntType.propagate
+  property("[Scalar, Int] - grad")                     = genScalarIntType.grad
 
-  property("[Seq, Float]  - apply")                     = genSeqFloatType.apply
-  property("[Seq, Float]  - deriv w.r.t. self")         = genSeqFloatType.derivSelf
-  property("[Seq, Float]  - deriv w.r.t. unknown Node") = genSeqFloatType.deriv
-  property("[Seq, Float]  - propagate value")           = genSeqFloatType.propagate
-  property("[Seq, Float]  - grad")                      = genSeqFloatType.grad
+  property("[Seq, Float]  - apply")                    = genSeqFloatType.apply
+  property("[Seq, Float]  - deriv w.r.t. unknown var") = genSeqFloatType.derivUnknownVar
+  property("[Seq, Float]  - propagate value")          = genSeqFloatType.propagate
+  property("[Seq, Float]  - grad")                     = genSeqFloatType.grad
 
 }
 
@@ -45,12 +43,8 @@ class ScalarConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T])(
     c => c.apply() shouldBe c.data
   }
 
-  def derivSelf = forAll(nodes.genScalarConst()) {
-    c => c.deriv(c) shouldBe rule.zero(c())
-  }
-
-  def deriv = forAll(nodes.genScalarConst(), nodes.genNode()) {
-    (c, v) => c.deriv(v) shouldBe rule.zero(c())
+  def derivUnknownVar = forAll(nodes.genScalarConst(), nodes.genVar()) {
+    (c, v) => c.deriv(v) shouldBe rule.zero(v())
   }
 
   def propagate = forAll(nodes.genScalarConst(), values.genValue()) {

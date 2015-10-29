@@ -28,12 +28,10 @@ object TransposeSpecSeqFloat extends Properties("Transpose - Seq[Float]") {
   property("a.T apply") = seqFloatSpecGen.applyContainer()
   property("a.T apply") = seqFloatSpecGen.applyVar()
 
-  property("a.T (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("a.T (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("a.T (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("a.T (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("a.T (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("a.T (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("a.T (scalar) w.r.t. unknown var")          = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("a.T (container) w.r.t. unknown var")       = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("a.T (var) w.r.t. a")                       = seqFloatSpecGen.derivVarWrtSelf()
+  property("a.T (var) w.r.t. unknonw var")             = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("a.T (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("a.T (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
@@ -42,29 +40,9 @@ object TransposeSpecSeqFloat extends Properties("Transpose - Seq[Float]") {
   property("a.T (var) propagete with value")           = seqFloatSpecGen.propagateVarWithNCValue()
   property("a.T (var) propagate with container")       = seqFloatSpecGen.propagateVarWithCValue()
 
-  property("a.T (scalar) grad")     = seqFloatSpecGen.gradScalar()
-  property("a.T (caontainer) grad") = seqFloatSpecGen.gradContainer()
-  property("a.T (var) grad")        = seqFloatSpecGen.gradVar()
-
-  import com.kogecoo.scalaad.test.helper.matcher.ValueMatcherProp._
-
-  property("a.T (scalar) deriv w.r.t. a.T") = forAll(nodeGen.genScalarConstWithSource()) {
-    case a: ScalarConstSample[Seq, Float] =>
-    val aT = a.node.T
-    aT.deriv(aT) shouldBe 0f
-  }
-
-  property("a.T (container) deriv w.r.t. a.T") = forAll(nodeGen.genContainerConstWithSource()) {
-    case a: ContainerConstSample[Seq, Float] =>
-    val aT = a.node.T
-    aT.deriv(aT) shouldBe Seq.fill(a.src.size)(0f)
-  }
-
-  property("a.T (var) deriv w.r.t. a.T") = forAll(nodeGen.genVarWithSource()) {
-    case a: VarSample[Seq, Float] =>
-    val aT = a.node.T
-    aT.deriv(aT) shouldBe Seq.fill(a.src.size)(0f)
-  }
+  property("a.T (scalar) grad")    = seqFloatSpecGen.gradScalar()
+  property("a.T (container) grad") = seqFloatSpecGen.gradContainer()
+  property("a.T (var) grad")       = seqFloatSpecGen.gradVar()
 
 }
 

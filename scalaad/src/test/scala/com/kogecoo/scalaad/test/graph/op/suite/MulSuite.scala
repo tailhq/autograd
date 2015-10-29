@@ -15,6 +15,7 @@ class MulSuite extends FunSuite {
 
   test("Mul - Seq[Float]") {
 
+    val var42_12 = Var[Seq, Float](Seq(42.0f, 12f))
     val var71_3 = Var[Seq, Float](Seq(71.0f, 3f))
     val var33_51 = Var[Seq, Float](Seq(33.0f, 51.0f))
     val c12_42 = ContainerConst[Seq, Float](Seq(12.0f, 42.0f))
@@ -28,8 +29,7 @@ class MulSuite extends FunSuite {
     val a1 = Mul(c12_42, c63_21)
 
     a1.apply()              shouldBe Seq(12f * 63f, 42f * 21f)
-    a1.deriv(c12_42)        shouldBe Seq(0f, 0f)
-    a1.deriv(c63_21)        shouldBe Seq(0f, 0f)
+    a1.deriv(var42_12)      shouldBe Seq(0f, 0f)
     a1.propagate(value15)   shouldBe Seq(0f, 0f)
     a1.propagate(cValue3_5) shouldBe Seq(0.0f, 0.0f)
 
@@ -40,7 +40,7 @@ class MulSuite extends FunSuite {
 
     a2.apply()              shouldBe Seq(71f * 63f, 3f * 21f)
     a2.deriv(var71_3)       shouldBe Seq(63f, 21f)
-    a2.deriv(c63_21)        shouldBe Seq(0f, 0f)
+    a2.deriv(var42_12)      shouldBe Seq(0f, 0f)
     a2.propagate(value15)   shouldBe Seq(15f * 63f, 15f * 21f)
     a2.propagate(cValue3_5) shouldBe Seq(3.0f * 63f, 5.0f * 21f)
 
@@ -48,7 +48,7 @@ class MulSuite extends FunSuite {
     val a3 = Mul(c12_42, var33_51)
 
     a3.apply()              shouldBe Seq(12f * 33f, 42f * 51f)
-    a3.deriv(c12_42)        shouldBe Seq(0f, 0f)
+    a3.deriv(var42_12)      shouldBe Seq(0f, 0f)
     a3.deriv(var33_51)      shouldBe Seq(12f, 42f)
     a3.propagate(value15)   shouldBe Seq(12f * 15f, 42f * 15f)
     a3.propagate(cValue3_5) shouldBe Seq(12f * 3.0f , 42f * 5f)
@@ -59,6 +59,7 @@ class MulSuite extends FunSuite {
     a4.apply()              shouldBe Seq(71f * 33f, 3f * 51f)
     a4.deriv(var71_3)       shouldBe Seq(33f, 51f)
     a4.deriv(var33_51)      shouldBe Seq(71f, 3f)
+    a4.deriv(var42_12)      shouldBe Seq(0f, 0f)
     a4.propagate(value15)   shouldBe Seq(71f * 15f + 33f * 15f, 3f * 15f + 51f * 15f)
     a4.propagate(cValue3_5) shouldBe Seq((71f  + 33f) * 3f, (3f + 51f) * 5f)
 
@@ -68,6 +69,7 @@ class MulSuite extends FunSuite {
     a5.apply()              shouldBe Seq(71f * 2f * 33f, 3f * 2f * 51f)
     a5.deriv(var71_3)       shouldBe Seq(33f * 2f, 51f * 2f)
     a5.deriv(var33_51)      shouldBe Seq(71f * 2f, 3f * 2f)
+    a5.deriv(var42_12)      shouldBe Seq(0f, 0f)
     a5.propagate(value15)   shouldBe Seq((71f + 33f) * 2f * 15f, (3f + 51f) * 2f * 15f)
     a5.propagate(cValue3_5) shouldBe Seq((71f + 33f) * 2f * 3f, (3f + 51f) * 2f * 5f)
   }

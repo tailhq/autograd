@@ -25,12 +25,10 @@ object AbsSpecSeqFloat extends Properties("Abs - Seq[Float]") {
   property("abs(a) apply") = seqFloatSpecGen.applyContainer()
   property("abs(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("abs(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("abs(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("abs(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("abs(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("abs(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("abs(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("abs(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("abs(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("abs(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("abs(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("abs(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("abs(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

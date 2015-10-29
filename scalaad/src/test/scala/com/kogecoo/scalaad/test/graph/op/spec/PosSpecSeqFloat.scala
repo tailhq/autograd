@@ -25,12 +25,10 @@ object PosSpecSeqFloat extends Properties("Pos - Seq[Float]") {
   property("+a apply") = seqFloatSpecGen.applyContainer()
   property("+a apply") = seqFloatSpecGen.applyVar()
 
-  property("+a (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("+a (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("+a (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("+a (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("+a (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("+a (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("+a (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("+a (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("+a (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("+a (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("+a (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("+a (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

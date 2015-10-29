@@ -11,7 +11,7 @@ import org.scalacheck.Properties
 import scala.language.higherKinds
 
 
-object ATanSpecSeqFloat extends Properties("ATan - Seq[Float]") {
+object AtanSpecSeqFloat extends Properties("Atan - Seq[Float]") {
 
   implicit val compareRule = new SeqFloatSoftCompareRule
 
@@ -25,12 +25,10 @@ object ATanSpecSeqFloat extends Properties("ATan - Seq[Float]") {
   property("atan(a) apply") = seqFloatSpecGen.applyContainer()
   property("atan(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("atan(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("atan(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("atan(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("atan(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("atan(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("atan(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("atan(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("atan(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("atan(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("atan(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("atan(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("atan(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
@@ -46,7 +44,7 @@ object ATanSpecSeqFloat extends Properties("ATan - Seq[Float]") {
 }
 
 
-class ATanSeqFloatExpectedBehavior(implicit vr: MathRule[Seq, Float]) extends UnaryOpExpectedBehaviorDef[Seq, Float] {
+class AtanSeqFloatExpectedBehavior(implicit vr: MathRule[Seq, Float]) extends UnaryOpExpectedBehaviorDef[Seq, Float] {
 
   override val zero: Float = 0f
 

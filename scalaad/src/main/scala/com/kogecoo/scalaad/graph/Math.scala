@@ -9,21 +9,21 @@ import scala.language.higherKinds
 class sin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"sin(${ v })"
   override def apply(): Value[U, T] = sin(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = cos(v()) * v.deriv(wrt)
+  override def deriv(wrt: Var[U, T]): Value[U, T] = cos(v()) * v.deriv(wrt)
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * cos(v()))
 }
 
 class cos[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"cos(${ v })"
   override def apply(): Value[U, T] = cos(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = -sin(v()) * v.deriv(wrt)
+  override def deriv(wrt: Var[U, T]): Value[U, T] = -sin(v()) * v.deriv(wrt)
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(-sin(v()) * g)
 }
 
 class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"tan(${ v })"
   override def apply(): Value[U, T] = tan(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val tan_v_val = tan(v())
     v.deriv(wrt) * (vr.one + tan_v_val * tan_v_val)
   }
@@ -37,7 +37,7 @@ class tan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U
 class asin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"asin(${ v })"
   override def apply(): Value[U, T] = asin(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val v_val = v()
     val one = vr.one
     val d = one / sqrt(one - (v_val * v_val))
@@ -54,7 +54,7 @@ class asin[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
 class acos[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"acos(${ v })"
   override def apply(): Value[U, T] = acos(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val v_val = v()
     val one = vr.one
     val d = -(one / sqrt(one - (v_val * v_val)))
@@ -71,7 +71,7 @@ class acos[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
 class atan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"atan(${ v })"
   override def apply(): Value[U, T] = atan(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val v_val = v()
     val one = vr.one
     val d = one / (one + (v_val * v_val))
@@ -88,21 +88,21 @@ class atan[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
 class sinh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"sinh(${ v })"
   override def apply(): Value[U, T] = sinh(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = cosh(v()) * v.deriv(wrt)
+  override def deriv(wrt: Var[U, T]): Value[U, T] = cosh(v()) * v.deriv(wrt)
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * cosh(v()))
 }
 
 class cosh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"cosh(${ v })"
   override def apply(): Value[U, T] = cosh(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = sinh(v()) * v.deriv(wrt)
+  override def deriv(wrt: Var[U, T]): Value[U, T] = sinh(v()) * v.deriv(wrt)
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(sinh(v()) * g)
 }
 
 class tanh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"tanh(${ v })"
   override def apply(): Value[U, T] = tanh(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val tanh_v_val = tanh(v())
     val one = vr.one
     v.deriv(wrt) * (one - tanh_v_val * tanh_v_val)
@@ -118,21 +118,21 @@ class tanh[U[_], T](v: Node[U, T])(implicit vr: MathRule[U, T]) extends UnaryOp[
 class ln[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"ln(${ v })"
   override def apply(): Value[U, T] = ln(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = v.deriv(wrt) / v()
+  override def deriv(wrt: Var[U, T]): Value[U, T] = v.deriv(wrt) / v()
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g / v())
 }
 
 class exp[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"exp(${ v })"
   override def apply(): Value[U, T] = exp(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = v.deriv(wrt) * exp(v())
+  override def deriv(wrt: Var[U, T]): Value[U, T] = v.deriv(wrt) * exp(v())
   override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g * exp(v()))
 }
 
 class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"|${ v }|"
   override def apply(): Value[U, T] = where(v() >= r.zero, v(), -v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = where(v() >= r.zero, v.deriv(wrt), -v.deriv(wrt))
+  override def deriv(wrt: Var[U, T]): Value[U, T] = where(v() >= r.zero, v.deriv(wrt), -v.deriv(wrt))
   override def propagate(g: Value[U, T]): Value[U, T] = where(v() >= r.zero, v.propagate(g), v.propagate(-g))
 }
 
@@ -140,7 +140,7 @@ class abs[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U,
 class sqrt[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U, T] {
   override def toString: String = s"sqrt(${ v })"
   override def apply(): Value[U, T] = sqrt(v())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val half = r.one / (r.one + r.one)
     val minus_half = half - r.one
     v.deriv(wrt) * half * pow(v(), minus_half)
@@ -156,7 +156,7 @@ class sqrt[U[_], T](v: Node[U, T])(implicit r: MathRule[U, T]) extends UnaryOp[U
 class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"pow(${ a }, ${ b } )"
   override def apply(): Value[U, T] = pow(a(), b())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = {
+  override def deriv(wrt: Var[U, T]): Value[U, T] = {
     val a_val = a()
     val b_val =  b()
     val b_minus_one = b_val - r.one
@@ -181,7 +181,7 @@ class pow[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
 class max[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"max(${ a }, ${ b })"
   override def apply(): Value[U, T] = where(a() >= b(), a(), b())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = where(a() >= b(), a.deriv(wrt), b.deriv(wrt))
+  override def deriv(wrt: Var[U, T]): Value[U, T] = where(a() >= b(), a.deriv(wrt), b.deriv(wrt))
   override def propagate(g: Value[U, T]): Value[U, T] = where(a() >= b(), a.propagate(g), b.propagate(g))
 }
 
@@ -190,7 +190,7 @@ class max[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
 class min[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"min(${ a }, ${ b }})"
   override def apply(): Value[U, T] = where(a() <= b(), a(), b())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = where(a() <= b(), a.deriv(wrt), b.deriv(wrt))
+  override def deriv(wrt: Var[U, T]): Value[U, T] = where(a() <= b(), a.deriv(wrt), b.deriv(wrt))
   override def propagate(g: Value[U, T]): Value[U, T] = where(a() <= b(), a.propagate(g), b.propagate(g))
 }
 
@@ -199,7 +199,7 @@ class min[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) ext
 class dot[U[_], T](a: Node[U, T], b: Node[U, T])(implicit r: MathRule[U, T]) extends BinaryOp[U, T] {
   override def toString: String = s"${ a }・${ b })"
   override def apply(): Value[U, T] = dot(a(), b())
-  override def deriv(wrt: Node[U, T]): Value[U, T] = dot(a.deriv(wrt), b().T) + dot(a().T, b.deriv(wrt))
+  override def deriv(wrt: Var[U, T]): Value[U, T] = dot(a.deriv(wrt), b().T) + dot(a().T, b.deriv(wrt))
   override def propagate(g: Value[U, T]): Value[U, T] = a.propagate(dot(g, b().T)) + b.propagate(dot(a().T, g))
 }
 

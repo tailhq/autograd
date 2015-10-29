@@ -29,11 +29,11 @@ abstract class UnaryOpExpectedBehaviorDef[U[_], T](implicit vr: ValueRule[U, T])
   def derivVarWrtSelf(a: U[T]): U[T]
 
 
-  def derivScalarWrtUnknown(a: T, b: Node[U, T]): T = zero
+  def derivScalarWrtUnknown(a: T, b: U[T]): U[T] = zero(b)
 
-  def derivContainerWrtUnknown(a: U[T], b: Node[U, T]): U[T] = zero(a)
+  def derivContainerWrtUnknown(a: U[T], b: U[T]): U[T] = zero(b)
 
-  def derivVarWrtUnknown(a: U[T], b: Node[U, T]): U[T] = zero(a)
+  def derivVarWrtUnknown(a: U[T], b: U[T]): U[T] = zero(b)
 
 
   def propagateScalarWithNCValue(a: T, b: T): T = zero

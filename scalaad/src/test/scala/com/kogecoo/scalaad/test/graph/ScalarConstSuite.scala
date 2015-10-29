@@ -26,10 +26,7 @@ class ScalarConstSuite extends FunSuite {
     val a1 = ScalarConst[Seq, Float](3.1f)
 
     a1.apply()                shouldBe 3.1f
-    a1.deriv(sc7)             shouldBe 0f
-    a1.deriv(c45_6)           shouldBe 0f
-    a1.deriv(a1)              shouldBe 0f
-    a1.deriv(var12_3)         shouldBe 0f
+    a1.deriv(var12_3)         shouldBe Seq(0f, 0f)
     a1.propagate(value89)     shouldBe 0f
     a1.propagate(cValue10_11) shouldBe Seq(0.0f, 0.0f)
 

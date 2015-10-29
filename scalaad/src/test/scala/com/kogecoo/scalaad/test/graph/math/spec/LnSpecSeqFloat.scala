@@ -25,12 +25,10 @@ object LnSpecSeqFloat extends Properties("Ln - Seq[Float]") {
   property("ln(a) apply") = seqFloatSpecGen.applyContainer()
   property("ln(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("ln(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("ln(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("ln(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("ln(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("ln(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("ln(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("ln(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("ln(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("ln(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("ln(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("ln(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("ln(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()
@@ -60,8 +58,7 @@ class LnSeqFloatExpectedBehavior(implicit vr: MathRule[Seq, Float]) extends Unar
 
   override def derivVarWrtSelf(a: Seq[Float]): Seq[Float] = a.map { x => 1f / x }
 
-  override def propagateVarWithNCValue(a: Seq[Float], b: Float): Seq[Float] = a.map { x => b / x }
-
+  override def propagateVarWithNCValue(a: Seq[Float], b: Float): Seq[Float]     = a.map { x => b / x }
   override def propagateVarWithCValue(a: Seq[Float], b: Seq[Float]): Seq[Float] = a.zip(b).map { case (x, y) => y / x }
 
   override def gradVar(a: Seq[Float]): Seq[Float] = a.map { x => 1f / x }

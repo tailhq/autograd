@@ -18,13 +18,15 @@ class SinSuite extends FunSuite {
   test("Sin - Seq[Float]") {
 
     val n = 10
-    val varSeq = Seq.fill[Float](n)(Random.nextFloat())
+    val varSeq1 = Seq.fill[Float](n)(Random.nextFloat())
+    val varSeq2 = Seq.fill[Float](n)(Random.nextFloat())
     val ccSeq = Seq.fill[Float](n)(Random.nextFloat())
     val sc = Random.nextFloat()
     val value = Random.nextFloat()
     val cValue = Seq.fill(n)(Random.nextFloat())
 
-    val varNode = Var[Seq, Float](varSeq)
+    val varNode1 = Var[Seq, Float](varSeq1)
+    val varNode2 = Var[Seq, Float](varSeq2)
     val ccNode = ContainerConst[Seq, Float](ccSeq)
     val scNode = ScalarConst(sc)
 
@@ -36,9 +38,7 @@ class SinSuite extends FunSuite {
       val scSin= sin(ccNode)
 
       scSin.apply()               shouldBe ccSeq.map(scala.math.sin(_).toFloat)
-      scSin.deriv(varNode)        shouldBe Seq.fill(n)(0f)
-      scSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
-      scSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
+      scSin.deriv(varNode1)       shouldBe Seq.fill(n)(0f)
       scSin.propagate(valueRand)  shouldBe Seq.fill(n)(0f)
       scSin.propagate(cValueRand) shouldBe Seq.fill(n)(0f)
 
@@ -46,21 +46,18 @@ class SinSuite extends FunSuite {
       val ccSin = sin(ccNode)
 
       ccSin.apply()               shouldBe ccSeq.map(scala.math.sin(_).toFloat)
-      ccSin.deriv(varNode)        shouldBe Seq.fill(n)(0f)
-      ccSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
-      ccSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
+      ccSin.deriv(varNode1)       shouldBe Seq.fill(n)(0f)
       ccSin.propagate(valueRand)  shouldBe Seq.fill(n)(0f)
       ccSin.propagate(cValueRand) shouldBe Seq.fill(n)(0f)
 
       // Var
-      val varSin = sin(varNode)
+      val varSin = sin(varNode1)
 
-      varSin.apply()               shouldBe varSeq.map(scala.math.sin(_).toFloat)
-      varSin.deriv(varNode)        shouldBe varSeq.map { v => (scala.math.cos(v)).toFloat }
-      varSin.deriv(ccNode)         shouldBe Seq.fill(n)(0f)
-      varSin.deriv(scNode)         shouldBe Seq.fill(n)(0f)
-      varSin.propagate(valueRand)  shouldBe varSeq.map { v => (value * scala.math.cos(v)).toFloat }
-      varSin.propagate(cValueRand) shouldBe varSeq.map({ v => scala.math.cos(v) }).zip(cValue).map { case (a, b) => (a * b).toFloat }
+      varSin.apply()               shouldBe varSeq1.map(scala.math.sin(_).toFloat)
+      varSin.deriv(varNode1)       shouldBe varSeq1.map { v => scala.math.cos(v).toFloat }
+      varSin.deriv(varNode2)       shouldBe Seq.fill(n)(0f)
+      varSin.propagate(valueRand)  shouldBe varSeq1.map { v => (value * scala.math.cos(v)).toFloat }
+      varSin.propagate(cValueRand) shouldBe varSeq1.map({ v => scala.math.cos(v) }).zip(cValue).map { case (a, b) => (a * b).toFloat }
 
     }
 

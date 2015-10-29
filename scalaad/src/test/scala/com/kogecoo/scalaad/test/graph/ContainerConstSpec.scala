@@ -25,17 +25,15 @@ object ContainerConstSpec extends Properties("ContainerConst") {
 
   val genSeqFloatType = new ContainerConstSpecGen[Seq, Float](new SeqFloatNodeGen, new SeqFloatValueGen)
 
-  property("[Scalar, Int] - apply")                     = genScalarIntType.apply
-  property("[Scalar, Int] - deriv w.r.t. self")         = genScalarIntType.derivSelf
-  property("[Scalar, Int] - deriv w.r.t. unknown node") = genScalarIntType.deriv
-  property("[Scalar, Int] - propagate value")           = genScalarIntType.propagate
-  property("[Scalar, Int] - grad")                      = genScalarIntType.grad
+  property("[Scalar, Int] - apply")                    = genScalarIntType.apply
+  property("[Scalar, Int] - deriv w.r.t. unknown var") = genScalarIntType.derivUnknownVar
+  property("[Scalar, Int] - propagate value")          = genScalarIntType.propagate
+  property("[Scalar, Int] - grad")                     = genScalarIntType.grad
 
-  property("[Seq, Float]  - apply")                     = genSeqFloatType.apply
-  property("[Seq, Float]  - deriv w.r.t. self")         = genSeqFloatType.derivSelf
-  property("[Seq, Float]  - deriv w.r.t. unknown node") = genSeqFloatType.deriv
-  property("[Seq, Float]  - propagate value")           = genSeqFloatType.propagate
-  property("[Seq, Float]  - grad")                      = genSeqFloatType.grad
+  property("[Seq, Float]  - apply")                    = genSeqFloatType.apply
+  property("[Seq, Float]  - deriv w.r.t. unknown var") = genSeqFloatType.derivUnknownVar
+  property("[Seq, Float]  - propagate value")          = genSeqFloatType.propagate
+  property("[Seq, Float]  - grad")                     = genSeqFloatType.grad
 
 }
 
@@ -46,11 +44,7 @@ class ContainerConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T
     c => c.apply() shouldBe c.data
   }
 
-  def derivSelf = forAll(nodes.genContainerConst()) {
-    c => c.deriv(c) shouldBe rule.zero(c())
-  }
-
-  def deriv = forAll(nodes.genContainerConst(), nodes.genNode()) {
+  def derivUnknownVar = forAll(nodes.genContainerConst(), nodes.genVar()) {
     (c, v) => c.deriv(v) shouldBe rule.zero(c())
   }
 
@@ -63,4 +57,3 @@ class ContainerConstSpecGen[U[_], T](nodes: GenNode[U, T], values: GenValue[U, T
   }
 
 }
-

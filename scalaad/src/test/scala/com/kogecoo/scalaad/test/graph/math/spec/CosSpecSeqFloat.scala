@@ -25,12 +25,10 @@ object CosSpecSeqFloat extends Properties("Cos - Seq[Float]") {
   property("cos(a) apply") = seqFloatSpecGen.applyContainer()
   property("cos(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("cos(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("cos(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("cos(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("cos(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("cos(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("cos(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("cos(a) (scalar) w.r.t. unknown var")          = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("cos(a) (container) w.r.t. unknown var")       = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("cos(a) (var) w.r.t. a")                       = seqFloatSpecGen.derivVarWrtSelf()
+  property("cos(a) (var) w.r.t. unknonw var")             = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("cos(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("cos(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

@@ -25,12 +25,10 @@ object TanSpecSeqFloat extends Properties("Tan - Seq[Float]") {
   property("tan(a) apply") = seqFloatSpecGen.applyContainer()
   property("tan(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("tan(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("tan(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("tan(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("tan(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("tan(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("tan(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("tan(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("tan(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("tan(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("tan(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("tan(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("tan(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

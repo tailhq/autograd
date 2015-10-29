@@ -21,16 +21,15 @@ object SinSpecSeqFloat extends Properties("Sin - Seq[Float]") {
 
   val seqFloatSpecGen = new UnaryOpSpec[Seq, Float](expects, nodeGen, valueGen)
 
+
   property("sin(a) apply") = seqFloatSpecGen.applyScalar()
   property("sin(a) apply") = seqFloatSpecGen.applyContainer()
   property("sin(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("sin(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("sin(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("sin(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("sin(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("sin(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("sin(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("sin(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("sin(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("sin(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("sin(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("sin(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("sin(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

@@ -25,12 +25,10 @@ object SinhSpecSeqFloat extends Properties("Sinh - Seq[Float]") {
   property("sinh(a) apply") = seqFloatSpecGen.applyContainer()
   property("sinh(a) apply") = seqFloatSpecGen.applyVar()
 
-  property("sinh(a) (scalar) w.r.t. a")    = seqFloatSpecGen.derivScalarWrtSelf()
-  property("sinh(a) (scalar) w.r.t. b")    = seqFloatSpecGen.derivScalarWrtUnknown()
-  property("sinh(a) (container) w.r.t. a") = seqFloatSpecGen.derivContainerWrtSelf()
-  property("sinh(a) (container) w.r.t. b") = seqFloatSpecGen.derivContainerWrtUnknown()
-  property("sinh(a) (var) w.r.t. a")       = seqFloatSpecGen.derivContainerWrtSelf()
-  property("sinh(a) (var) w.r.t. b")       = seqFloatSpecGen.derivContainerWrtUnknown()
+  property("sinh(a) (scalar) w.r.t. unknown var")    = seqFloatSpecGen.derivScalarWrtUnknownVar()
+  property("sinh(a) (container) w.r.t. unknown var") = seqFloatSpecGen.derivContainerWrtUnknownVar()
+  property("sinh(a) (var) w.r.t. a")                 = seqFloatSpecGen.derivVarWrtSelf()
+  property("sinh(a) (var) w.r.t. unknonw var")       = seqFloatSpecGen.derivVarWrtUnknownVar()
 
   property("sinh(a) (scalar) propagete with value")        = seqFloatSpecGen.propagateScalarWithNCValue()
   property("sinh(a) (scalar) propagate with container")    = seqFloatSpecGen.propagateScalarWithCValue()

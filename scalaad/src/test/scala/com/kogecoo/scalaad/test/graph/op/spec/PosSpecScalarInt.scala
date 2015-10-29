@@ -25,12 +25,10 @@ object PosSpecScalarInt extends Properties("Pos - Scalar[Int]") {
   property("+a apply") = scalarIntSpecGen.applyContainer()
   property("+a apply") = scalarIntSpecGen.applyVar()
 
-  property("+a (scalar) w.r.t. a")    = scalarIntSpecGen.derivScalarWrtSelf()
-  property("+a (scalar) w.r.t. b")    = scalarIntSpecGen.derivScalarWrtUnknown()
-  property("+a (container) w.r.t. a") = scalarIntSpecGen.derivContainerWrtSelf()
-  property("+a (container) w.r.t. b") = scalarIntSpecGen.derivContainerWrtUnknown()
-  property("+a (var) w.r.t. a")       = scalarIntSpecGen.derivContainerWrtSelf()
-  property("+a (var) w.r.t. b")       = scalarIntSpecGen.derivContainerWrtUnknown()
+  property("+a (scalar) w.r.t. unknown var")    = scalarIntSpecGen.derivScalarWrtUnknownVar()
+  property("+a (container) w.r.t. unknown var") = scalarIntSpecGen.derivContainerWrtUnknownVar()
+  property("+a (var) w.r.t. a")                 = scalarIntSpecGen.derivVarWrtSelf()
+  property("+a (var) w.r.t. unknonw var")       = scalarIntSpecGen.derivVarWrtUnknownVar()
 
   property("+a (scalar) propagete with value")        = scalarIntSpecGen.propagateScalarWithNCValue()
   property("+a (scalar) propagate with container")    = scalarIntSpecGen.propagateScalarWithCValue()
@@ -42,6 +40,7 @@ object PosSpecScalarInt extends Properties("Pos - Scalar[Int]") {
   property("+a (scalar) grad")    = scalarIntSpecGen.gradScalar()
   property("+a (container) grad") = scalarIntSpecGen.gradContainer()
   property("+a (var) grad")       = scalarIntSpecGen.gradVar()
+
 
 }
 
