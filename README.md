@@ -25,9 +25,20 @@ println(y.gradient)
 
 ## TODO
 * test
-* make it to be multiple package
-* exclude Nd4jRule and BreezeRule to other package
 * maven repo
+* compiler model
+* high order differentiation
+* Operators
+  * where
+  * dot
+  * matmul
+  * transform
+  * max
+  * min
+  * abs
+  * L-0 Norm
+  * L-1 Norm
+  * L-2 Norm
 
 ## Reference
 * http://d.hatena.ne.jp/Nos/20130811/1376232751
@@ -42,3 +53,10 @@ println(y.gradient)
 * http://www.met.reading.ac.uk/clouds/publications/adept.pdf
 * http://colah.github.io/posts/2015-08-Backprop/index.html
 * http://uhra.herts.ac.uk/bitstream/handle/2299/4335/903836.pdf?sequence=1
+
+* http://arxiv.org/pdf/1509.07164v1.pdf
+* Old and New Matrix Algebra Useful for Statistics, Thomas P. Minka, December 28, 2000
+* http://research.microsoft.com/en-us/um/people/minka/papers/matrix/minka-matrix.pdf
+
+* Matrix calculus
+* https://en.wikipedia.org/wiki/Matrix_calculus

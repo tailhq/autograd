@@ -1,8 +1,7 @@
 package com.kogecoo.scalaad.example
 
-import com.kogecoo.scalaad.graph.{ Var, sin }
-
 object Application {
+
   def main(args: Array[String]) = {
     scalarExample()
     breezeExample()
@@ -10,51 +9,58 @@ object Application {
   }
 
   def scalarExample() = {
-    import com.kogecoo.scalaad.ScalarRule.Implicits._
+    import com.kogecoo.scalaad.impl.std._
+    import com.kogecoo.scalaad.impl.std.Implicits._
+    import com.kogecoo.scalaad.Shorthands.math._
 
     val x = Var(5.0)
     val y = Var(3.0)
-    val z = 1 * x * sin(x) * 2 + y * x * 3
+    val z = x :* sin(x) :* 2 :+ y :* x :* 3
 
     println(z)
-    println(z.deriv(x))  // forward-mode automatic differentiation
-    println(z.deriv(y))
+    println(z.forward(x).eval[T0])  // forward-mode automatic differentiation
+    println(z.forward(y).eval[T0])
 
-    println(z.grad())    // reverse-mode automatic differentiation 
-    println(x.gradient)  // we can get partial differentiation through gradient after run grad()
-    println(y.gradient)
+    val grads = z.reverse(Const(1)) // reverse-mode automatic differentiation
+    println(grads)
+    println(s"$x -> ${grads(x)}")  // we can get partial differentiation through gradient after run grad()
+    println(s"$y -> ${grads(y)}")
   }
 
   def breezeExample() = {
-    import com.kogecoo.scalaad.breeze.BreezeRule.Implicits._
 
     import breeze.linalg.DenseVector
+    import com.kogecoo.scalaad.impl.breeze._
+    import com.kogecoo.scalaad.impl.breeze.Implicits._
+    import com.kogecoo.scalaad.Shorthands.math._
 
     val x = Var(DenseVector(1.0, 2.0, 3.0))
 
-    val y = 1 * sin(x) * 2 + x * 3
+    val y = sin(x) :* 2 :+ x :* 3
 
     println(y)
-    println(y.deriv(x))
+    println(y.forward(x).eval[T2])
 
-    println(y.grad())
-    println(x.gradient)
+    val grads = y.reverse(Const(DenseVector(1.0, 1.0, 1.0)))
+    println(s"$x -> ${grads(x)}")
 
   }
 
   def nd4jExample() = {
-    import com.kogecoo.scalaad.nd4j.Nd4jRule.Implicits._
+    import com.kogecoo.scalaad.impl.nd4j._
+    import com.kogecoo.scalaad.impl.nd4j.Implicits._
+    import com.kogecoo.scalaad.Shorthands.math._
     import org.nd4s.Implicits._
 
     val x = Var((1 to 9).asNDArray(1, 3))
 
-    val y = 1 * sin(x) * 2 + x * 3
+    val y = sin(x) :* 2 :+ x :* 3
 
     println(y)
-    println(y.deriv(x))
+    println(y.forward(x).eval[T])
 
-    println(y.grad())
-    println(x.gradient)
+    val grads = y.reverse(Const(1))
+    println(s"$x -> ${grads(x)}")
   }
 
 }
