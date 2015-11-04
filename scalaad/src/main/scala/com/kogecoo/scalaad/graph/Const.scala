@@ -1,28 +1,56 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.rule.ValueRule
-import com.kogecoo.scalaad.value.{NonContainerValue, ContainerValue, Value}
-
-import scala.language.higherKinds
+import com.kogecoo.scalaad._
 
 
-case class ScalarConst[U[_], T](data: T)(implicit r: ValueRule[U, T]) extends Node[U, T] {
-  override def toString: String = data.toString
-  override def apply(): Value[U, T] = r.toValue(data)
-  override def deriv(wrt: Var[U, T]): Value[U, T] = wrt() match {
-    case v: NonContainerValue[U, T] => r.zero
-    case v: ContainerValue[U, T]    => r.zero(v)
-  }
-  override def propagate(g: Value[U, T]): Value[U, T] = g * r.zero
-}
+trait ConstNode0 extends N0 { override val shape: S0 = Shape0() }
 
-case class ContainerConst[U[_], T](data: U[T])(implicit r: ValueRule[U, T]) extends Node[U, T] {
-  override def toString: String = data.toString
-  override def apply(): Value[U, T] = r.toValue(data)
-  override def deriv(wrt: Var[U, T]): Value[U, T] = wrt() match {
-    case v: NonContainerValue[U, T] => r.zero(data)
-    case v: ContainerValue[U, T]    => r.zero(v)
-  }
-  override def propagate(g: Value[U, T]): Value[U, T] = g * r.zero(data)
-}
+trait ConstNode1 extends N1
+
+trait ConstNode2 extends N2
+
+
+case class Const0(data: Tensor0) extends ConstNode0
+
+case class Const1(data: Tensor1, shape: S1) extends ConstNode1
+
+case class Const2(data: Tensor2, shape: S2) extends ConstNode2
+
+
+case class One0() extends ConstNode0
+
+case class One1(shape: S1) extends ConstNode1
+
+case class One2(shape: S2) extends ConstNode2
+
+case class Eye2(shape: S2) extends ConstNode2
+
+
+case class Zero0() extends ConstNode0
+
+case class Zero1(shape: S1) extends ConstNode1
+
+case class Zero2(shape: S2) extends ConstNode2
+
+
+case class Half0() extends ConstNode0
+
+case class Half1(shape: S1) extends ConstNode1
+
+case class Half2(shape: S2) extends ConstNode2
+
+
+object One1 { def apply(n: N1): One1 = One1(n.shape) }
+
+object One2 { def apply(n: N2): One2 = One2(n.shape) }
+
+
+object Zero1 { def apply(n: N1): Zero1 = Zero1(n.shape) }
+
+object Zero2 { def apply(n: N2): Zero2 = Zero2(n.shape) }
+
+
+object Half1 { def apply(n: N1): Half1 = Half1(n.shape) }
+
+object Half2 { def apply(n: N2): Half2 = Half2(n.shape) }
 

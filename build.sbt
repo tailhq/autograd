@@ -3,11 +3,11 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(name := "scalaad-root")
   .settings(publish := { })
-  .settings(testSettings: _*)
 
 lazy val scalaad = project.in(file("scalaad"))
   .settings(commonSettings ++ commonPublishSettings:_*)
   .settings(name := "scalaad")
+  .settings(testSettings: _*)
 
 lazy val breeze = project.in(file("breeze"))
   .dependsOn(scalaad)
@@ -44,6 +44,8 @@ lazy val commonPublishSettings = Seq(
   publishTo               <<= version { (v: String) => choosePublishTo(v) }
 )
 
+
+
 lazy val commonScalacOptions = Seq(
   "-feature",
   "-deprecation",
@@ -56,12 +58,14 @@ lazy val commonScalacOptions = Seq(
 lazy val commonResolvers = Seq(
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
   "Sonatype release Repository" at "http://oss.sonatype.org/service/local/staging/deploy/maven2/",
-  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository/"
+  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository/",
+  "bintray/non" at "http://dl.bintray.com/non/maven"
 )
 
 lazy val commonLibraryDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+  "com.chuusai" %% "shapeless" % "2.2.5",
+  "org.scalacheck" %% "scalacheck" % "1.13.0" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )
 
 lazy val commonPomExtra = {
@@ -79,8 +83,8 @@ lazy val commonPomExtra = {
 }
 
 lazy val testSettings = Seq(
-  testOptions          += Tests.Argument(TestFrameworks.ScalaCheck, "-verbosity", "2"),
-  testOptions          += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
+  testOptions += Tests.Argument(TestFrameworks.ScalaCheck, "-verbosity", "2"),
+  testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
 )
 
 def choosePublishTo(v: String) = {

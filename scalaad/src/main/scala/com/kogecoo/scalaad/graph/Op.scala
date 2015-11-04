@@ -1,68 +1,48 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.rule.ValueRule
-import com.kogecoo.scalaad.value.Value
-
-import scala.language.higherKinds
+import com.kogecoo.scalaad.Shape2
 
 
-case class Add[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit vr: ValueRule[U, T]) extends BinaryOp[U, T] {
-  override def toString: String = s"(${ lhs.toString } + ${ rhs.toString })"
-  override def apply(): Value[U, T] = lhs() + rhs()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = lhs.deriv(wrt) + rhs.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = lhs.propagate(g) + rhs.propagate(g)
+case class Apply0(v: N0, op: Op0)
+
+case class Elementwise1(v: N1, op: Op0)
+case class Elementwise2(v: N2, op: Op0)
+
+case class Broadcast1(v: N1, op: Op0)
+case class Broadcast2(v: N1, op: Op0)
+
+case class Elementwise11(l: N1, r: N1, op: Op00) extends Op11
+case class Elementwise22(l: N2, r: N2, op: Op00) extends Op22
+
+case class Broadcast01(l: N0, r: N1, op: Op00) extends Op02
+case class Broadcast02(l: N0, r: N2, op: Op00) extends Op02
+
+case class Rowwise12(l: N1, r: N2, op: Op00) extends Op12
+case class Columnwise12(l: N1, r: N2, op: Op00) extends Op12
+
+
+case class Add00(l :N0, r: N0) extends Op00
+case class Sub00(l :N0, r: N0) extends Op00
+case class Mul00(l :N0, r: N0) extends Op00
+case class Div00(l :N0, r: N0) extends Op00
+
+// Element-wise Pos
+case class Pos0(v: N0) extends Op0
+case class Neg0(v: N0) extends Op0
+
+// Transpose
+case class Transpose1(v: N1) extends Op1
+case class Transpose2(v: N2) extends Op2
+
+// Experimental
+case class VecFill(override val v: N0, override val shape: S1) extends UnaryOp[S1, S0]
+case class MatFill(override val v: N0, override val shape: S2) extends UnaryOp[S2, S0]
+
+case class MatFillAcrossRow(override val v: N1, columnSize: Int) extends UnaryOp[S2, S1] {
+  override val shape: S2 = Shape2(v.shape._1, columnSize)
 }
 
-case class Sub[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit r: ValueRule[U, T]) extends BinaryOp[U, T] {
-  override def toString: String = s"(${ lhs.toString } - ${ rhs.toString })"
-  override def apply(): Value[U, T] = lhs() - rhs()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = lhs.deriv(wrt) - rhs.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = lhs.propagate(g) + rhs.propagate(-g)
+case class MatFillAcrossColumn(override val v: N1, rowSize: Int) extends UnaryOp[S2, S1] {
+  override val shape: S2 = Shape2(rowSize, v.shape._1)
 }
 
-case class Mul[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit r: ValueRule[U, T]) extends BinaryOp[U, T] {
-  override def toString: String = s"(${ lhs.toString } * ${ rhs.toString })"
-  override def apply(): Value[U, T] = lhs() * rhs()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = {
-    lhs.deriv(wrt) * rhs() + lhs() * rhs.deriv(wrt)
-  }
-
-  override def propagate(g: Value[U, T]): Value[U, T] = {
-    lhs.propagate(g * rhs()) + rhs.propagate(g * lhs())
-  }
-}
-
-case class Div[U[_], T](lhs: Node[U, T], rhs: Node[U, T])(implicit r: ValueRule[U, T]) extends BinaryOp[U, T] {
-  override def toString: String = s"(${ lhs.toString } / ${ rhs.toString })"
-  override def apply(): Value[U, T] = lhs() / rhs()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = {
-    val rhs_val: Value[U, T] = rhs()
-    lhs.deriv(wrt) / rhs_val  - rhs.deriv(wrt) * lhs() / rhs_val / rhs_val
-  }
-
-  override def propagate(g: Value[U, T]): Value[U, T] = {
-    val rhs_val = rhs()
-    lhs.propagate(g / rhs_val) + rhs.propagate(-g * lhs() / rhs_val / rhs_val)
-  }
-}
-
-case class Pos[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends UnaryOp[U, T] {
-  override def toString: String = s"+(${ v })"
-  override def apply(): Value[U, T] = +v()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = +v.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(+g)
-}
-
-case class Neg[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends UnaryOp[U, T] {
-  override def toString: String = s"-(${ v })"
-  override def apply(): Value[U, T] = -v()
-  override def deriv(wrt: Var[U, T]): Value[U, T] = -v.deriv(wrt)
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(-g)
-}
-
-case class Transpose[U[_], T](v: Node[U, T])(implicit r: ValueRule[U, T]) extends UnaryOp[U, T] {
-  override def toString: String = s"${ v }.T"
-  override def apply(): Value[U, T] = v().T
-  override def deriv(wrt: Var[U, T]): Value[U, T] = v.deriv(wrt).T
-  override def propagate(g: Value[U, T]): Value[U, T] = v.propagate(g.T)
-}
