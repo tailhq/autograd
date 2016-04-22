@@ -1,13 +1,13 @@
 package com.kogecoo.scalaad.test.helper.impl.std
 
-import com.kogecoo.scalaad.Shape2
-import com.kogecoo.scalaad.graph.S2
+import com.kogecoo.scalaad.{Shape, Shape2}
 import org.scalacheck.Gen
+import shapeless.Nat._2
 
 
 object S2Gen {
 
-  private[this] val noShapeConstraint: S2 => Boolean = _ => true
+  private[this] val noShapeConstraint: Shape[_2] => Boolean = _ => true
   private[this] val defaultRowSizeMin = 1
   private[this] val defaultRowSizeMax = 10
   private[this] val defaultColSizeMin = 1
@@ -20,12 +20,12 @@ object S2Gen {
   def apply(
       rowCons: Int => Boolean,
       columnCons: Int => Boolean,
-      shapeConstraint: S2 => Boolean,
+      shapeConstraint: Shape[_2] => Boolean,
       sizeRowMin: Int,
       sizeRowMax: Int,
       sizeColMin: Int,
       sizeColMax: Int
-  ): Gen[S2] = {
+  ): Gen[Shape[_2]] = {
     for {
       row   <- genSize(sizeRowMin, sizeRowMax, rowCons)
       col   <- genSize(sizeColMin, sizeColMax, columnCons)
@@ -36,10 +36,10 @@ object S2Gen {
   def apply(
       row: Int,
       columnCons: Int => Boolean,
-      shapeConstraint: S2 => Boolean,
+      shapeConstraint: Shape[_2] => Boolean,
       sizeColMin: Int,
       sizeColMax: Int
-  ): Gen[S2] = {
+  ): Gen[Shape[_2]] = {
     for {
       row   <- Gen.const[Int](row)
       col   <- genSize(sizeColMin, sizeColMax, columnCons)
@@ -50,10 +50,10 @@ object S2Gen {
   def apply(
      rowCons: Int => Boolean,
      column: Int,
-     shapeCons: S2 => Boolean,
+     shapeCons: Shape[_2] => Boolean,
      sizeRowMin: Int,
      sizeRowMax: Int
-  ): Gen[S2] = {
+  ): Gen[Shape[_2]] = {
      for {
       row   <- genSize(sizeRowMin, sizeRowMax, rowCons)
       col   <- Gen.const[Int](column)
@@ -61,7 +61,7 @@ object S2Gen {
     } yield shape
   }
 
-  def apply(row: Int, column: Int, shapeConstraint: S2 => Boolean): Gen[S2] = {
+  def apply(row: Int, column: Int, shapeConstraint: Shape[_2] => Boolean): Gen[Shape[_2]] = {
     for {
       row   <- Gen.const[Int](row)
       col   <- Gen.const[Int](column)

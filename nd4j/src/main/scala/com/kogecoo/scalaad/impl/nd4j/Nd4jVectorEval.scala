@@ -12,12 +12,13 @@ import scala.Predef.{any2stringadd => _, _}
 
 trait Nd4jVectorEval {
 
+  /*
   private[this] type T = Double
   private[this] type V = INDArray
 
-  implicit val eval11_nd4j_vector_double: Eval[N1, V] = new Eval[N1, V] {
+  implicit val eval11_nd4j_vector_double: Eval[V1, V] = new Eval[V1, V] {
 
-    private[this] type N = N1
+    private[this] type N = V1
 
     def eval(n: N): V = n match {
 
@@ -33,20 +34,20 @@ trait Nd4jVectorEval {
       case Neg1(v: N) => -v.eval[V]
 
       // Binary ops
-      case Add01(l: N0, r: N)  => r.eval[V].add(l.eval[T])  // FIXME: this assuming commutative law
-      case Add10(l: N , r: N0) => l.eval[V].add(r.eval[T])
+      case Add01(l: V0, r: N)  => r.eval[V].add(l.eval[T])  // FIXME: this assuming commutative law
+      case Add10(l: N , r: V0) => l.eval[V].add(r.eval[T])
       case Add11(l: N , r: N)  => l.eval[V].add(r.eval[V])
 
-      case Sub01(l: N0, r: N)  => r.eval[V].rsub(l.eval[T])
-      case Sub10(l: N , r: N0) => l.eval[V].sub(r.eval[T])
+      case Sub01(l: V0, r: N)  => r.eval[V].rsub(l.eval[T])
+      case Sub10(l: N , r: V0) => l.eval[V].sub(r.eval[T])
       case Sub11(l: N , r: N)  => l.eval[V].sub(r.eval[V])
 
-      case Mul01(l: N0, r: N)  => r.eval[V].mul(l.eval[T])  // FIXME: this assuming commutative law
-      case Mul10(l: N , r: N0) => l.eval[V].mul(r.eval[T])
+      case Mul01(l: V0, r: N)  => r.eval[V].mul(l.eval[T])  // FIXME: this assuming commutative law
+      case Mul10(l: N , r: V0) => l.eval[V].mul(r.eval[T])
       case Mul11(l: N , r: N)  => l.eval[V].mul(r.eval[V])
 
-      case Div01(l: N0, r: N)  => r.eval[V].rdiv(l.eval[T])
-      case Div10(l: N , r: N0) => l.eval[V].div(r.eval[T])
+      case Div01(l: V0, r: N)  => r.eval[V].rdiv(l.eval[T])
+      case Div10(l: N , r: V0) => l.eval[V].div(r.eval[T])
       case Div11(l: N , r: N)  => l.eval[V].div(r.eval[V])
 
       // Math
@@ -67,16 +68,16 @@ trait Nd4jVectorEval {
       case Exp1(v: N)  => v.eval[V].map(math.exp)
       case Sqrt1(v: N) => v.eval[V].map(math.sqrt)
 
-      case Pow01(l: N0, r: N)  => Nd4jUtil.pow(l.eval[T], r.eval[V])
-      case Pow10(l: N , r: N0) => Nd4jUtil.pow(l.eval[V], r.eval[T])
+      case Pow01(l: V0, r: N)  => Nd4jUtil.pow(l.eval[T], r.eval[V])
+      case Pow10(l: N , r: V0) => Nd4jUtil.pow(l.eval[V], r.eval[T])
       case Pow11(l: N , r: N)  => Nd4jUtil.pow(l.eval[V], r.eval[V])
 
       case Abs1(v: N)          => v.eval[V].map(math.abs)
-      case Max01(l: N0, r: N)  => Nd4jUtil.max(r.eval[V], l.eval[T])
-      case Max10(l: N , r: N0) => Nd4jUtil.max(l.eval[V], r.eval[T])
+      case Max01(l: V0, r: N)  => Nd4jUtil.max(r.eval[V], l.eval[T])
+      case Max10(l: N , r: V0) => Nd4jUtil.max(l.eval[V], r.eval[T])
       case Max11(l: N , r: N)  => Nd4jUtil.max(l.eval[V], r.eval[V])
-      case Min01(l: N0, r: N)  => Nd4jUtil.min(r.eval[V], l.eval[T])
-      case Min10(l: N , r: N0) => Nd4jUtil.min(l.eval[V], r.eval[T])
+      case Min01(l: V0, r: N)  => Nd4jUtil.min(r.eval[V], l.eval[T])
+      case Min10(l: N , r: V0) => Nd4jUtil.min(l.eval[V], r.eval[T])
       case Min11(l: N , r: N)  => Nd4jUtil.min(l.eval[V], r.eval[V])
     }
   }
@@ -84,24 +85,24 @@ trait Nd4jVectorEval {
   implicit val eval_bool11_nd4j_double: Eval[B1, V] = new Eval[B1, V] {
 
     def eval(n: B1): V = n match {
-      case Eq01(l: N0, r: N1)  => Nd4jUtil.eq(r.eval[V], l.eval[T])
-      case Eq10(l: N1, r: N0)  => Nd4jUtil.eq(l.eval[V], r.eval[T])
-      case Eq11(l: N1, r: N1)  => Nd4jUtil.eq(l.eval[V], r.eval[V])
-      case Neq01(l: N0, r: N1) => Nd4jUtil.neq(r.eval[V], l.eval[T])
-      case Neq10(l: N1, r: N0) => Nd4jUtil.neq(l.eval[V], r.eval[T])
-      case Neq11(l: N1, r: N1) => Nd4jUtil.neq(l.eval[V], r.eval[V])
-      case Lt01(l: N0, r: N1)  => Nd4jUtil.gt(r.eval[V], l.eval[T])
-      case Lt10(l: N1, r: N0)  => Nd4jUtil.lt(l.eval[V], r.eval[T])
-      case Lt11(l: N1, r: N1)  => Nd4jUtil.lt(l.eval[V], r.eval[V])
-      case Lte01(l: N0, r: N1) => Nd4jUtil.gte(r.eval[V], l.eval[T])
-      case Lte10(l: N1, r: N0) => Nd4jUtil.lte(l.eval[V], r.eval[T])
-      case Lte11(l: N1, r: N1) => Nd4jUtil.lte(l.eval[V], r.eval[V])
-      case Gt01(l: N0, r: N1)  => Nd4jUtil.lt(r.eval[V], l.eval[T])
-      case Gt10(l: N1, r: N0)  => Nd4jUtil.gt(l.eval[V], r.eval[T])
-      case Gt11(l: N1, r: N1)  => Nd4jUtil.gt(l.eval[V], r.eval[V])
-      case Gte01(l: N0, r: N1) => Nd4jUtil.gte(r.eval[V], l.eval[T])
-      case Gte10(l: N1, r: N0) => Nd4jUtil.gte(l.eval[V], r.eval[T])
-      case Gte11(l: N1, r: N1) => Nd4jUtil.gte(l.eval[V], r.eval[V])
+      case Eq01(l: V0, r: V1)  => Nd4jUtil.eq(r.eval[V], l.eval[T])
+      case Eq10(l: V1, r: V0)  => Nd4jUtil.eq(l.eval[V], r.eval[T])
+      case Eq11(l: V1, r: V1)  => Nd4jUtil.eq(l.eval[V], r.eval[V])
+      case Neq01(l: V0, r: V1) => Nd4jUtil.neq(r.eval[V], l.eval[T])
+      case Neq10(l: V1, r: V0) => Nd4jUtil.neq(l.eval[V], r.eval[T])
+      case Neq11(l: V1, r: V1) => Nd4jUtil.neq(l.eval[V], r.eval[V])
+      case Lt01(l: V0, r: V1)  => Nd4jUtil.gt(r.eval[V], l.eval[T])
+      case Lt10(l: V1, r: V0)  => Nd4jUtil.lt(l.eval[V], r.eval[T])
+      case Lt11(l: V1, r: V1)  => Nd4jUtil.lt(l.eval[V], r.eval[V])
+      case Lte01(l: V0, r: V1) => Nd4jUtil.gte(r.eval[V], l.eval[T])
+      case Lte10(l: V1, r: V0) => Nd4jUtil.lte(l.eval[V], r.eval[T])
+      case Lte11(l: V1, r: V1) => Nd4jUtil.lte(l.eval[V], r.eval[V])
+      case Gt01(l: V0, r: V1)  => Nd4jUtil.lt(r.eval[V], l.eval[T])
+      case Gt10(l: V1, r: V0)  => Nd4jUtil.gt(l.eval[V], r.eval[T])
+      case Gt11(l: V1, r: V1)  => Nd4jUtil.gt(l.eval[V], r.eval[V])
+      case Gte01(l: V0, r: V1) => Nd4jUtil.gte(r.eval[V], l.eval[T])
+      case Gte10(l: V1, r: V0) => Nd4jUtil.gte(l.eval[V], r.eval[T])
+      case Gte11(l: V1, r: V1) => Nd4jUtil.gte(l.eval[V], r.eval[V])
 
       case And01(l: B0, r: B1) => Nd4jUtil.and(r.eval[V], l.eval[Boolean])
       case And10(l: B1, r: B0) => Nd4jUtil.and(l.eval[V], r.eval[Boolean])
@@ -114,5 +115,6 @@ trait Nd4jVectorEval {
     }
   }
 
+*/
 }
 

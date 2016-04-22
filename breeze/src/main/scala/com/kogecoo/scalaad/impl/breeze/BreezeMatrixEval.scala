@@ -11,12 +11,13 @@ import com.kogecoo.scalaad.impl.breeze.Implicits._
 
 trait BreezeMatrixEval {
 
+  /*
   private[this] type T = Double
   private[this] type V = DenseMatrix[Double]
 
-  implicit val eval22_breeze_matrix_double: Eval[N2, V] = new Eval[N2, V] {
+  implicit val eval22_breeze_matrix_double: Eval[V2, V] = new Eval[V2, V] {
 
-    private[this] type N = N2
+    private[this] type N = V2
 
     def eval(n: N): V = n match {
 
@@ -33,20 +34,20 @@ trait BreezeMatrixEval {
       case Transpose2(v) => v.eval[V].t
 
       // Binary ops
-      case Add02(l: N0, r: N)  => r.eval[V] + l.eval[T]  // FIXME: this assuming commutative law
-      case Add20(l: N , r: N0) => l.eval[V] :+ r.eval[T]
+      case Add02(l: V0, r: N)  => r.eval[V] + l.eval[T]  // FIXME: this assuming commutative law
+      case Add20(l: N , r: V0) => l.eval[V] :+ r.eval[T]
       case Add22(l: N , r: N)  => l.eval[V] :+ r.eval[V]
 
-      case Sub02(l: N0, r: N)  => l.eval[T]  - r.eval[V]
-      case Sub20(l: N , r: N0) => l.eval[V] :- r.eval[T]
+      case Sub02(l: V0, r: N)  => l.eval[T]  - r.eval[V]
+      case Sub20(l: N , r: V0) => l.eval[V] :- r.eval[T]
       case Sub22(l: N , r: N)  => l.eval[V] :- r.eval[V]
 
-      case Mul02(l: N0, r: N)  => l.eval[T]  * r.eval[V]
-      case Mul20(l: N , r: N0) => l.eval[V] :* r.eval[T]
+      case Mul02(l: V0, r: N)  => l.eval[T]  * r.eval[V]
+      case Mul20(l: N , r: V0) => l.eval[V] :* r.eval[T]
       case Mul22(l: N , r: N)  => l.eval[V] :* r.eval[V]
 
-      case Div02(l: N0, r: N)  => l.eval[T]  / r.eval[V]
-      case Div20(l: N , r: N0) => l.eval[V] :/ r.eval[T]
+      case Div02(l: V0, r: N)  => l.eval[T]  / r.eval[V]
+      case Div20(l: N , r: V0) => l.eval[V] :/ r.eval[T]
       case Div22(l: N , r: N)  => l.eval[V] :/ r.eval[V]
 
       // Math
@@ -65,16 +66,16 @@ trait BreezeMatrixEval {
       case Ln2(v)              => bmath.log(v.eval[V])
       case Exp2(v: N)          => bmath.exp(v.eval[V])
       case Sqrt2(v: N)         => bmath.sqrt(v.eval[V])
-      case Pow02(l: N0, r: N)  => bmath.pow(l.eval[T], r.eval[V])
-      case Pow20(l: N , r: N0) => bmath.pow(l.eval[V], r.eval[T])
+      case Pow02(l: V0, r: N)  => bmath.pow(l.eval[T], r.eval[V])
+      case Pow20(l: N , r: V0) => bmath.pow(l.eval[V], r.eval[T])
       case Pow22(l: N , r: N)  => bmath.pow(l.eval[V], r.eval[V])
 
       case Abs2(v)                => v.eval[V].map(math.abs)
-      case Max02(l: N0, r: N)  => breeze.linalg.max(r.eval[V], l.eval[T])
-      case Max20(l: N , r: N0) => breeze.linalg.max(l.eval[V], r.eval[T])
+      case Max02(l: V0, r: N)  => breeze.linalg.max(r.eval[V], l.eval[T])
+      case Max20(l: N , r: V0) => breeze.linalg.max(l.eval[V], r.eval[T])
       case Max22(l: N , r: N)  => breeze.linalg.max(l.eval[V], r.eval[V])
-      case Min02(l: N0, r: N)  => breeze.linalg.min(r.eval[V], l.eval[T])
-      case Min20(l: N , r: N0) => breeze.linalg.min(l.eval[V], r.eval[T])
+      case Min02(l: V0, r: N)  => breeze.linalg.min(r.eval[V], l.eval[T])
+      case Min20(l: N , r: V0) => breeze.linalg.min(l.eval[V], r.eval[T])
       case Min22(l: N , r: N)  => breeze.linalg.min(l.eval[V], r.eval[V])
     }
   }
@@ -87,24 +88,24 @@ trait BreezeMatrixEval {
     }
 
     def eval(n: B2): DenseMatrix[Boolean] = n match {
-      case Eq02 (l: N0, r: N2) => r.eval[V] :== l.eval[T]
-      case Eq20 (l: N2, r: N0) => l.eval[V] :== r.eval[T]
-      case Eq22 (l: N2, r: N2) => l.eval[V] :== r.eval[V]
-      case Neq02(l: N0, r: N2) => r.eval[V] :!= l.eval[T]
-      case Neq20(l: N2, r: N0) => l.eval[V] :!= r.eval[T]
-      case Neq22(l: N2, r: N2) => l.eval[V] :!= r.eval[V]
-      case Lt02 (l: N0, r: N2) => r.eval[V] :>  l.eval[T]
-      case Lt20 (l: N2, r: N0) => l.eval[V] :<  r.eval[T]
-      case Lt22 (l: N2, r: N2) => l.eval[V] :<  r.eval[V]
-      case Lte02(l: N0, r: N2) => r.eval[V] :>= l.eval[T]
-      case Lte20(l: N2, r: N0) => l.eval[V] :<= r.eval[T]
-      case Lte22(l: N2, r: N2) => l.eval[V] :<= r.eval[V]
-      case Gt02 (l: N0, r: N2) => r.eval[V] :<  l.eval[T]
-      case Gt20 (l: N2, r: N0) => l.eval[V] :>  r.eval[T]
-      case Gt22 (l: N2, r: N2) => l.eval[V] :>  r.eval[V]
-      case Gte02(l: N0, r: N2) => r.eval[V] :<= l.eval[T]
-      case Gte20(l: N2, r: N0) => l.eval[V] :>= r.eval[T]
-      case Gte22(l: N2, r: N2) => l.eval[V] :>= r.eval[V]
+      case Eq02 (l: V0, r: V2) => r.eval[V] :== l.eval[T]
+      case Eq20 (l: V2, r: V0) => l.eval[V] :== r.eval[T]
+      case Eq22 (l: V2, r: V2) => l.eval[V] :== r.eval[V]
+      case Neq02(l: V0, r: V2) => r.eval[V] :!= l.eval[T]
+      case Neq20(l: V2, r: V0) => l.eval[V] :!= r.eval[T]
+      case Neq22(l: V2, r: V2) => l.eval[V] :!= r.eval[V]
+      case Lt02 (l: V0, r: V2) => r.eval[V] :>  l.eval[T]
+      case Lt20 (l: V2, r: V0) => l.eval[V] :<  r.eval[T]
+      case Lt22 (l: V2, r: V2) => l.eval[V] :<  r.eval[V]
+      case Lte02(l: V0, r: V2) => r.eval[V] :>= l.eval[T]
+      case Lte20(l: V2, r: V0) => l.eval[V] :<= r.eval[T]
+      case Lte22(l: V2, r: V2) => l.eval[V] :<= r.eval[V]
+      case Gt02 (l: V0, r: V2) => r.eval[V] :<  l.eval[T]
+      case Gt20 (l: V2, r: V0) => l.eval[V] :>  r.eval[T]
+      case Gt22 (l: V2, r: V2) => l.eval[V] :>  r.eval[V]
+      case Gte02(l: V0, r: V2) => r.eval[V] :<= l.eval[T]
+      case Gte20(l: V2, r: V0) => l.eval[V] :>= r.eval[T]
+      case Gte22(l: V2, r: V2) => l.eval[V] :>= r.eval[V]
 
       case And02(l: B0, r: B2) => map20(r.eval[DenseMatrix[Boolean]], l.eval[Boolean], _ && _)
       case And20(l: B2, r: B0) => map20(l.eval[DenseMatrix[Boolean]], r.eval[Boolean], _ && _)
@@ -116,5 +117,6 @@ trait BreezeMatrixEval {
       case Not2(v: B2) => !v.eval[DenseMatrix[Boolean]]
     }
   }
+  */
 
 }

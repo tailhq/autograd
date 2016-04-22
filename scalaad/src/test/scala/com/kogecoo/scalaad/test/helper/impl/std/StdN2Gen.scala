@@ -1,33 +1,35 @@
 package com.kogecoo.scalaad.test.helper.impl.std
 
+import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.impl.std.{StdMat, StdMatrix}
+import com.kogecoo.scalaad.impl.std.{Mat, StdMatrix}
 import com.kogecoo.scalaad.test.helper._
 import org.scalacheck.Gen
+import shapeless.Nat._2
 
 
 class StdN2Gen extends N2Gen[Double] {
 
-  private[this] def genStdMatWithShape(shapeGen: Gen[S2], valueGen: Gen[Double]): Gen[StdMat[Double]] = {
+  private[this] def genStdMatWithShape(shapeGen: Gen[Shape[_2]], valueGen: Gen[Double]): Gen[Mat[Double]] = {
     for {
       s    <- shapeGen
-      m    <- Gen.listOfN(s._1, Gen.listOfN(s._2, valueGen))
+      m    <- Gen.listOfN(s.at(0), Gen.listOfN(s.at(1), valueGen))
     } yield m
 
   }
 
-  override def genVar2(shapeGen: Gen[S2], valueGen: Gen[Double]): Gen[Var2] = {
+  override def genVar2(shapeGen: Gen[Shape[_2]], valueGen: Gen[Double]): Gen[Var[_2]] = {
     for {
       s   <- shapeGen
       mat <- genStdMatWithShape(s, valueGen)
-    } yield Var2(StdMatrix(mat), s)
+    } yield Var[_2](StdMatrix(mat))
   }
 
-  override def genConst2(shapeGen: Gen[S2], valueGen: Gen[Double]): Gen[Const2] = {
+  override def genConst2(shapeGen: Gen[Shape[_2]], valueGen: Gen[Double]): Gen[Const[_2]] = {
     for {
       s   <- shapeGen
       mat <- genStdMatWithShape(s, valueGen)
-    } yield Const2(StdMatrix(mat), s)
+    } yield Const[_2](StdMatrix(mat))
   }
 
 }

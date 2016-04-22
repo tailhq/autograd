@@ -1,30 +1,79 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.N1
+import shapeless.Nat.{_0, _1, _2}
+import shapeless.ops.nat.LT.<
+import shapeless.{Nat, Sized}
+
 
 /**
   * containers used for carrying
   * tensor shape (dimensions for each axis) parameter(s).
   */
-trait Shape
+class Shape[N <: Nat](shape: Sized[List[Int], N]) {
 
-case class Shape0() extends Shape
+  override def toString: String = {
+    val o = order
+    val s = underlying.mkString(", ")
+    s"Shape(order=$o, shape=($s))"
+  }
 
-// default shape is a column vector
-case class Shape1(_1: Int, transposed: Boolean = false) extends Shape
+  def at(i: Int): Int = shape.unsized(i)
 
-case class Shape2(_1: Int, _2: Int) extends Shape
+  def underlying: List[Int] = shape.unsized
+
+  def extend[M <: Nat, O <: Nat](other: Shape[M]): Shape[O] = {
+    val extend = underlying ++ other.underlying
+    new Shape[O](Sized.wrap[List[Int], O](extend))
+  }
+
+  def shrink[O <: Nat](axes: List[Int]): Shape[O] = {
+    val shrunk = for (
+      (s, i) <- underlying.zipWithIndex
+      if !axes.contains(i)
+    ) yield s
+    new Shape[O](Sized.wrap[List[Int], O](shrunk))
+  }
+
+  def order: Int = shape.unsized.length
+
+  def hasSamePrefixWith[M <: Nat](s: Shape[M]): Boolean = {
+    underlying.take(s.order).zip(s.underlying).forall { case (i, j) => i == j }
+  }
+
+  def ==[M <: Nat](other: Shape[M]): Boolean = {
+    order == other.order && underlying.zip(other.underlying).forall { case (i, j) => i == j }
+  }
+
+  def !=[M <: Nat](other: Shape[M]): Boolean = !(this == other)
+}
 
 
-/**
-  * shorthands for making Shape2 from two Shape1
-  */
-object Shape2 {
+object Shape {
 
-  def apply(row: Shape1, col: Shape1): Shape2 = Shape2(row._1, col._1)
-  def apply(row: N1, col: N1): Shape2 = Shape2(row.shape._1, col.shape._1)
+  def apply[N <: Nat](underlying: List[Int]): Shape[N] = {
+    new Shape[N](Sized.wrap[List[Int], N](underlying))
+  }
 
 }
 
 
-// Future work: case class Shape[K <: Nat](s: Sized[Seq[Int], K]) extends Shape
+object Shape0 {
+
+  def apply(): Shape[_0] = new Shape[_0](Sized[List]())
+
+}
+
+
+object Shape1 {
+
+  def apply(l: Int): Shape[_1] = new Shape[_1](Sized[List](l))
+
+}
+
+
+object Shape2 {
+
+  def apply(r: Int, c: Int): Shape[_2] = Shape[_2](Sized[List](r, c))
+
+}
+

@@ -3,7 +3,7 @@ package com.kogecoo.scalaad.test.helper.impl.std
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.impl.std.StdUtil
-import com.kogecoo.scalaad.impl.std.StdUtil.{T0, T1, T2}
+import com.kogecoo.scalaad.impl.std.{T0, T1, T2}
 
 
 
@@ -45,10 +45,10 @@ object Implicits {
   }
 
 
-  implicit class N0Ops(val self: N0) extends AnyVal { def toT0: T0 = self.eval[T0] }
+  implicit class N0Ops(val self: V0) extends AnyVal { def toT0: T0 = self.eval[T0] }
 
-  implicit class N1Ops(val self: N1) extends AnyVal { def toT1: T1 = self.eval[T1] }
+  implicit class N1Ops(val self: V1) extends AnyVal { def toT1: T1 = self.eval[T1] }
 
-  implicit class N2Ops(val self: N2) extends AnyVal { def toT2: T2 = self.eval[T2] }
+  implicit class N2Ops(val self: V2) extends AnyVal { def toT2: T2 = self.eval[T2] }
 
 }

@@ -1,56 +1,42 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad._
+import shapeless.Nat
+import shapeless.Nat._1
 
 
-trait ConstNode0 extends N0 { override val shape: S0 = Shape0() }
+// These constant Expr are shorthanded expression of Apply0[N](NullaryOp)
 
-trait ConstNode1 extends N1
+trait ConstBase[N <: Nat] extends V[N] {
 
-trait ConstNode2 extends N2
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = Zero(shape.extend(wrt.shape))
 
+  def _reverse[G <: Nat](adj: V[G]): Grad[G] = Grad.empty[G]
 
-case class Const0(data: Tensor0) extends ConstNode0
-
-case class Const1(data: Tensor1, shape: S1) extends ConstNode1
-
-case class Const2(data: Tensor2, shape: S2) extends ConstNode2
+}
 
 
-case class One0() extends ConstNode0
+case class Zero[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
-case class One1(shape: S1) extends ConstNode1
+case class Half[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
-case class One2(shape: S2) extends ConstNode2
+case class One[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
-case class Eye2(shape: S2) extends ConstNode2
-
-
-case class Zero0() extends ConstNode0
-
-case class Zero1(shape: S1) extends ConstNode1
-
-case class Zero2(shape: S2) extends ConstNode2
+case class Two[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
 
-case class Half0() extends ConstNode0
+case class Const[N <: Nat](v: Tensor[N]) extends ConstBase[N] { def shape: Shape[N] = v.shape }
 
-case class Half1(shape: S1) extends ConstNode1
-
-case class Half2(shape: S2) extends ConstNode2
-
-
-object One1 { def apply(n: N1): One1 = One1(n.shape) }
-
-object One2 { def apply(n: N2): One2 = One2(n.shape) }
+@throws[Exception]
+case class Eye[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
 
-object Zero1 { def apply(n: N1): Zero1 = Zero1(n.shape) }
+@throws[Exception]
+case class Diag[N <: Nat](diag: Tensor[_1], order: Int) extends ConstBase[N] {
 
-object Zero2 { def apply(n: N2): Zero2 = Zero2(n.shape) }
+  if (shape.order < 1) throw new Exception(s"Eye requires Shape with order N >= 2")
 
+  def shape: Shape[N] = Shape[N](List.fill(order)(diag.shape.at(0)))
 
-object Half1 { def apply(n: N1): Half1 = Half1(n.shape) }
-
-object Half2 { def apply(n: N2): Half2 = Half2(n.shape) }
+}
 
