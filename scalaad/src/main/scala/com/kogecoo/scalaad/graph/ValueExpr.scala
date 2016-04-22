@@ -1,42 +1,43 @@
 package com.kogecoo.scalaad.graph
 
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.algorithm.{Grad, Eval, Forward, Reverse}
+import com.kogecoo.scalaad.algorithm.{Eval, Forward, Grad, Reverse}
+import com.kogecoo.scalaad.op.{Add00, Div00, Dot11, Eq00, Gt00, Gte00, Lt00, Lte00, MatMul22, Mul00, Neg0, Neq00, Pos0, Sub00}
+import com.kogecoo.scalaad.{Shape, ShapeCheckException}
 
 // g -> adjoint
 // type dynamic http://seratch.hatenablog.jp/entry/2013/03/28/210928
 // A.reverse(B) need to satisfy A.size == B.size when A and B are N1
-trait Node[S <: Shape] {
+trait ValueExpr[S <: Shape]  extends Expr[S]{
   val shape: S
-  def forward[W, O](w: W)(implicit F: Forward[Node[S], W, O]): O = F.forward(this, w)
-  def reverse[G](g: G)(implicit R: Reverse[Node[S], G]): Grad = R.reverse(this, g)
+  def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
+  def reverse[G](g: G)(implicit R: Reverse[ValueExpr[S], G]): Grad = R.reverse(this, g)
 
-  def eval[V](implicit E: Eval[Node[S], V]): V = E.eval(this)
-  def grad(implicit R: Reverse[Node[S], N0]): Grad = reverse[N0](One0())
+  def eval[V](implicit E: Eval[ValueExpr[S], V]): V = E.eval(this)
+  def grad(implicit R: Reverse[ValueExpr[S], N0]): Grad = reverse[N0](One0())
 }
 
 
-object Node {
+object ValueExpr {
 
   implicit class Node0Op(val self: N0) extends AnyVal {
-    def +(rhs: N0): Add00 = Add00(self, rhs)
-    def -(rhs: N0): Sub00 = Sub00(self, rhs)
-    def *(rhs: N0): Mul00 = Mul00(self, rhs)
-    def /(rhs: N0): Div00 = Div00(self, rhs)
+    def +(rhs: N0): N0 = Apply00(self, rhs, Add00)
+    def -(rhs: N0): N0 = Apply00(self, rhs, Sub00)
+    def *(rhs: N0): N0 = Apply00(self, rhs, Mul00)
+    def /(rhs: N0): N0 = Apply00(self, rhs, Div00)
 
-    def :+(rhs: N1): Add01 = Add01(self, rhs)
-    def :-(rhs: N1): Sub01 = Sub01(self, rhs)
-    def :*(rhs: N1): Mul01 = Mul01(self, rhs)
-    def :/(rhs: N1): Div01 = Div01(self, rhs)
+    def :+(rhs: N1): N1 = Broadcast01(self, rhs, Add00)
+    def :-(rhs: N1): N1 = Broadcast01(self, rhs, Sub00)
+    def :*(rhs: N1): N1 = Broadcast01(self, rhs, Mul00)
+    def :/(rhs: N1): N1 = Broadcast01(self, rhs, Div00)
 
-    def :+(rhs: N2): Add02 = Add02(self, rhs)
-    def :-(rhs: N2): Sub02 = Sub02(self, rhs)
-    def :*(rhs: N2): Mul02 = Mul02(self, rhs)
-    def :/(rhs: N2): Div02 = Div02(self, rhs)
+    def :+(rhs: N2): N2 = Broadcast02(self, rhs, Add00)
+    def :-(rhs: N2): N2 = Broadcast02(self, rhs, Sub00)
+    def :*(rhs: N2): N2 = Broadcast02(self, rhs, Mul00)
+    def :/(rhs: N2): N2 = Broadcast02(self, rhs, Div00)
 
-    def unary_+(): Pos0 = Pos0(self)
-    def unary_-(): Neg0 = Neg0(self)
+    def unary_+(): N0 = Apply0(self, Pos0)
+    def unary_-(): N0 = Apply0(self, Neg0)
 
     def ==(rhs: N0): B0 = Eq00 (self, rhs)
     def !=(rhs: N0): B0 = Neq00(self, rhs)
@@ -74,24 +75,24 @@ object Node {
       }
     }
 
-    def +(rhs: N1): Add11 = { check(rhs, Add11.toString); Add11(self, rhs) }
-    def -(rhs: N1): Sub11 = { check(rhs, Sub11.toString); Sub11(self, rhs) }
-    def *(rhs: N1): Mul11 = { check(rhs, Mul11.toString); Mul11(self, rhs) }
-    def /(rhs: N1): Div11 = { check(rhs, Div11.toString); Div11(self, rhs) }
+    def +(rhs: N1): N1 = { check(rhs, "Add11"); Elementwise11(self, rhs, Add00) }
+    def -(rhs: N1): N1 = { check(rhs, "Sub11"); Elementwise11(self, rhs, Sub00) }
+    def *(rhs: N1): N1 = { check(rhs, "Mul11"); Elementwise11(self, rhs, Mul00) }
+    def /(rhs: N1): N1 = { check(rhs, "Div11"); Elementwise11(self, rhs, Div00) }
     def dot(rhs: N1): Dot11 = { check(rhs, Dot11.toString); Dot11(self, rhs) }
 
-    def :+(rhs: N0): Add10 = Add10(self, rhs)
-    def :-(rhs: N0): Sub10 = Sub10(self, rhs)
-    def :*(rhs: N0): Mul10 = Mul10(self, rhs)
-    def :/(rhs: N0): Div10 = Div10(self, rhs)
+    def :+(rhs: N0): Broadcast10 = Broadcast10(self, rhs, Add00)
+    def :-(rhs: N0): Broadcast10 = Broadcast10(self, rhs, Sub00)
+    def :*(rhs: N0): Broadcast10 = Broadcast10(self, rhs, Mul00)
+    def :/(rhs: N0): Broadcast10 = Broadcast10(self, rhs, Div00)
 
-    def :+(rhs: N2)(implicit d: DummyImplicit): Add12 = { check(rhs, Add12.toString); Add12(self, rhs) }
-    def :-(rhs: N2)(implicit d: DummyImplicit): Sub12 = { check(rhs, Sub12.toString); Sub12(self, rhs) }
-    def :*(rhs: N2)(implicit d: DummyImplicit): Mul12 = { check(rhs, Mul12.toString); Mul12(self, rhs) }
-    def :/(rhs: N2)(implicit d: DummyImplicit): Div12 = { check(rhs, Div12.toString); Div12(self, rhs) }
+    def :+(rhs: N2)(implicit d: DummyImplicit): N2 = { check(rhs, "Add12"); Broadcast02(self, rhs, Add00) }
+    def :-(rhs: N2)(implicit d: DummyImplicit): N2 = { check(rhs, "Sub12"); Broadcast02(self, rhs, Sub00) }
+    def :*(rhs: N2)(implicit d: DummyImplicit): N2 = { check(rhs, "Mul12"); Broadcast02(self, rhs, Mul00) }
+    def :/(rhs: N2)(implicit d: DummyImplicit): N2 = { check(rhs, "Div12"); Broadcast02(self, rhs, Div00) }
 
-    def unary_+(): Pos1 = Pos1(self)
-    def unary_-(): Neg1 = Neg1(self)
+    def unary_+(): Elementwise1 = Elementwise1(self, Pos0)
+    def unary_-(): Elementwise1 = Elementwise1(self, Neg0)
     def T: N1 = self match {
       case Transpose1(v) => v
       case v             => Transpose1(v)
@@ -138,22 +139,22 @@ object Node {
       if (self.shape._2 != rhs.shape._1) throw new ShapeCheckException(self, rhs, op)
     }
 
-    def +(rhs: N2): Add22 = { check(rhs, Add22.toString); Add22(self, rhs) }
-    def -(rhs: N2): Sub22 = { check(rhs, Sub22.toString); Sub22(self, rhs) }
-    def *(rhs: N2): Mul22 = { check(rhs, Mul22.toString); Mul22(self, rhs) }
-    def /(rhs: N2): Div22 = { check(rhs, Div22.toString); Div22(self, rhs) }
+    def +(rhs: N2): N2 = { check(rhs, "Add22"); Elementwise22(self, rhs, Add00) }
+    def -(rhs: N2): N2 = { check(rhs, "Sub22"); Elementwise22(self, rhs, Sub00) }
+    def *(rhs: N2): N2 = { check(rhs, "Mul22"); Elementwise22(self, rhs, Mul00) }
+    def /(rhs: N2): N2 = { check(rhs, "Div22"); Elementwise22(self, rhs, Div00) }
 
-    def :+(rhs: N0): Add20 = Add20(self, rhs)
-    def :-(rhs: N0): Sub20 = Sub20(self, rhs)
-    def :*(rhs: N0): Mul20 = Mul20(self, rhs)
-    def :/(rhs: N0): Div20 = Div20(self, rhs)
+    def :+(rhs: N0): N2 = Broadcast02(self, rhs, Add00)
+    def :-(rhs: N0): N2 = Broadcast02(self, rhs, Sub00)
+    def :*(rhs: N0): N2 = Broadcast02(self, rhs, Mul00)
+    def :/(rhs: N0): N2 = Broadcast02(self, rhs, Div00)
 
-    def :+(rhs: N1)(implicit d: DummyImplicit): Add21 = { check(rhs, Add21.toString); Add21(self, rhs) }
-    def :-(rhs: N1)(implicit d: DummyImplicit): Sub21 = { check(rhs, Sub21.toString); Sub21(self, rhs) }
-    def :*(rhs: N1)(implicit d: DummyImplicit): Mul21 = { check(rhs, Mul21.toString); Mul21(self, rhs) }
-    def :/(rhs: N1)(implicit d: DummyImplicit): Div21 = { check(rhs, Div21.toString); Div21(self, rhs) }
+    def :+(rhs: N1)(implicit d: DummyImplicit): N2 = { check(rhs, "Add21"); Broadcast12(self, rhs, Add00) }
+    def :-(rhs: N1)(implicit d: DummyImplicit): N2 = { check(rhs, "Sub21"); Broadcast12(self, rhs, Sub00) }
+    def :*(rhs: N1)(implicit d: DummyImplicit): N2 = { check(rhs, "Mul21"); Broadcast12(self, rhs, Mul00) }
+    def :/(rhs: N1)(implicit d: DummyImplicit): N2 = { check(rhs, "Div21"); Broadcast12(self, rhs, Div00) }
 
-    def matmul(rhs: N2): MatMul22 = { matmulCheck(rhs, MatMul22.toString()); MatMul22(self, rhs) }
+    def matmul(rhs: N2): N2 = { matmulCheck(rhs, MatMul22.toString()); MatMul22(self, rhs) }
 
     def unary_+(): Pos2 = Pos2(self)
     def unary_-(): Neg2 = Neg2(self)
@@ -187,7 +188,4 @@ object Node {
 
 }
 
-class ShapeCheckException(a: Node[_], b: Node[_], op: String)
-  extends Exception(
-    s"$op cannot applicable for variables with shape pair ${a.shape} and ${b.shape}"
-  )
+

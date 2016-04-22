@@ -2,6 +2,7 @@ package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.Shape2
 import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.op.{Ln0, _}
 
 import scala.Predef.{any2stringadd => _}
 
@@ -13,22 +14,22 @@ trait Forward[N, W, O] {
 }
 
 /**
-  Supported combinations of Node's tensor order (shape)
-
-  1st:  Node order which will be differentiated
-  2nd:  Node order which differentiate with respect to
-  3rd:  Node order represents differentiated node (output node)
-       with 1st with respect to node with 2nd.
-       (shape of output Node is simply determined by sum of lefts)
-
-  0 0 0
-  0 1 1
-  0 2 2
-  1 0 1
-  1 1 2
-  2 0 2
-
-**/
+  * Supported combinations of Node's tensor order (shape)
+  **
+  *1st:  Node order which will be differentiated
+  *2nd:  Node order which differentiate with respect to
+  *3rd:  Node order represents differentiated node (output node)
+  *with 1st with respect to node with 2nd.
+  *(shape of output Node is simply deExprined by sum of lefts)
+  **
+  *0 0 0
+  *0 1 1
+  *0 2 2
+  *1 0 1
+  *1 1 2
+  *2 0 2
+  *
+  **/
 object Forward {
 
   implicit def forward000: Forward[N0, N0, N0] = new Forward[N0, N0, N0] {
@@ -48,37 +49,52 @@ object Forward {
       case _: One0    => Zero0()
       case _: Const0  => Zero0()
 
-      case Pos0(v) => +v.forward[W, O](wrt)
-      case Neg0(v) => -v.forward[W, O](wrt)
+      case Apply0(v, op) => op match {
+        case Pos0 => +v.forward[W, O](wrt)
+        case Neg0 => -v.forward[W, O](wrt)
 
-      case Add00(l, r) => l.forward[W, O](wrt) + r.forward[W, O](wrt)
-      case Sub00(l, r) => l.forward[W, O](wrt) - r.forward[W, O](wrt)
-      case Mul00(l, r) => l.forward[W, O](wrt) * r + l * r.forward[W, O](wrt)
-      case Div00(l, r) => l.forward[W, O](wrt) / r - ((l * r.forward[W, O](wrt)) / (r * r))
+        case Sin0 => v.forward[W, O](wrt) *  Apply0(v, Cos0)
+        case Cos0 => v.forward[W, O](wrt) * -Apply0(v, Sin0)
+        case Tan0 => v.forward[W, O](wrt) * (One0() + Apply0(v, Tan0) * Apply0(v, Tan0))
 
-      case Sin0(v) => v.forward[W, O](wrt) *  Cos0(v)
-      case Cos0(v) => v.forward[W, O](wrt) * -Sin0(v)
-      case Tan0(v) => v.forward[W, O](wrt) * (One0() + (Tan0(v) * Tan0(v)))
+        case Asin0 => v.forward[W, O](wrt) *  (One0() / Apply0(One0() - (v * v), Sqrt0))
+        case Acos0 => v.forward[W, O](wrt) * -(One0() / Apply0(One0() - (v * v), Sqrt0))
+        case Atan0 => v.forward[W, O](wrt) *  (One0() / (One0() + (v * v)))
 
-      case Asin0(v) => v.forward[W, O](wrt) *  (One0() / Sqrt0(One0() - (v * v)))
-      case Acos0(v) => v.forward[W, O](wrt) * -(One0() / Sqrt0(One0() - (v * v)))
-      case Atan0(v) => v.forward[W, O](wrt) *  (One0() / (One0() + (v * v)))
+        case Sinh0 => v.forward[W, O](wrt) * Apply0(v, Cosh0)
+        case Cosh0 => v.forward[W, O](wrt) * Apply0(v, Sinh0)
+        case Tanh0 => v.forward[W, O](wrt) * (One0()  - Apply0(v, Tanh0) * Apply0(v, Tanh0))
 
-      case Sinh0(v) => v.forward[W, O](wrt) * Cosh0(v)
-      case Cosh0(v) => v.forward[W, O](wrt) * Sinh0(v)
-      case Tanh0(v) => v.forward[W, O](wrt) * (One0()  - (Tanh0(v) * Tanh0(v)))
+        case Ln0      => v.forward[W, O](wrt) / v
+        case Exp0     => v.forward[W, O](wrt) * Apply0(v, Exp0)
+        case Sqrt0    => v.forward[W, O](wrt) * (Half0() / Apply0(v, Sqrt0))
 
-      case Ln0(v)      => v.forward[W, O](wrt) / v
-      case Exp0(v)     => v.forward[W, O](wrt) * Exp0(v)
-      case Sqrt0(v)    => v.forward[W, O](wrt) * (Half0() / Sqrt0(v))
-      case Pow00(l, r) => (l.forward[W, O](wrt) * (r * Pow00(l, r - One0()))) + (Ln0(l) * Pow00(l, r) * r.forward(wrt))
+        case Abs0     => Where0_0(v > Zero0(), v.forward[W, O](wrt), -v.forward[W, O](wrt))
+      }
 
-      // Experimental
-      case Dot11(l, r) => Dot11(l.forward[W, O1](wrt), r) + Dot11(l, r.forward[W, O1](wrt))
+      case Apply00(l, r, op) => op match {
+        case Add00 => l.forward[W, O](wrt) + r.forward[W, O](wrt)
+        case Sub00 => l.forward[W, O](wrt) - r.forward[W, O](wrt)
+        case Mul00 => l.forward[W, O](wrt) * r + l * r.forward[W, O](wrt)
+        case Div00 => l.forward[W, O](wrt) / r - ((l * r.forward[W, O](wrt)) / (r * r))
+        case Pow00 => {
+          val lhs = l.forward[W, O](wrt) * (r * Apply00(l, r - One0(), Pow00))
+          val rhs = Apply0(l, Ln0) * Apply00(l, r, Pow00) * r.forward(wrt)
+          lhs + rhs
+        }
 
-      case Abs0(v)     => Where0_0(v > Zero0(), v.forward[W, O](wrt), -v.forward[W, O](wrt))
-      case Max00(l, r) => Where0_0(l > r, l.forward[W, O](wrt), r.forward[W, O](wrt))
-      case Min00(l, r) => Where0_0(l < r, l.forward[W, O](wrt), r.forward[W, O](wrt))
+        // Experimental
+
+        case Max00 => Where0_0(l > r, l.forward[W, O](wrt), r.forward[W, O](wrt))
+        case Min00 => Where0_0(l < r, l.forward[W, O](wrt), r.forward[W, O](wrt))
+
+      }
+
+      case Fold11(l, r, op) => op match {
+        case Dot11 => Dot11(l.forward[W, O1](wrt), r) + Dot11(l, r.forward[W, O1](wrt))
+      }
+
+
 
     }
   }

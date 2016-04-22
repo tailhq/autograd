@@ -1,17 +1,20 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad._
+import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.op.{And00, Not0, Or00}
 
-trait BoolNode[S <: Shape] {
+
+trait BooleanExpr[S <: Shape] extends Expr[S] {
 
   val shape: S
 
-  def eval[V](implicit E: Eval[BoolNode[S], V]): V = E.eval(this)
+  def eval[V](implicit E: Eval[BooleanExpr[S], V]): V = E.eval(this)
 
 }
 
-object BoolNode {
+
+object BooleanExpr {
 
   implicit class BoolNode0Op(val self: B0) extends AnyVal {
 
@@ -59,10 +62,4 @@ object BoolNode {
   }
 
 }
-
-case class Bool0(data: BoolTensor0) extends B0 { override val shape: S0 = Shape0() }
-
-case class Bool1(data: BoolTensor1, shape: S1) extends B1
-
-case class Bool2(data: BoolTensor2, shape: S2) extends B2
 

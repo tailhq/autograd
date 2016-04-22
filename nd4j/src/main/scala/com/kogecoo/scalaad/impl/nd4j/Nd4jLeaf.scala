@@ -13,7 +13,7 @@ trait Nd4jLeaf {
   object Var {
 
     def apply(data: Double): Var0 = Var0(StdScalar(data))
-    def apply(data: INDArray): Node[_ <: Shape] = data.shape().size match {
+    def apply(data: INDArray): ValueExpr[_ <: Shape] = data.shape().size match {
       case 1 => Var1(Nd4jVector(data), Shape1(data.shape()(0)))
       case 2 => Var2(Nd4jMatrix(data), Shape2(data.rows(), data.columns()))
       case o => throw new UnsupportedTensorOrder(o)
@@ -24,7 +24,7 @@ trait Nd4jLeaf {
   object Const {
 
     def apply(data: Double): Const0 = Const0(StdScalar(data))
-    def apply(data: INDArray): Node[_ <: Shape] = data.shape().size match {
+    def apply(data: INDArray): ValueExpr[_ <: Shape] = data.shape().size match {
       case 1 => Const1(Nd4jVector(data), Shape1(data.shape()(0)))
       case 2 => Const2(Nd4jMatrix(data), Shape2(data.rows(), data.columns()))
       case o => throw new UnsupportedTensorOrder(o)
@@ -39,7 +39,7 @@ trait Nd4jLeaf {
   implicit def fromFloat(v: Float):   Const0 = Const(v.toDouble)
   implicit def fromDouble(v: Double): Const0 = Const(v)
 
-  implicit def fromINDArray(v: INDArray): Node[_] = Const(v)
+  implicit def fromINDArray(v: INDArray): ValueExpr[_] = Const(v)
 
 }
 

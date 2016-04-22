@@ -11,7 +11,7 @@ trait Shape
 case class Shape0() extends Shape
 
 // default shape is a column vector
-case class Shape1(_1: Int, transposed: Boolean = false) extends Shape
+case class Shape1(_1: Int) extends Shape
 
 case class Shape2(_1: Int, _2: Int) extends Shape
 

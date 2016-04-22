@@ -3,7 +3,7 @@ package com.kogecoo.scalaad.impl.std
 import com.kogecoo.scalaad.graph._
 
 
-trait StdMath {
+trait StdMath {/*
 
   object sin {
     def apply(n: N0): Sin0 = Sin0(n)
@@ -88,5 +88,5 @@ trait StdMath {
     def apply(l: N2, r: N1): Pow21 = Pow21(l, r)
     def apply(l: N2, r: N2): Pow22 = Pow22(l, r)
   }
-
+*/
 }

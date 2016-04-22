@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad.test.node.unary
 
-import com.kogecoo.scalaad.graph.{Ln0, N0, Var0}
+import com.kogecoo.scalaad.graph.{N0, Var0}
+import com.kogecoo.scalaad.op.Ln0
 import com.kogecoo.scalaad.test.{SpecBackend, StdSpecBackend}
 import org.scalacheck.{Gen, Properties}
 

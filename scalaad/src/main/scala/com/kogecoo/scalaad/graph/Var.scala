@@ -4,9 +4,9 @@ import com.kogecoo.scalaad.{Shape0, Tensor2, Tensor1, Tensor0}
 
 trait VarNode0 extends N0 { override val shape: S0 = Shape0() }
 
-trait VarNode1 extends N1 { def isFunctionOf(n: Node[_]): Boolean = this == n }
+trait VarNode1 extends N1 { def isFunctionOf(n: ValueExpr[_]): Boolean = this == n }
 
-trait VarNode2 extends N2 { def isFunctionOf(n: Node[_]): Boolean = this == n }
+trait VarNode2 extends N2 { def isFunctionOf(n: ValueExpr[_]): Boolean = this == n }
 
 
 case class Var0(data: Tensor0) extends VarNode0
