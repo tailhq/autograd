@@ -27,7 +27,7 @@ abstract class N1Gen[V] {
 
   // composite
 
-  final def genNode1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[N1] = {
+  final def genNode1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[V1] = {
     oneOf(
       genVar1(shapeGen, valueGen),
       genConst1(shapeGen, valueGen),
@@ -37,7 +37,7 @@ abstract class N1Gen[V] {
     )
   }
 
-  final def genNonVar1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[N1] = {
+  final def genNonVar1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[V1] = {
     oneOf(
       genConst1(shapeGen, valueGen),
       genZero1(shapeGen),
@@ -46,7 +46,7 @@ abstract class N1Gen[V] {
     )
   }
 
-  final def genNonzeroNode1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[N1] = {
+  final def genNonzeroNode1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[V1] = {
     Gen.oneOf(
       genVar1(shapeGen, valueGen),
       genConst1(shapeGen, valueGen),
@@ -55,7 +55,7 @@ abstract class N1Gen[V] {
     )
   }
 
-  final def genNonzeroNonVar1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[N1] = {
+  final def genNonzeroNonVar1(shapeGen: Gen[S1], valueGen: Gen[V]): Gen[V1] = {
     Gen.oneOf(
       genConst1(shapeGen, valueGen),
       genHalf1(shapeGen),

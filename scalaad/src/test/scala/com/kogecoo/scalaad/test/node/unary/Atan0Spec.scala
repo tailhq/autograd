@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.test.node.unary
 
-import com.kogecoo.scalaad.graph.N0
+import com.kogecoo.scalaad.graph.V0
 import com.kogecoo.scalaad.op.Atan0
 import com.kogecoo.scalaad.test.{SpecBackend, StdSpecBackend}
 import org.scalacheck.Properties
@@ -10,7 +10,7 @@ object StdAtan0Spec extends Properties("Atan0") with Atan0Spec with StdSpecBacke
 
   import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
 
-  override def expectApplyOp(a: N0): T0 = math.atan(a.toT0)
+  override def expectApplyOp(a: V0): T0 = math.atan(a.toT0)
 
   override def deriv(a: T0): T0 = 1.0 / (1.0 + a * a)
 
@@ -23,7 +23,7 @@ object StdAtan0Spec extends Properties("Atan0") with Atan0Spec with StdSpecBacke
 
 trait Atan0Spec extends UnaryOp0SpecBase { self: Properties with SpecBackend =>
 
-  override def op(a: N0): N0 = Atan0(a)
+  override def op(a: V0): V0 = Atan0(a)
 
   override def op(argStr: String): String = s"atan($argStr)"
 

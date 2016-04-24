@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.ValueExpr$
+import com.kogecoo.scalaad.graph.ValueExpr
+
 
 class ShapeCheckException(a: ValueExpr[_], b: ValueExpr[_], op: String)
   extends Exception(

@@ -32,10 +32,10 @@ trait Reverse[N, G] {
 object Reverse {
 
 
-  implicit def reverse00: Reverse[N0, N0] = new Reverse[N0, N0] {
+  implicit def reverse00: Reverse[V0, V0] = new Reverse[V0, V0] {
 
-    private[this] type N = N0
-    private[this] type G = N0
+    private[this] type N = V0
+    private[this] type G = V0
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -86,11 +86,11 @@ object Reverse {
     }
   }
 
-  implicit def reverse01: Reverse[N0, N1] = new Reverse[N0, N1] {
+  implicit def reverse01: Reverse[V0, V1] = new Reverse[V0, V1] {
 
-    private[this] type N = N0
-    private[this] type G = N1
-    private[this] type G0 = N0
+    private[this] type N = V0
+    private[this] type G = V1
+    private[this] type G0 = V0
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -141,10 +141,10 @@ object Reverse {
     }
   }
 
-  implicit def reverse02: Reverse[N0, N2] = new Reverse[N0, N2] {
+  implicit def reverse02: Reverse[V0, V2] = new Reverse[V0, V2] {
 
-    private[this] type N  = N0
-    private[this] type G  = N2
+    private[this] type N  = V0
+    private[this] type G  = V2
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -191,11 +191,11 @@ object Reverse {
     }
   }
 
-  implicit def reverse10: Reverse[N1, N0] = new Reverse[N1, N0] {
+  implicit def reverse10: Reverse[V1, V0] = new Reverse[V1, V0] {
 
-    private[this] type N  = N1
-    private[this] type G  = N0
-    private[this] type G1 = N1
+    private[this] type N  = V1
+    private[this] type G  = V0
+    private[this] type G1 = V1
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -266,11 +266,11 @@ object Reverse {
     }
   }
 
-  implicit def reverse11: Reverse[N1, N1] = new Reverse[N1, N1] {
+  implicit def reverse11: Reverse[V1, V1] = new Reverse[V1, V1] {
 
-    private[this] type N = N1
-    private[this] type G = N1
-    private[this] type G2 = N2
+    private[this] type N = V1
+    private[this] type G = V1
+    private[this] type G2 = V2
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -340,17 +340,17 @@ object Reverse {
       case Max11(l, r) => Grad.where(Gt11(l, r),       l.reverse[G](g), r.reverse[G]( g))
       case Min11(l, r) => Grad.where(Lt11(l, r),       l.reverse[G](g), r.reverse[G]( g))
 
-      case MatMulR12(l, r) if g.shape.transposed => l.reverse[G](MatMulR12(g  , r)) ++ r.reverse[N0](Dot11(l, g))
-      case MatMulR12(l, r)                       => l.reverse[G](MatMulR12(g.T, r)) ++ r.reverse[N0](Dot11(l, g))
-      case MatMul2C1(l, r) if g.shape.transposed => l.reverse[N0](Dot11(g, r))      ++ r.reverse[G](MatMul2C1(l, g.T))
-      case MatMul2C1(l, r)                       => l.reverse[N0](Dot11(g, r))      ++ r.reverse[G](MatMul2C1(l, g))
+      case MatMulR12(l, r) if g.shape.transposed => l.reverse[G](MatMulR12(g  , r)) ++ r.reverse[V0](Dot11(l, g))
+      case MatMulR12(l, r)                       => l.reverse[G](MatMulR12(g.T, r)) ++ r.reverse[V0](Dot11(l, g))
+      case MatMul2C1(l, r) if g.shape.transposed => l.reverse[V0](Dot11(g, r))      ++ r.reverse[G](MatMul2C1(l, g.T))
+      case MatMul2C1(l, r)                       => l.reverse[V0](Dot11(g, r))      ++ r.reverse[G](MatMul2C1(l, g))
     }
   }
 
-  implicit def reverse12: Reverse[N1, N2] = new Reverse[N1, N2] {
+  implicit def reverse12: Reverse[V1, V2] = new Reverse[V1, V2] {
 
-    private[this] type N = N1
-    private[this] type G = N2
+    private[this] type N = V1
+    private[this] type G = V2
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -418,18 +418,18 @@ object Reverse {
       case Max11(l, r) => Grad.where(Gt11(l, r),       l.reverse[G](g), r.reverse[G]( g))
       case Min11(l, r) => Grad.where(Lt11(l, r),       l.reverse[G](g), r.reverse[G]( g))
 
-      case MatMulR12(l, r) => l.reverse[G](MatMul22(g, r))  ++ r.reverse[N1](MatMulR12(l, g.T))
-      case MatMul2C1(l, r) => l.reverse[N1](MatMul2C1(g, r)) ++ r.reverse[G](MatMul22(l, g.T))
+      case MatMulR12(l, r) => l.reverse[G](MatMul22(g, r))  ++ r.reverse[V1](MatMulR12(l, g.T))
+      case MatMul2C1(l, r) => l.reverse[V1](MatMul2C1(g, r)) ++ r.reverse[G](MatMul22(l, g.T))
 
       case VecFill(v, s) => v.reverse[G](g)
     }
   }
 
-  implicit def reverse20: Reverse[N2, N0] = new Reverse[N2, N0] {
+  implicit def reverse20: Reverse[V2, V0] = new Reverse[V2, V0] {
 
-    private[this] type N  = N2
-    private[this] type G  = N0
-    private[this] type G2 = N2
+    private[this] type N  = V2
+    private[this] type G  = V0
+    private[this] type G2 = V2
 
     def reverse(n: N, g: G): Grad = n match {
       // Leaf nodes
@@ -498,11 +498,11 @@ object Reverse {
     }
   }
 
-  implicit def reverse21: Reverse[N2, N1] = new Reverse[N2, N1] {
+  implicit def reverse21: Reverse[V2, V1] = new Reverse[V2, V1] {
 
-    private[this] type N  = N2
-    private[this] type G  = N1
-    private[this] type G2 = N2
+    private[this] type N  = V2
+    private[this] type G  = V1
+    private[this] type G2 = V2
 
     def reverse(n: N, g: G): Grad = n match {
 
@@ -575,10 +575,10 @@ object Reverse {
     }
   }
 
-  implicit def reverse22: Reverse[N2, N2] = new Reverse[N2, N2] {
+  implicit def reverse22: Reverse[V2, V2] = new Reverse[V2, V2] {
 
-    private[this] type N = N2
-    private[this] type G = N2
+    private[this] type N = V2
+    private[this] type G = V2
 
     def reverse(n: N, g: G): Grad = n match {
 

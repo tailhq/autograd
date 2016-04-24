@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.test.node.unary
 
-import com.kogecoo.scalaad.graph.{Acos2, N1, N2, Var2}
+import com.kogecoo.scalaad.graph.{Acos2, V1, V2, Var2}
 import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
 import com.kogecoo.scalaad.test.helper.impl.std.StdValueGen
 import com.kogecoo.scalaad.test.{SpecBackend, StdSpecBackend}
@@ -9,7 +9,7 @@ import org.scalacheck.{Gen, Properties}
 
 object StdAcos2Spec extends Properties("Acos2") with Acos2Spec with StdSpecBackend {
 
-  override def expectApplyOp(a: N2): T2 = broadcast2(a.toT2, math.acos)
+  override def expectApplyOp(a: V2): T2 = broadcast2(a.toT2, math.acos)
 
   override def deriv(a: T0): T0 = -1.0 / math.sqrt(1.0 - a * a)
 
@@ -31,25 +31,25 @@ trait Acos2Spec extends UnaryOp2SpecBase { self: Properties with SpecBackend =>
 
   override def op(a: String): String = s"acos($a)"
 
-  override def op(a: N2): N2 = Acos2(a)
+  override def op(a: V2): V2 = Acos2(a)
 
   // exclude One1 node
   override def genArgV2ForSpecBase: Gen[Var2] = genV2(value = domain)
 
-  override def genArgN2ForSpecBase: Gen[N2] = Gen.oneOf(
+  override def genArgN2ForSpecBase: Gen[V2] = Gen.oneOf(
     genV2(value = domain),
     genConst2(value = domain),
     genHalf2(),
     genZero2()
   )
 
-  override def genArgNV2ForSpecBase: Gen[N2] = Gen.oneOf(
+  override def genArgNV2ForSpecBase: Gen[V2] = Gen.oneOf(
     genConst2(value = domain),
     genHalf2(),
     genZero2()
   )
 
-  override def genArgNV2_N1_ForSpecBase: Gen[(N2, N1)] = {
+  override def genArgNV2_N1_ForSpecBase: Gen[(V2, V1)] = {
     for {
       first  <- genArgNV2ForSpecBase
       s1     =  genS1(first.shape._1)
@@ -57,14 +57,14 @@ trait Acos2Spec extends UnaryOp2SpecBase { self: Properties with SpecBackend =>
     } yield (first, second)
   }
 
-  override def genArgNV2_N2_ForSpecBase: Gen[(N2, N2)] = {
+  override def genArgNV2_N2_ForSpecBase: Gen[(V2, V2)] = {
     for {
       first  <- genArgNV2ForSpecBase
       second <- n2gen.genNode2(first.shape, genDefaultDomainValue)
     } yield (first, second)
   }
 
-  override def genArgV2_N1_ForSpecBase: Gen[(Var2, N1)] = {
+  override def genArgV2_N1_ForSpecBase: Gen[(Var2, V1)] = {
     for {
       first  <- genArgV2ForSpecBase
       s1     =  genS1(first.shape._1)
@@ -72,7 +72,7 @@ trait Acos2Spec extends UnaryOp2SpecBase { self: Properties with SpecBackend =>
     } yield (first, second)
   }
 
-  override def genArgV2_N2_ForSpecBase: Gen[(Var2, N2)] = {
+  override def genArgV2_N2_ForSpecBase: Gen[(Var2, V2)] = {
     for {
       first  <- genArgV2ForSpecBase
       second <- n2gen.genNode2(first.shape, genDefaultDomainValue)

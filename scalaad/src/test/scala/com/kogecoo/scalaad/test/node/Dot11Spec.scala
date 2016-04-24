@@ -14,7 +14,7 @@ object StdDot11Spec extends Properties("Dotl11") with Dot11Spec with StdSpecBack
   override def defaultMinValue = Some(-1e100)
   override def defaultMaxValue = Some(1e100)
 
-  override def expectedApplyOp(a: N1, b: N1): T0 = dot(a.toT1, b.toT1)
+  override def expectedApplyOp(a: V1, b: V1): T0 = dot(a.toT1, b.toT1)
 }
 
 
@@ -22,60 +22,60 @@ trait Dot11Spec extends NodeSpecBase { self: Properties with SpecBackend =>
 
   import com.kogecoo.scalaad.test.SpecBackendHelper.Implicits._
 
-  def op(a: N1, b: N1): N0 = Dot11(a, b)
+  def op(a: V1, b: V1): V0 = Dot11(a, b)
 
   def op(a: String, b: String): String = s"$a dot $b"
 
-  def vec(a: N0, s: S1): N1 = VecFill(a, s)
+  def vec(a: V0, s: S1): V1 = VecFill(a, s)
 
-  def expectedApplyOp(a: N1, b: N1): T0
+  def expectedApplyOp(a: V1, b: V1): T0
 
-  property("eval") = forAll(genN1_N1()) { case (a: N1, b: N1) =>
+  property("eval") = forAll(genN1_N1()) { case (a: V1, b: V1) =>
     op(a, b) shouldCloseTo expectedApplyOp(a, b)
   }
 
-  property(s"${op("node1", "node1")} forward w.r.t node0") = forAll(genN1_N1(), genN0()) { case ((a: N1, b: N1), c: N0) =>
-    op(a, b).forward[N0, N0](c) shouldCloseTo zero0
+  property(s"${op("node1", "node1")} forward w.r.t node0") = forAll(genN1_N1(), genN0()) { case ((a: V1, b: V1), c: V0) =>
+    op(a, b).forward[V0, V0](c) shouldCloseTo zero0
   }
 
-  property(s"${op("vec(var0)", "node1")} forward w.r.t left") = forAll(genV0(), genN1()) { case (a: Var0, b: N1) =>
-    op(vec(a, b.shape), b).forward[N0, N0](a) shouldCloseTo sum1(b.toT1)
+  property(s"${op("vec(var0)", "node1")} forward w.r.t left") = forAll(genV0(), genN1()) { case (a: Var0, b: V1) =>
+    op(vec(a, b.shape), b).forward[V0, V0](a) shouldCloseTo sum1(b.toT1)
   }
 
-  property(s"${op("node1", "vec(var0)")} forward w.r.t right") = forAll(genN1(), genV0()) { case (a: N1, b: Var0) =>
-    op(a, vec(b, a.shape)).forward[N0, N0](b) shouldCloseTo sum1(a.toT1)
+  property(s"${op("node1", "vec(var0)")} forward w.r.t right") = forAll(genN1(), genV0()) { case (a: V1, b: Var0) =>
+    op(a, vec(b, a.shape)).forward[V0, V0](b) shouldCloseTo sum1(a.toT1)
   }
 
   property(s"${op("vec(var0)", "vec(var0)")} forward w.r.t self") = forAll(genV0(), genS1()) { case (a: Var0, s: S1) =>
     val side = sum1(vec(a, s).toT1)
-    op(vec(a, s), vec(a, s)).forward[N0, N0](a) shouldCloseTo add(side, side)
+    op(vec(a, s), vec(a, s)).forward[V0, V0](a) shouldCloseTo add(side, side)
   }
 
-  property(s"${op("nonvar1", "nonvar1")} reverse node0") = forAll(genNV1_NV1(), genN0()) { case ((a: N1, b: N1), c: N0) =>
+  property(s"${op("nonvar1", "nonvar1")} reverse node0") = forAll(genNV1_NV1(), genN0()) { case ((a: V1, b: V1), c: V0) =>
     op(a, b).reverse(c).size == 0
   }
 
-  property(s"${op("nonvar1", "nonvar1")} reverse node1") = forAll(genNV1_NV1(), genN1()) { case ((a: N1, b: N1), c: N1) =>
+  property(s"${op("nonvar1", "nonvar1")} reverse node1") = forAll(genNV1_NV1(), genN1()) { case ((a: V1, b: V1), c: V1) =>
     op(a, b).reverse(c).size == 0
   }
 
-  property(s"${op("nonvar1", "nonvar1")} reverse node2") = forAll(genNV1_NV1(), genN2()) { case ((a: N1, b: N1), c: N2) =>
+  property(s"${op("nonvar1", "nonvar1")} reverse node2") = forAll(genNV1_NV1(), genN2()) { case ((a: V1, b: V1), c: V2) =>
     op(a, b).reverse(c).size == 0
   }
 
-  property(s"${op("var1", "nonvar1")} reverse node0") = forAll(genV1_NV1(), genN0()) { case ((a: Var1, b: N1), c: N0) =>
+  property(s"${op("var1", "nonvar1")} reverse node0") = forAll(genV1_NV1(), genN0()) { case ((a: Var1, b: V1), c: V0) =>
     val g = op(a, b).reverse(c)
-    g(a).get.asInstanceOf[N1] shouldCloseTo const1(mul(sum1(b.toT1), c.toT0), a.shape)
+    g(a).get.asInstanceOf[V1] shouldCloseTo const1(mul(sum1(b.toT1), c.toT0), a.shape)
   }
 
-  property(s"${op("var1", "nonvar1")} reverse node1") = forAll(genV1_NV1_N1()) { case(a: Var1, b: N1, c: N1) =>
+  property(s"${op("var1", "nonvar1")} reverse node1") = forAll(genV1_NV1_N1()) { case(a: Var1, b: V1, c: V1) =>
     val g = op(a, b).reverse(c)
-    g(a).get.asInstanceOf[N1] shouldCloseTo const1(dot(a.toT1, b.toT1), a.shape)
+    g(a).get.asInstanceOf[V1] shouldCloseTo const1(dot(a.toT1, b.toT1), a.shape)
   }
 
-  property(s"${op("var1", "nonvar1")} reverse node2") = forAll(genV1_NV1_RowEquivN2()) { case (a: Var1, b: N1, c: N2) =>
+  property(s"${op("var1", "nonvar1")} reverse node2") = forAll(genV1_NV1_RowEquivN2()) { case (a: Var1, b: V1, c: V2) =>
     val g = op(a, b).reverse(c)
-    g(a).get.asInstanceOf[N2] shouldCloseTo columnwise(c.toT2, b.toT1, mul)
+    g(a).get.asInstanceOf[V2] shouldCloseTo columnwise(c.toT2, b.toT1, mul)
   }
 /*
   property(s"${op("nonvar1","var1")} reverse node0") = forAll(genNV1_V1(), genN0()) { case ((a: N1, b: Var1), c: N0) =>

@@ -9,7 +9,7 @@ object StdAdd00Spec extends Properties("Add00") with Add00Spec with StdSpecBacke
 
   import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
 
-  override def expectApplyOp(a: N0, b: N0): T0 = a.toT0 + b.toT0
+  override def expectApplyOp(a: V0, b: V0): T0 = a.toT0 + b.toT0
 
   override def leftDeriv(a: T0, b: T0): T0 = 1.0
 
@@ -26,7 +26,7 @@ object StdAdd00Spec extends Properties("Add00") with Add00Spec with StdSpecBacke
 
 trait Add00Spec extends BinaryOp00SpecBase { self: Properties with SpecBackend =>
 
-  override def op(a: N0, b: N0): N0 = Add00(a, b)
+  override def op(a: V0, b: V0): V0 = Add00(a, b)
 
   override def op(a: String, b: String): String = s"$a + $b"
 

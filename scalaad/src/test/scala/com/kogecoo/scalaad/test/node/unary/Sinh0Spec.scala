@@ -10,7 +10,7 @@ object StdSinhSpec extends Properties("Sinh0") with Sinh0Spec with StdSpecBacken
 
   import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
 
-  override def expectApplyOp(a: N0): T0 = math.sinh(a.toT0)
+  override def expectApplyOp(a: V0): T0 = math.sinh(a.toT0)
 
   override def deriv(a: T0): T0 = math.cosh(a)
 
@@ -23,7 +23,7 @@ object StdSinhSpec extends Properties("Sinh0") with Sinh0Spec with StdSpecBacken
 
 trait Sinh0Spec extends UnaryOp0SpecBase { self: Properties with SpecBackend =>
 
-  override def op(a: N0): N0 = Sinh0(a)
+  override def op(a: V0): V0 = Sinh0(a)
 
   override def op(argStr: String): String = s"sinh($argStr)"
 

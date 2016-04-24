@@ -14,17 +14,17 @@ trait BreezeVectorEval {
   private[this] type T = Double
   private[this] type V = DenseVector[Double]
 
-  implicit val eval11_breeze_trans_vector_double: Eval[N1, Transpose[V]] = new Eval[N1, Transpose[V]] {
+  implicit val eval11_breeze_trans_vector_double: Eval[V1, Transpose[V]] = new Eval[V1, Transpose[V]] {
 
-    def eval(n: N1): Transpose[V] = n match {
+    def eval(n: V1): Transpose[V] = n match {
       case Transpose1(v) => v.eval[Transpose[V]]
 
     }
   }
 
-  implicit val eval11_breeze_vector_double: Eval[N1, V] = new Eval[N1, V] {
+  implicit val eval11_breeze_vector_double: Eval[V1, V] = new Eval[V1, V] {
 
-    private[this] type N = N1
+    private[this] type N = V1
 
     def eval(n: N): V = n match {
 
@@ -40,20 +40,20 @@ trait BreezeVectorEval {
       case Neg1(v: N) => -v.eval[V]
 
       // Binary ops
-      case Add01(l: N0, r: N)  => r.eval[V]  + l.eval[T]  // FIXME: this assuming commutative law
-      case Add10(l: N , r: N0) => l.eval[V] :+ r.eval[T]
+      case Add01(l: V0, r: N)  => r.eval[V]  + l.eval[T]  // FIXME: this assuming commutative law
+      case Add10(l: N , r: V0) => l.eval[V] :+ r.eval[T]
       case Add11(l: N , r: N)  => l.eval[V] :+ r.eval[V]
 
-      case Sub01(l: N0, r: N)  => l.eval[T] - r.eval[V]
-      case Sub10(l: N , r: N0) => l.eval[V] :- r.eval[T]
+      case Sub01(l: V0, r: N)  => l.eval[T] - r.eval[V]
+      case Sub10(l: N , r: V0) => l.eval[V] :- r.eval[T]
       case Sub11(l: N , r: N)  => l.eval[V] :- r.eval[V]
 
-      case Mul01(l: N0, r: N)  => l.eval[T] * r.eval[V]
-      case Mul10(l: N , r: N0) => l.eval[V] :* r.eval[T]
+      case Mul01(l: V0, r: N)  => l.eval[T] * r.eval[V]
+      case Mul10(l: N , r: V0) => l.eval[V] :* r.eval[T]
       case Mul11(l: N , r: N)  => l.eval[V] :* r.eval[V]
 
-      case Div01(l: N0, r: N)  => l.eval[T] / r.eval[V]
-      case Div10(l: N , r: N0) => l.eval[V] :/ r.eval[T]
+      case Div01(l: V0, r: N)  => l.eval[T] / r.eval[V]
+      case Div10(l: N , r: V0) => l.eval[V] :/ r.eval[T]
       case Div11(l: N , r: N)  => l.eval[V] :/ r.eval[V]
 
       // Math
@@ -73,16 +73,16 @@ trait BreezeVectorEval {
       case Exp1(v: N)  => bmath.exp(v.eval[V])
       case Sqrt1(v: N) => bmath.sqrt(v.eval[V])
 
-      case Pow01(l: N0, r: N)  => bmath.pow(l.eval[T], r.eval[V])
-      case Pow10(l: N , r: N0) => bmath.pow(l.eval[V], r.eval[T])
+      case Pow01(l: V0, r: N)  => bmath.pow(l.eval[T], r.eval[V])
+      case Pow10(l: N , r: V0) => bmath.pow(l.eval[V], r.eval[T])
       case Pow11(l: N , r: N)  => bmath.pow(l.eval[V], r.eval[V])
 
       case Abs1(v: N)          => bmath.abs(v.eval[V])
-      case Max01(l: N0, r: N)  => val a = l.eval[T]; r.eval[V].map { breeze.linalg.max(a, _) }
-      case Max10(l: N , r: N0) => breeze.linalg.max(l.eval[V], r.eval[T])
+      case Max01(l: V0, r: N)  => val a = l.eval[T]; r.eval[V].map { breeze.linalg.max(a, _) }
+      case Max10(l: N , r: V0) => breeze.linalg.max(l.eval[V], r.eval[T])
       case Max11(l: N , r: N)  => breeze.linalg.max(l.eval[V], r.eval[V])
-      case Min01(l: N0, r: N)  => val a = l.eval[T]; r.eval[V].map { breeze.linalg.min(a, _) }
-      case Min10(l: N , r: N0) => breeze.linalg.min(l.eval[V], r.eval[T])
+      case Min01(l: V0, r: N)  => val a = l.eval[T]; r.eval[V].map { breeze.linalg.min(a, _) }
+      case Min10(l: N , r: V0) => breeze.linalg.min(l.eval[V], r.eval[T])
       case Min11(l: N , r: N)  => breeze.linalg.min(l.eval[V], r.eval[V])
     }
   }
@@ -93,24 +93,24 @@ trait BreezeVectorEval {
     private[this] def or10(a: BitVector, b: Boolean): BitVector = a :| BitVector.ones(a.size)
 
     def eval(n: B1): BitVector = n match {
-      case Eq01(l: N0, r: N1)  => r.eval[V] :== l.eval[T]
-      case Eq10(l: N1, r: N0)  => l.eval[V] :== r.eval[T]
-      case Eq11(l: N1, r: N1)  => l.eval[V] :== r.eval[V]
-      case Neq01(l: N0, r: N1) => r.eval[V] :!= l.eval[T]
-      case Neq10(l: N1, r: N0) => l.eval[V] :!= r.eval[T]
-      case Neq11(l: N1, r: N1) => l.eval[V] :!= r.eval[V]
-      case Lt01(l: N0, r: N1)  => r.eval[V] :>  l.eval[T]
-      case Lt10(l: N1, r: N0)  => l.eval[V] :<  r.eval[T]
-      case Lt11(l: N1, r: N1)  => l.eval[V] :<  r.eval[V]
-      case Lte01(l: N0, r: N1) => r.eval[V] :>= l.eval[T]
-      case Lte10(l: N1, r: N0) => l.eval[V] :<= r.eval[T]
-      case Lte11(l: N1, r: N1) => l.eval[V] :<= r.eval[V]
-      case Gt01(l: N0, r: N1)  => r.eval[V] :<  l.eval[T]
-      case Gt10(l: N1, r: N0)  => l.eval[V] :>  r.eval[T]
-      case Gt11(l: N1, r: N1)  => l.eval[V] :>  r.eval[V]
-      case Gte01(l: N0, r: N1) => r.eval[V] :<= l.eval[T]
-      case Gte10(l: N1, r: N0) => l.eval[V] :>= r.eval[T]
-      case Gte11(l: N1, r: N1) => l.eval[V] :>= r.eval[V]
+      case Eq01(l: V0, r: V1)  => r.eval[V] :== l.eval[T]
+      case Eq10(l: V1, r: V0)  => l.eval[V] :== r.eval[T]
+      case Eq11(l: V1, r: V1)  => l.eval[V] :== r.eval[V]
+      case Neq01(l: V0, r: V1) => r.eval[V] :!= l.eval[T]
+      case Neq10(l: V1, r: V0) => l.eval[V] :!= r.eval[T]
+      case Neq11(l: V1, r: V1) => l.eval[V] :!= r.eval[V]
+      case Lt01(l: V0, r: V1)  => r.eval[V] :>  l.eval[T]
+      case Lt10(l: V1, r: V0)  => l.eval[V] :<  r.eval[T]
+      case Lt11(l: V1, r: V1)  => l.eval[V] :<  r.eval[V]
+      case Lte01(l: V0, r: V1) => r.eval[V] :>= l.eval[T]
+      case Lte10(l: V1, r: V0) => l.eval[V] :<= r.eval[T]
+      case Lte11(l: V1, r: V1) => l.eval[V] :<= r.eval[V]
+      case Gt01(l: V0, r: V1)  => r.eval[V] :<  l.eval[T]
+      case Gt10(l: V1, r: V0)  => l.eval[V] :>  r.eval[T]
+      case Gt11(l: V1, r: V1)  => l.eval[V] :>  r.eval[V]
+      case Gte01(l: V0, r: V1) => r.eval[V] :<= l.eval[T]
+      case Gte10(l: V1, r: V0) => l.eval[V] :>= r.eval[T]
+      case Gte11(l: V1, r: V1) => l.eval[V] :>= r.eval[V]
 
       case And01(l: B0, r: B1) => and10(r.eval[BitVector], l.eval[Boolean])
       case And10(l: B1, r: B0) => and10(l.eval[BitVector], r.eval[Boolean])

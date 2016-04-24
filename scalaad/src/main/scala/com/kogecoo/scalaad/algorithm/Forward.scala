@@ -32,12 +32,12 @@ trait Forward[N, W, O] {
   **/
 object Forward {
 
-  implicit def forward000: Forward[N0, N0, N0] = new Forward[N0, N0, N0] {
+  implicit def forward000: Forward[V0, V0, V0] = new Forward[V0, V0, V0] {
 
-    private[this] type N = N0
-    private[this] type W = N0
-    private[this] type O = N0
-    private[this] type O1 = N1
+    private[this] type N = V0
+    private[this] type W = V0
+    private[this] type O = V0
+    private[this] type O1 = V1
 
     def forward(n: N, wrt: W): O = n match {
 
@@ -49,7 +49,7 @@ object Forward {
       case _: One0    => Zero0()
       case _: Const0  => Zero0()
 
-      case Apply0(v, op) => op match {
+      case Apply0(v: ValueExpr[S0], op: Op0) => op match {
         case Pos0 => +v.forward[W, O](wrt)
         case Neg0 => -v.forward[W, O](wrt)
 
@@ -99,11 +99,11 @@ object Forward {
     }
   }
 
-  implicit def forward011: Forward[N0, N1, N1] = new Forward[N0, N1, N1] {
+  implicit def forward011: Forward[V0, V1, V1] = new Forward[V0, V1, V1] {
 
-    private[this] type N = N0
-    private[this] type W = N1
-    private[this] type O = N1
+    private[this] type N = V0
+    private[this] type W = V1
+    private[this] type O = V1
 
     def forward(n: N, wrt: W): O = n match {
 
@@ -148,11 +148,11 @@ object Forward {
 
   }
 
-  implicit def forward022: Forward[N0, N2, N2] = new Forward[N0, N2, N2] {
+  implicit def forward022: Forward[V0, V2, V2] = new Forward[V0, V2, V2] {
 
-    private[this] type N = N0
-    private[this] type W = N2
-    private[this] type O = N2
+    private[this] type N = V0
+    private[this] type W = V2
+    private[this] type O = V2
 
     def forward(n: N, wrt: W): O = n match {
 
@@ -196,13 +196,13 @@ object Forward {
     }
   }
 
-  implicit def forward101: Forward[N1, N0, N1] = new Forward[N1, N0, N1] {
+  implicit def forward101: Forward[V1, V0, V1] = new Forward[V1, V0, V1] {
 
-    private[this] type N = N1
-    private[this] type W = N0
-    private[this] type O0 = N0
-    private[this] type O1 = N1
-    private[this] type O2 = N2
+    private[this] type N = V1
+    private[this] type W = V0
+    private[this] type O0 = V0
+    private[this] type O1 = V1
+    private[this] type O2 = V2
 
     def forward(n: N, wrt: W): O1 = n match {
 
@@ -261,12 +261,12 @@ object Forward {
     }
   }
 
-  implicit def forward112: Forward[N1, N1, N2] = new Forward[N1, N1, N2] {
+  implicit def forward112: Forward[V1, V1, V2] = new Forward[V1, V1, V2] {
 
-    private[this] type N = N1
-    private[this] type W = N1
-    private[this] type O1 = N1
-    private[this] type O2 = N2
+    private[this] type N = V1
+    private[this] type W = V1
+    private[this] type O1 = V1
+    private[this] type O2 = V2
 
     def forward(n: N, wrt: W): O2 = n match {
 
@@ -319,13 +319,13 @@ object Forward {
     }
   }
 
-  implicit def forward202: Forward[N2, N0, N2] = new Forward[N2, N0, N2] {
+  implicit def forward202: Forward[V2, V0, V2] = new Forward[V2, V0, V2] {
 
-    private[this] type N = N2
-    private[this] type W = N0
-    private[this] type O0 = N0
-    private[this] type O1 = N1
-    private[this] type O2 = N2
+    private[this] type N = V2
+    private[this] type W = V0
+    private[this] type O0 = V0
+    private[this] type O1 = V1
+    private[this] type O2 = V2
 
     def forward(n: N, wrt: W): O2 = n match {
 

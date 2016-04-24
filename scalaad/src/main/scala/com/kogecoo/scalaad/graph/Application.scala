@@ -6,11 +6,12 @@ import com.kogecoo.scalaad.{Shape, Shape0, Shape1, Shape2}
 import scala.language.higherKinds
 
 /**
-  * represents applying binary operation, which takes 2 Nodes as arguments.
- *
-  * @tparam S a shape of this Node
-  * @tparam L a shape of left Node
-  * @tparam R a shape of right Node
+  * represents applying binary operation, which takes 2 Exprs arguments.
+  *
+  * @tparam E type of this Expr
+  * @tparam S a shape of this Expr
+  * @tparam L a shape of left Expr
+  * @tparam R a shape of right Expr
   */
 trait Application2[E[_] <: Expr[S], S <: Shape, L <: Shape, R <: Shape] extends E[S] {
   val shape: S
@@ -19,10 +20,11 @@ trait Application2[E[_] <: Expr[S], S <: Shape, L <: Shape, R <: Shape] extends 
 }
 
 /**
-  * specialized BinaryNode, its left and output Node are the same type of shape.
- *
-  * @tparam L a shape of left and output Node
-  * @tparam R a shape of right Node
+  * specialized Application2, its left and output Expr are the same type of shape.
+  *
+  * @tparam E type of this Expr
+  * @tparam L a shape of left and output Expr
+  * @tparam R a shape of right Expr
   */
 trait LeftShapedApplication2[E[_] <: Expr[L], L <: Shape, R <: Shape] extends Application2[E, L, L, R] {
   override val shape: L = l.shape
@@ -31,10 +33,11 @@ trait LeftShapedApplication2[E[_] <: Expr[L], L <: Shape, R <: Shape] extends Ap
 }
 
 /**
-  * specialized BinaryNode, its right and output Node are the same type of shape.
- *
-  * @tparam L a shape of left Node
-  * @tparam R a shape of right and output Node
+  * specialized Application2, its right and output Expr are the same type of shape.
+  *
+  * @tparam E type of this Expr
+  * @tparam L a shape of left Expr
+  * @tparam R a shape of right and output Expr
   */
 trait RightShapedApplication2[E[_] <: Expr[R], L <: Shape, R <: Shape] extends Application2[E, R, L, R] {
   override val shape: R = r.shape
@@ -43,9 +46,10 @@ trait RightShapedApplication2[E[_] <: Expr[R], L <: Shape, R <: Shape] extends A
 }
 
 /**
-  * specialized BinaryNode, its left, right and output Node are the same type of shape.
- *
-  * @tparam S type of shape for left, right and output Node
+  * specialized Application2, its left, right and output Expr are the same type of shape.
+  *
+  * @tparam E type of this Expr
+  * @tparam S type of shape for left, right and output Expr
   */
 trait SameShapedApplication2[E[_] <: Expr[S], S <: Shape] extends Application2[E, S, S, S] {
   override val shape: S = l.shape
@@ -54,10 +58,11 @@ trait SameShapedApplication2[E[_] <: Expr[S], S <: Shape] extends Application2[E
 }
 
 /**
-  * represents applying unary operation, which takes 1 Node as argument.
- *
-  * @tparam O type of shape for output Node
-  * @tparam S type of shape for argument Node
+  * represents applying unary operation, which takes 1 Expr as argument.
+  *
+  * @tparam E type of this Expr
+  * @tparam O type of shape for output Expr
+  * @tparam S type of shape for argument Expr
   */
 trait Application1[E[_] <: Expr[S], O <: Shape, S <: Shape] extends E[O] {
   val shape: O
@@ -65,9 +70,10 @@ trait Application1[E[_] <: Expr[S], O <: Shape, S <: Shape] extends E[O] {
 }
 
 /**
-  * specialized UnaryNode, its input and output Node are the same type of shape.
- *
-  * @tparam S type of shape for left, right and output Node
+  * specialized Application1, its input and output Expr are the same type of shape.
+  *
+  * @tparam E type of this Expr
+  * @tparam S type of shape for left, right and output Expr
   */
 trait SameShapedApplication1[E[_] <: Expr[S], S <: Shape] extends Application1[E, S, S] {
   override val shape: S = v.shape
@@ -75,8 +81,6 @@ trait SameShapedApplication1[E[_] <: Expr[S], S <: Shape] extends Application1[E
   override def v: E[S]
 }
 
-
-// These nodes express higher-order functions
 
 // Unary Application
 

@@ -9,9 +9,9 @@ package object graph {
   type S1 = Shape1
   type S2 = Shape2
 
-  type N0 = ValueExpr[S0]
-  type N1 = ValueExpr[S1]
-  type N2 = ValueExpr[S2]
+  type V0 = ValueExpr[S0]
+  type V1 = ValueExpr[S1]
+  type V2 = ValueExpr[S2]
 
   type B0 = BooleanExpr[S0]
   type B1 = BooleanExpr[S1]

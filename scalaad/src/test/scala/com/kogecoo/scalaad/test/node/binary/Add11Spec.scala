@@ -9,7 +9,7 @@ object StdAdd11Spec extends Properties("Add11") with Add11Spec with StdSpecBacke
 
   import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
 
-  override def expectApplyOp(a: N1, b: N1): T1 = elementwise1(a.toT1, b.toT1, _ + _)
+  override def expectApplyOp(a: V1, b: V1): T1 = elementwise1(a.toT1, b.toT1, _ + _)
 
   override def leftDeriv(a: T0, b: T0): T0 = 1.0
 
@@ -26,7 +26,7 @@ object StdAdd11Spec extends Properties("Add11") with Add11Spec with StdSpecBacke
 
 trait Add11Spec extends BinaryOp11SpecBase { self: Properties with SpecBackend =>
 
-  override def op(a: N1, b: N1): N1 = Add11(a, b)
+  override def op(a: V1, b: V1): V1 = Add11(a, b)
 
   override def op(a: String, b: String): String = s"$a + $b"
 

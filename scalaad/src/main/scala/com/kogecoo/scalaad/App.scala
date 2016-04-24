@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.{One0, N0}
+import com.kogecoo.scalaad.graph.{One0, V0}
 import com.kogecoo.scalaad.impl.std.Implicits._
 import Predef.{any2stringadd => _, _}
 
@@ -13,8 +13,8 @@ object App {
     val z = y.eval
 
     println(z)
-    println(y.forward[N0, N0](x))
-    println(y.reverse[N0](One0()))
+    println(y.forward[V0, V0](x))
+    println(y.reverse[V0](One0()))
     //val g = One0[Double]()
     //Reverse.reverse(y, g)
   }
