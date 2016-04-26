@@ -2,7 +2,6 @@ package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.op.{Where0_0, Where0_1, Where0_2, Where1_1, Where1_2, Where2_2}
 
 import Predef.{any2stringadd => _, _}
 import scala.language.higherKinds
@@ -90,9 +89,9 @@ object Grad {
         case (a: V0 @unchecked, _: S0, b: V2 @unchecked, _: S2) => a :+ b
         case (a: V1 @unchecked, _: S1, b: V0 @unchecked, _: S0) => a :+ b
         case (a: V1 @unchecked, _: S1, b: V1 @unchecked, _: S1) => a  + b
-        case (a: V1 @unchecked, _: S1, b: V2 @unchecked, _: S2) => a :+ b
+        //case (a: V1 @unchecked, _: S1, b: V2 @unchecked, _: S2) => a :+ b
         case (a: V2 @unchecked, _: S2, b: V0 @unchecked, _: S0) => a :+ b
-        case (a: V2 @unchecked, _: S2, b: V1 @unchecked, _: S1) => a :+ b
+        //case (a: V2 @unchecked, _: S2, b: V1 @unchecked, _: S1) => a :+ b
         case (a: V2 @unchecked, _: S2, b: V2 @unchecked, _: S2) => a  + b
       }
     }

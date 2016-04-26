@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.op.{Cos0, Cosh0, Dot01, Dot10, Dot11, Exp0, Gt00, Ln0, Lt00, MatMul22, MatMul2C1, MatMulR12, Pow00, Sin0, Sinh0, Sqrt0, Tan0, Tanh0}
+import com.kogecoo.scalaad.op.{Abs0, Acos0, Add00, Asin0, Atan0, Cos0, Cosh0, Div00, Exp0, Gt00, Ln0, Lt00, Max00, Min00, Mul00, Neg0, Pos0, Pow00, Sin0, Sinh0, Sqrt0, Sub00, Tan0, Tanh0}
 
 import scala.Predef.{any2stringadd => _}
 
@@ -13,22 +13,22 @@ trait Reverse[N, G] {
 }
 
 /**
-  Supported combinations of Node's tensor order
-
-  1st:  Node order which will be differentiated
-  2nd: propagating (inExprediate) gradient.
-
-  0 0
-  0 1
-  0 2
-  1 0
-  1 1
-  1 2
-  2 0
-  2 1
-  2 2
-
-**/
+  * Supported combinations of Node's tensor order
+  **
+  *1st:  Node order which will be differentiated
+  *2nd: propagating (inExprediate) gradient.
+  **
+  *0 0
+  *0 1
+  *0 2
+  *1 0
+  *1 1
+  *1 2
+  *2 0
+  *2 1
+  *2 2
+  *
+  **/
 object Reverse {
 
 
@@ -46,46 +46,51 @@ object Reverse {
       case _: Half0   => Grad.empty
       case _: Const0  => Grad.empty
 
-      case Pos0(v) => v.reverse[G](+g)
-      case Neg0(v) => v.reverse[G](-g)
+      case Apply0(v, op) => op match {
+        case Pos0 => v.reverse[G](+g)
+        case Neg0 => v.reverse[G](-g)
 
-      case Add00(l, r) => l.reverse[G](g) ++ r.reverse[G](g)
-      case Sub00(l, r) => l.reverse[G](g) ++ r.reverse[G](-g)
-      case Mul00(l, r) => l.reverse[G](g * r) ++ r.reverse[G](l * g)
-      case Div00(l, r) => l.reverse[G](g / r) ++ r.reverse[G]((-l * g) / (r * r))
+        case Sin0 => v.reverse[G](g * Cos0(v))
+        case Cos0 => v.reverse[G](-g * Sin0(v))
+        case Tan0 => v.reverse[G](g * (One0() + (Tan0(v) * Tan0(v))))
 
-      case Sin0(v) => v.reverse[G](g * Cos0(v))
-      case Cos0(v) => v.reverse[G](-g * Sin0(v))
-      case Tan0(v) => v.reverse[G](g * (One0() + (Tan0(v) * Tan0(v))))
+        case Asin0 => v.reverse[G](g *  (One0() / Sqrt0(One0() - (v * v))))
+        case Acos0 => v.reverse[G](g * -(One0() / Sqrt0(One0() - (v * v))))
+        case Atan0 => v.reverse[G](g *  (One0() / (One0() + (v * v))))
 
-      case Asin0(v) => v.reverse[G](g *  (One0() / Sqrt0(One0() - (v * v))))
-      case Acos0(v) => v.reverse[G](g * -(One0() / Sqrt0(One0() - (v * v))))
-      case Atan0(v) => v.reverse[G](g *  (One0() / (One0() + (v * v))))
+        case Sinh0 => v.reverse[G](g * Cosh0(v))
+        case Cosh0 => v.reverse[G](g * Sinh0(v))
+        case Tanh0 => v.reverse[G](g * (One0() - (Tanh0(v) * Tanh0(v))))
 
-      case Sinh0(v) => v.reverse[G](g * Cosh0(v))
-      case Cosh0(v) => v.reverse[G](g * Sinh0(v))
-      case Tanh0(v) => v.reverse[G](g * (One0() - (Tanh0(v) * Tanh0(v))))
-
-      case Ln0(v)      => v.reverse[G](g / v)
-      case Exp0(v)     => v.reverse[G](g * Exp0(v))
-      case Sqrt0(v)    => v.reverse[G](g * (Half0() / Sqrt0(v)))
-      case Pow00(l, r) => {
-        val lg = l.reverse[G]((g * r) * Pow00(l, r - One0()))
-        val rg = r.reverse[G](g * (Ln0(l) * Pow00(l, r)))
-        lg ++ rg
+        case Ln0      => v.reverse[G](g / v)
+        case Exp0     => v.reverse[G](g * Exp0(v))
+        case Sqrt0    => v.reverse[G](g * (Half0() / Sqrt0(v)))
+        case Abs0     => Grad.where(Gt00(v, Zero0()), v.reverse[G](g), v.reverse[G](-g))
       }
+      case Apply00(l, r, op) => op match {
+        case Add00 => l.reverse[G](g) ++ r.reverse[G](g)
+        case Sub00 => l.reverse[G](g) ++ r.reverse[G](-g)
+        case Mul00 => l.reverse[G](g * r) ++ r.reverse[G](l * g)
+        case Div00 => l.reverse[G](g / r) ++ r.reverse[G]((-l * g) / (r * r))
 
-      // Experimental
-      case Abs0(v)     => Grad.where(Gt00(v, Zero0()), v.reverse[G](g), v.reverse[G](-g))
-      case Max00(l, r) => Grad.where(Gt00(l, r),       l.reverse[G](g), r.reverse[G]( g))
-      case Min00(l, r) => Grad.where(Lt00(l, r),       l.reverse[G](g), r.reverse[G]( g))
+        case Pow00 => {
+          val lg = l.reverse[G]((g * r) * Pow00(l, r - One0()))
+          val rg = r.reverse[G](g * (Ln0(l) * Pow00(l, r)))
+          lg ++ rg
+        }
 
-      case Dot01(l, r) => l.reverse[G](Dot01(g, r)) ++ r.reverse[G](l * g)
+        // Experimental
+        case Max00 => Grad.where(Gt00(l, r), l.reverse[G](g), r.reverse[G](g))
+        case Min00 => Grad.where(Lt00(l, r), l.reverse[G](g), r.reverse[G](g))
+
+      }
+      /*case Dot01(l, r) => l.reverse[G](Dot01(g, r)) ++ r.reverse[G](l * g)
       case Dot10(l, r) => l.reverse[G](g * r)       ++ r.reverse[G](Dot10(l, g))
-      case Dot11(l, r) => l.reverse[G](Dot01(g, r)) ++ r.reverse[G](Dot10(l, g))
+      case Dot11(l, r) => l.reverse[G](Dot01(g, r)) ++ r.reverse[G](Dot10(l, g))*/
     }
   }
 
+  /*
   implicit def reverse01: Reverse[V0, V1] = new Reverse[V0, V1] {
 
     private[this] type N = V0
@@ -649,6 +654,7 @@ object Reverse {
       case MatMul22(l, r) => l.reverse[G](MatMul22(g, r)) ++ r.reverse[G](MatMul22(l, g.T))
     }
   }
+  */
 
 }
 

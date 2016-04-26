@@ -1,5 +1,6 @@
 package com.kogecoo.scalaad.test.node
 
+/*
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.op.Dot11
@@ -110,3 +111,4 @@ trait Dot11Spec extends NodeSpecBase { self: Properties with SpecBackend =>
 */
 }
 
+*/

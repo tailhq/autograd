@@ -12,7 +12,7 @@ class StdN1Gen extends N1Gen[Double] {
     for {
       s      <- shapeGen
       vec    <- Gen.listOfN(s._1, valueGen)
-      stdVec =  StdVector(vec, s.transposed)
+      stdVec =  StdVector(vec/*, s.transposed*/)
     } yield Var1(stdVec, s)
   }
 
@@ -20,7 +20,7 @@ class StdN1Gen extends N1Gen[Double] {
     for {
       s      <- shapeGen
       vec    <- Gen.listOfN(s._1, valueGen)
-      stdVec =  StdVector(vec, s.transposed)
+      stdVec =  StdVector(vec/*, s.transposed*/)
     } yield Const1(stdVec, s)
   }
 

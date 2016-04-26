@@ -17,6 +17,7 @@ trait StdVecEval {
 
   }*/
 
+  /*
   implicit val eval11_stdvec_double: Eval[V1, T1] = new Eval[V1, T1] {
 
     def eval(n: V1): T1 = n match {
@@ -142,5 +143,5 @@ trait StdVecEval {
       case Not1(v: B1) => broadcast1B(v.eval[BV], !_)
     }
   }
-
+*/
 }

@@ -8,7 +8,7 @@ import com.kogecoo.scalaad.impl.std.{StdUtil => U}
 
 
 trait StdMatEval {
-
+/*
   private[this] type BOp = (T0, T0) => T0
 
   private[this] def map12row(l: V1, r: V2, f: BOp): T2 = r.eval[T2].map(l.eval[T1].zip(_).map { case (x, y) => f(x, y) })
@@ -191,4 +191,5 @@ trait StdMatEval {
     }
   }
 
+*/
 }
