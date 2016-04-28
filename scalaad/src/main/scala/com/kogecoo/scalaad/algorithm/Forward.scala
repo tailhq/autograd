@@ -1,18 +1,101 @@
 package com.kogecoo.scalaad.algorithm
 
-import com.kogecoo.scalaad.Shape2
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.op.{Ln0, _}
+import com.kogecoo.scalaad.{Shape, Shape0}
 
 import scala.Predef.{any2stringadd => _}
 
 
-trait Forward[N, W, O] {
+case class SymbolShape[S <: Shape](symbol: Symbol, shape: S) {
+  def subst(v: Value[S]): (SymbolShape[S], Value[S]) =
+    (this, v)
+}
 
-  def forward(n: N, wrt: W): O
+
+object  foo {
+
+  val x = SymbolShape('x, S0)
+  val y = SymbolShape('y, S0)
+
+  val f = x + y
+
+  f.apply(Map(x.subst(3), y.subst(4)))
+
+}
+case class Var()
+
+trait Fun[O <: Shape] {
+  def params: Map[Symbol, Shape]
+
+  def apply(args: Map[Symbol, Value[Shape]]): Value[O]
+
+  def deriv(wrt: Symbol): Fun[O]
 
 }
 
+/*
+trait Elementwise2[Out <: Shape] extends Fun[Out] {
+  def op: Fun[Shape0]
+
+  def left: Fun[Out]
+  def right: Fun[Out]
+}
+*/
+
+case class Elementwise[Out <: Shape] extends Fun[Out] {
+  def op: Fun[Shape0]
+
+  def operand: Fun[Out]
+
+  def apply(args: Map[Symbol, Value[Shape]])
+
+  def deriv(wrt: Symbol): Fun[O] = Elementwise[Out]
+}
+
+case class Fold1[Out <: Shape, In <: Shape] extends Fun[Out] {
+  def op: Fun[Shape0]
+
+  def operand: Fun[In]
+}
+
+/*
+trait Fold2[Out <: Shape, In <: Shape] extends Fun[Out] {
+  def op: Fun[Shape0]
+
+  def left: Fun[In]
+  def right: Fun[In]
+}
+*/
+
+class Substitution[Out <: Shape](param: Symbol, subject: Fun[Shape], replacement: Fun[Shape]) extends Fun[Out] {
+
+  def params: Map[Symbol, Shape] = (subject.params - param) ++ replacement.params
+
+  def deriv: Fun[..] = new Substitution(param, subject.deriv replacement.deriv * (new Substitution.
+
+}
+
+case class Sin(param: (Symbol, Shape)) extends Fun[Shape0] {
+  override def params = Map(param)
+
+  override def deriv(wrt: Symbol) = Cos0(param)
+}
+
+case class Cos(param: (Symbol, Shape)) extends Fun[Shape0] {
+  override def params = Map(param)
+
+  override def deriv(wrt: Symbol) = Substitution(placeholder, new Neg0(placeholder), Sin0(param))
+}
+
+case class Add(param1: (Symbol, Shape), param2: (Symbol, Shape)) extends Fun[Shape0] {
+  override def params = Seq(param1, param2).toMap
+
+  override def deriv(wrt: Symbol) = {
+    if (wrt == param1._1) {
+      Substitution(placeholder, new (placeholder), Sin0(param))
+  }
+}
 /**
   * Supported combinations of Node's tensor order (shape)
   **
@@ -48,6 +131,7 @@ object Forward {
       case _: One0    => Zero0()
       case _: Const0  => Zero0()
 
+
       case Apply0(v, op) => op match {
         case Pos0 => +v.forward[W, O](wrt)
         case Neg0 => -v.forward[W, O](wrt)
@@ -80,8 +164,7 @@ object Forward {
         case Pow00 => {
           val lhs = l.forward[W, O](wrt) * (r * Pow00(l, r - One0()))
           val rhs = Ln0(l) * Pow00(l, r) * r.forward(wrt)
-          lhs + rhs
-        }
+          lhs + rhs }
 
         // Experimental
         case Max00 => Where0_0(l > r, l.forward[W, O](wrt), r.forward[W, O](wrt))
@@ -111,8 +194,6 @@ object Forward {
       case _: Half0   => Zero1(wrt)
       case _: One0    => Zero1(wrt)
       case _: Const0  => Zero1(wrt)
-
-      case Broadcast1(v, op) => v.forward[W, O](wrt)
 
       case Pos0 => +v.forward[W, O](wrt)
       case Neg0 => -v.forward[W, O](wrt)

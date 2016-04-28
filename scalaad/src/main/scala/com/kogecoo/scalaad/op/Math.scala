@@ -2,6 +2,9 @@ package com.kogecoo.scalaad.op
 
 import com.kogecoo.scalaad.graph.{Apply0, Apply00, V0}
 
+trait Op0 {
+  val child: Operator
+}
 
 case object Sin0 extends Op0  { def apply(v: V0): V0 = Apply0(v, Sin0) }
 
