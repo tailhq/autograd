@@ -7,6 +7,33 @@ import com.kogecoo.scalaad.{Shape, Shape0}
 import scala.Predef.{any2stringadd => _}
 
 
+trait Equation[S <: Shape]
+
+class Equation1[S <: Shape](left: Param[S], right: Param[S], op: UnaryOp[S, S]) extends Equation[S]
+class Equation2[S <: Shape](left: Param[S], right1: Param[S], right2: Param[S], op: BinaryOp[S, S, S]) extends Equation[S]
+
+class Elementwise1[S <: Shape](left: Param[S], right: Param[S], op: UnaryOp[S, S]) extends Equation[S]  // other words, Broadcast
+class Elementwise2[S <: Shape](left: Param[S], right1: Param[S], right2: Param[S], op: BinaryOp[S, S, S]) extends Equation[S]
+
+class Fold1[SO <: Shape, SI1 <: Shape](left: Param[SO], right: Param[SI1], op: UnaryOp[SO, SI1])
+class Fold2[SO <: Shape, SI1 <: Shape, SI2 <: Shape](left: Param[SO], right1: Param[SI1], right2: Param[SI2], op: BinaryOp[SO, SI1, SI2])
+
+
+case object Sin extends UnaryOp[S0, S0]
+case object Cos extends UnaryOp[S0, S0]
+
+case object Sum1 extends UnaryOp[S0, S1]
+case object Sum2 extends UnaryOp[S0, S2]
+
+case object Norm extends UnaryOp[S0, S1]
+
+case object Dot extends BinaryOp[S0, S1, S1]
+
+case class Param[S <: Shape]()
+
+
+
+
 case class SymbolShape[S <: Shape](symbol: Symbol, shape: S) {
   def subst(v: Value[S]): (SymbolShape[S], Value[S]) =
     (this, v)
@@ -22,8 +49,11 @@ object  foo {
 
   f.apply(Map(x.subst(3), y.subst(4)))
 
+  val x = Param()
+  val y = Param()
+  val z: Expr = x + y
+
 }
-case class Var()
 
 trait Fun[O <: Shape] {
   def params: Map[Symbol, Shape]

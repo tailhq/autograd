@@ -1,12 +1,14 @@
 package com.kogecoo.scalaad.op
 
+import com.kogecoo.scalaad.Shape
 
-sealed trait Operator
+
+sealed trait Operator[SO <: Shape]
 
 
-trait UnaryOp extends Operator
+trait UnaryOp[SO <: Shape, SI1 <: Shape] extends Operator[SO]
 
-trait BinaryOp extends Operator
+trait BinaryOp[SO <: Shape, SI1 <: Shape, SI2 <: Shape] extends Operator[SO]
 
 
 trait Op0 extends UnaryOp
