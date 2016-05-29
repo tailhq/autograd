@@ -1,24 +1,10 @@
 package com.kogecoo.scalaad.op
 
-
-sealed trait BooleanOperator
-
-
-trait UnaryBooleanOp extends BooleanOperator
-
-trait BinaryBooleanOp extends BooleanOperator
+import com.kogecoo.scalaad.Shape
 
 
-trait BooleanOp0 extends UnaryBooleanOp
+sealed trait BooleanOperator[S <: Shape]
 
-trait BooleanOp1 extends UnaryBooleanOp
+trait UnaryBooleanOp[SO <: Shape, SI <: Shape] extends BooleanOperator[SO]
 
-trait BooleanOp2 extends UnaryBooleanOp
-
-trait BooleanOp00 extends BinaryBooleanOp
-
-trait BooleanOp11 extends BinaryBooleanOp
-
-trait BooleanOp22 extends BinaryBooleanOp
-
-
+trait BinaryBooleanOp[SO <: Shape, SI1 <: Shape, SI2 <: Shape] extends BooleanOperator[SO]

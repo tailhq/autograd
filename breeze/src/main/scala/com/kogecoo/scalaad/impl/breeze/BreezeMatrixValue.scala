@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.impl.breeze
 
 import breeze.linalg.DenseMatrix
-import com.kogecoo.scalaad.{BoolTensor2, Tensor2}
+import com.kogecoo.scalaad.{BooleanTensor2, Tensor2}
 import com.kogecoo.scalaad.algorithm.Value
 
 
@@ -13,8 +13,8 @@ trait BreezeMatrixValue {
     }
   }
 
-  implicit val value_breeze_matrix_boolean: Value[BoolTensor2, DenseMatrix[Boolean]] = new Value[BoolTensor2, DenseMatrix[Boolean]] {
-    def value(t: BoolTensor2): DenseMatrix[Boolean] = t match {
+  implicit val value_breeze_matrix_boolean: Value[BooleanTensor2, DenseMatrix[Boolean]] = new Value[BooleanTensor2, DenseMatrix[Boolean]] {
+    def value(t: BooleanTensor2): DenseMatrix[Boolean] = t match {
       case t: BreezeBooleanMatrix => t.data
     }
   }

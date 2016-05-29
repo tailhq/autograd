@@ -6,7 +6,7 @@ import com.kogecoo.scalaad.graph.S2
 import com.kogecoo.scalaad.impl.std.StdMat
 
 
-case class BreezeBooleanMatrix(data: DenseMatrix[Boolean]) extends BoolTensor2 {
+case class BreezeBooleanMatrix(data: DenseMatrix[Boolean]) extends BooleanTensor2 {
 
   override def shape: S2 = Shape2(data.rows, data.cols)
 

@@ -1,10 +1,16 @@
 package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.op.{Ln0, _}
+import com.kogecoo.scalaad.op._
 
 import scala.Predef.{any2stringadd => _}
 
+
+trait Forward[N, W, O] {
+
+  def forward(n: N, wrt: W): O
+
+}
 
 /**
   * Supported combinations of Node's tensor order (shape)
@@ -23,6 +29,7 @@ import scala.Predef.{any2stringadd => _}
   *2 0 2
   *
   **/
+/*
 object Forward {
 
   implicit def forward000: Forward[V0, V0, V0] = new Forward[V0, V0, V0] {
@@ -46,32 +53,32 @@ object Forward {
         case Pos0 => +v.forward[W, O](wrt)
         case Neg0 => -v.forward[W, O](wrt)
 
-        case Sin0 => v.forward[W, O](wrt) *  Cos0(v)
-        case Cos0 => v.forward[W, O](wrt) * -Sin0(v)
-        case Tan0 => v.forward[W, O](wrt) * (One0() + Tan0(v) * Tan0(v))
+        case Sin => v.forward[W, O](wrt) *  Cos0(v)
+        case Cos => v.forward[W, O](wrt) * -Sin0(v)
+        case Tan => v.forward[W, O](wrt) * (One0() + Tan0(v) * Tan0(v))
 
-        case Asin0 => v.forward[W, O](wrt) *  (One0() / Sqrt0(One0() - (v * v)))
-        case Acos0 => v.forward[W, O](wrt) * -(One0() / Sqrt0(One0() - (v * v)))
-        case Atan0 => v.forward[W, O](wrt) *  (One0() / (One0() + (v * v)))
+        case Asin => v.forward[W, O](wrt) *  (One0() / Sqrt0(One0() - (v * v)))
+        case Acos => v.forward[W, O](wrt) * -(One0() / Sqrt0(One0() - (v * v)))
+        case Atan => v.forward[W, O](wrt) *  (One0() / (One0() + (v * v)))
 
-        case Sinh0 => v.forward[W, O](wrt) * Cosh0(v)
-        case Cosh0 => v.forward[W, O](wrt) * Sinh0(v)
-        case Tanh0 => v.forward[W, O](wrt) * (One0()  - Tanh0(v) * Tanh0(v))
+        case Sinh => v.forward[W, O](wrt) * Cosh0(v)
+        case Cosh => v.forward[W, O](wrt) * Sinh0(v)
+        case Tanh => v.forward[W, O](wrt) * (One0()  - Tanh0(v) * Tanh0(v))
 
-        case Ln0      => v.forward[W, O](wrt) / v
-        case Exp0     => v.forward[W, O](wrt) * Exp0(v)
-        case Sqrt0    => v.forward[W, O](wrt) * (Half0() / Sqrt0(v))
+        case Ln      => v.forward[W, O](wrt) / v
+        case Exp     => v.forward[W, O](wrt) * Exp0(v)
+        case Sqrt    => v.forward[W, O](wrt) * (Half0() / Sqrt0(v))
 
         // Experimental
-        case Abs0     => Where0_0(v > Zero0(), v.forward[W, O](wrt), -v.forward[W, O](wrt))
+        case Abs     => Where0_0(v > Zero0(), v.forward[W, O](wrt), -v.forward[W, O](wrt))
       }
 
       case Apply00(l, r, op) => op match {
-        case Add00 => l.forward[W, O](wrt) + r.forward[W, O](wrt)
-        case Sub00 => l.forward[W, O](wrt) - r.forward[W, O](wrt)
-        case Mul00 => (l.forward[W, O](wrt) * r) + (l * r.forward[W, O](wrt))
-        case Div00 => (l.forward[W, O](wrt) / r) - ((l * r.forward[W, O](wrt)) / (r * r))
-        case Pow00 => {
+        case Add => l.forward[W, O](wrt) + r.forward[W, O](wrt)
+        case Sub => l.forward[W, O](wrt) - r.forward[W, O](wrt)
+        case Mul => (l.forward[W, O](wrt) * r) + (l * r.forward[W, O](wrt))
+        case Div => (l.forward[W, O](wrt) / r) - ((l * r.forward[W, O](wrt)) / (r * r))
+        case Pow => {
           val lhs = l.forward[W, O](wrt) * (r * Pow00(l, r - One0()))
           val rhs = Ln0(l) * Pow00(l, r) * r.forward(wrt)
           lhs + rhs }
@@ -375,4 +382,4 @@ object Forward {
   }
 */
 }
-
+*/

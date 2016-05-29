@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad.algorithm.Value
-import com.kogecoo.scalaad.{BoolTensor1, Tensor1}
+import com.kogecoo.scalaad.{BooleanTensor1, Tensor1}
 
 
 trait StdVecValue {
@@ -18,8 +18,8 @@ trait StdVecValue {
     }
   }
 
-  implicit val value_stdvec_boolean: Value[BoolTensor1, StdVec[Boolean]] = new Value[BoolTensor1, StdVec[Boolean]] {
-    def value(t: BoolTensor1): StdVec[Boolean] = t match {
+  implicit val value_stdvec_boolean: Value[BooleanTensor1, StdVec[Boolean]] = new Value[BooleanTensor1, StdVec[Boolean]] {
+    def value(t: BooleanTensor1): StdVec[Boolean] = t match {
       case t => t.toStd
     }
   }

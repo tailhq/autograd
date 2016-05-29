@@ -1,17 +1,11 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{B0, V0}
+import com.kogecoo.scalaad.Shape
 
 
-sealed trait ComparisonOperator
+sealed trait ComparisonOperator[SO <: Shape]
 
-trait BinaryComparisonOp extends ComparisonOperator
+trait UnaryComparisonOp[SO <: Shape, SI <: Shape] extends ComparisonOperator[SO]
 
-
-trait ComparisonOp00 extends BinaryComparisonOp { def apply(l: V0, r: V0): B0 }
-
-trait ComparisonOp11 extends BinaryComparisonOp
-
-trait ComparisonOp22 extends BinaryComparisonOp
-
+trait BinaryComparisonOp[SO <: Shape, SI1 <: Shape, SI2 <: Shape] extends ComparisonOperator[SO]
 

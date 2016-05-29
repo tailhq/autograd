@@ -1,8 +1,8 @@
 package com.kogecoo.scalaad.op
 
 
-case object Not0 extends BooleanOp0
+case object Not extends Op0B
 
-case object And00 extends BooleanOp00
+case object And extends Op00B
 
-case object Or00 extends BooleanOp00
+case object Or  extends Op00B

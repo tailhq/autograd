@@ -3,10 +3,10 @@ package com.kogecoo.scalaad.impl.breeze
 import breeze.linalg.BitVector
 import com.kogecoo.scalaad.graph.S1
 import com.kogecoo.scalaad.impl.std.StdVec
-import com.kogecoo.scalaad.{BoolTensor1, Shape1}
+import com.kogecoo.scalaad.{BooleanTensor1, Shape1}
 
 
-case class BreezeBooleanVector(data: BitVector) extends BoolTensor1 {
+case class BreezeBooleanVector(data: BitVector) extends BooleanTensor1 {
 
   override def toStd: StdVec[Boolean] = data.toArray
 

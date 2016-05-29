@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.op.{BooleanOp00, ComparisonOp00}
+import com.kogecoo.scalaad.op.Op00C
+import com.kogecoo.scalaad.{S0, S1, S2, Shape}
 
 
 // TODO: code-sharing with Application
@@ -48,26 +48,27 @@ trait RightShapedComparisonApplication2[L <: Shape, R <: Shape] extends Comparis
   *
   * @tparam S type of shape for left, right and output Expr
   */
-trait SameShapedComparisonApplication2[S <: Shape] extends ComparisonApplication2[S, S, S] {
+trait CommonShapedComparisonApplication2[S <: Shape] extends ComparisonApplication2[S, S, S] {
   override val shape: S = l.shape
   override def l: ValueExpr[S]
   override def r: ValueExpr[S]
 }
 
+
 // Binary ComparisonApplication
 
-case class Apply00C(l: V0, r: V0, op: ComparisonOp00) extends SameShapedComparisonApplication2[S0]
-
-case class Elementwise11C(l: V1, r: V1, op: ComparisonOp00) extends SameShapedComparisonApplication2[S1]
-
-case class Elementwise22C(l: V2, r: V2, op: ComparisonOp00) extends SameShapedComparisonApplication2[S2]
+case class Apply00C(l: V0, r: V0, op: Op00C) extends CommonShapedComparisonApplication2[S0]
 
 
-case class Broadcast01C(l: V0, r: V1, op: ComparisonOp00) extends RightShapedComparisonApplication2[S0, S1]
+case class Elementwise11C(l: V1, r: V1, op: Op00C) extends CommonShapedComparisonApplication2[S1]
 
-case class Broadcast02C(l: V0, r: V2, op: ComparisonOp00) extends RightShapedComparisonApplication2[S0, S2]
+case class Elementwise22C(l: V2, r: V2, op: Op00C) extends CommonShapedComparisonApplication2[S2]
 
-case class Broadcast10C(l: V1, r: V0, op: ComparisonOp00) extends LeftShapedComparisonApplication2[S1, S0]
+case class Elementwise01C(l: V0, r: V1, op: Op00C) extends RightShapedComparisonApplication2[S0, S1]
 
-case class Broadcast20C(l: V2, r: V0, op: ComparisonOp00) extends LeftShapedComparisonApplication2[S2, S0]
+case class Elementwise02C(l: V0, r: V2, op: Op00C) extends RightShapedComparisonApplication2[S0, S2]
+
+case class Elementwise10C(l: V1, r: V0, op: Op00C) extends LeftShapedComparisonApplication2[S1, S0]
+
+case class Elementwise20C(l: V2, r: V0, op: Op00C) extends LeftShapedComparisonApplication2[S2, S0]
 

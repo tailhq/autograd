@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.impl.std.StdUtil.{T0, T1}
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
-import com.kogecoo.scalaad.op.{Abs0, Acos0, Add00, And00, Asin0, Atan0, Cos0, Cosh0, Div00, Dot11, Eq00, Exp0, Gt00, Gte00, Ln0, Lt00, Lte00, Max00, Min00, Mul00, Neg0, Neq00, Not0, Or00, Pos0, Pow00, Sin0, Sinh0, Sqrt0, Sub00, Tan0, Tanh0}
+import com.kogecoo.scalaad.op.{Abs, Acos, Add, And, Asin, Atan, Cos, Cosh, Div, Dot, Eq, Exp, Gt, Gte, Ln, Lt, Lte, Max, Min, Mul, Neg, Neq, Not, Or, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
 
 
 trait StdScalarEval {// self: StdVecEval =>

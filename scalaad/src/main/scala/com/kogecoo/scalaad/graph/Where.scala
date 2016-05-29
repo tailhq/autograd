@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.{S0, S1, S2, Shape}
 
 
 /**
@@ -31,6 +31,4 @@ case class Where2_2(cond: B2, a: V2, b: V2) extends WhereBase[S2, S2]
 case class Where0_1(cond: B0, a: V1, b: V1) extends WhereBase[S1, S0]
 
 case class Where0_2(cond: B0, a: V2, b: V2) extends WhereBase[S2, S0]
-
-case class Where1_2(cond: B1, a: V2, b: V2) extends WhereBase[S2, S1]
 

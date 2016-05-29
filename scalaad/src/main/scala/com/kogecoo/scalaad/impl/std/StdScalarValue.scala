@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.{BoolTensor0, Tensor0}
+import com.kogecoo.scalaad.{BooleanTensor0, Tensor0}
 import com.kogecoo.scalaad.algorithm.Value
 
 
@@ -12,8 +12,8 @@ trait StdScalarValue {
     }
   }
 
-  implicit val value_boolean: Value[BoolTensor0, Boolean] = new Value[BoolTensor0, Boolean] {
-    def value(t: BoolTensor0): Boolean = t match {
+  implicit val value_boolean: Value[BooleanTensor0, Boolean] = new Value[BooleanTensor0, Boolean] {
+    def value(t: BooleanTensor0): Boolean = t match {
       case t => t.toStd
     }
   }

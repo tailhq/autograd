@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.op.{Abs0, Acos0, Add00, Asin0, Atan0, Cos0, Cosh0, Div00, Exp0, Gt00, Ln0, Lt00, Max00, Min00, Mul00, Neg0, Pos0, Pow00, Sin0, Sinh0, Sqrt0, Sub00, Tan0, Tanh0}
+import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Gt, Ln, Lt, Max, Min, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
 
 import scala.Predef.{any2stringadd => _}
 
@@ -29,6 +29,7 @@ trait Reverse[N, G] {
   *2 2
   *
   **/
+/*
 object Reverse {
 
 
@@ -657,4 +658,4 @@ object Reverse {
   */
 
 }
-
+*/

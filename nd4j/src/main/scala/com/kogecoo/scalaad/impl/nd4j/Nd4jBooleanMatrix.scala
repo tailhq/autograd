@@ -2,11 +2,11 @@ package com.kogecoo.scalaad.impl.nd4j
 
 import com.kogecoo.scalaad.graph.S2
 import com.kogecoo.scalaad.impl.std.StdMat
-import com.kogecoo.scalaad.{BoolTensor2, Shape2}
+import com.kogecoo.scalaad.{BooleanTensor2, Shape2}
 import org.nd4j.linalg.api.ndarray.INDArray
 
 
-case class Nd4jBooleanMatrix(data: INDArray) extends BoolTensor2 {
+case class Nd4jBooleanMatrix(data: INDArray) extends BooleanTensor2 {
 
   override def toStd: StdMat[Boolean] ={
     (0 until data.rows()).toArray.toSeq.map { i =>
