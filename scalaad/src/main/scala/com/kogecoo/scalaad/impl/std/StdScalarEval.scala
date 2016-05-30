@@ -24,37 +24,37 @@ trait StdScalarEval {// self: StdVecEval =>
       case Const0(v)        => v.value[T0]
 
       // Unary ops
-      case Apply0(v, op) => op match {
-        case Pos0 => +v.eval[T0]
-        case Neg0 => -v.eval[T0]
+      case Apply1(v, op) => op match {
+        case Pos => +v.eval[T0]
+        case Neg => -v.eval[T0]
 
-        case Sin0 => math.sin(v.eval[T0])
-        case Cos0 => math.cos(v.eval[T0])
-        case Tan0 => math.tan(v.eval[T0])
+        case Sin => math.sin(v.eval[T0])
+        case Cos => math.cos(v.eval[T0])
+        case Tan => math.tan(v.eval[T0])
 
-        case Asin0 => math.asin(v.eval[T0])
-        case Acos0 => math.acos(v.eval[T0])
-        case Atan0 => math.atan(v.eval[T0])
+        case Asin => math.asin(v.eval[T0])
+        case Acos => math.acos(v.eval[T0])
+        case Atan => math.atan(v.eval[T0])
 
-        case Sinh0 => math.sinh(v.eval[T0])
-        case Cosh0 => math.cosh(v.eval[T0])
-        case Tanh0 => math.tanh(v.eval[T0])
+        case Sinh => math.sinh(v.eval[T0])
+        case Cosh => math.cosh(v.eval[T0])
+        case Tanh => math.tanh(v.eval[T0])
 
-        case Ln0         => math.log(v.eval[T0])
-        case Exp0        => math.exp(v.eval[T0])
-        case Sqrt0       => math.sqrt(v.eval[T0])
+        case Ln   => math.log(v.eval[T0])
+        case Exp  => math.exp(v.eval[T0])
+        case Sqrt => math.sqrt(v.eval[T0])
 
-        case Abs0         => math.abs(v.eval[T0])
+        case Abs  => math.abs(v.eval[T0])
       }
 
       // Binary ops
-      case Apply00(l, r, op) => op match {
-        case Add00 => l.eval[T0] + r.eval[T0]
-        case Sub00 => l.eval[T0] - r.eval[T0]
-        case Mul00 => l.eval[T0] * r.eval[T0]
-        case Div00 => l.eval[T0] / r.eval[T0]
+      case Apply2(l, r, op) => op match {
+        case Add => l.eval[T0] + r.eval[T0]
+        case Sub => l.eval[T0] - r.eval[T0]
+        case Mul => l.eval[T0] * r.eval[T0]
+        case Div => l.eval[T0] / r.eval[T0]
 
-        case Pow00 => math.pow(l.eval[T0], r.eval[T0])
+        case Pow => math.pow(l.eval[T0], r.eval[T0])
 
         // Experimental
 
@@ -62,8 +62,8 @@ trait StdScalarEval {// self: StdVecEval =>
         case Dot10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ * r.eval[T0]).sum
         case Dot11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ * _).sum*/
 
-        case Max00 => math.max(l.eval[T0], r.eval[T0])
-        case Min00 => math.min(l.eval[T0], r.eval[T0])
+        case Max => math.max(l.eval[T0], r.eval[T0])
+        case Min => math.min(l.eval[T0], r.eval[T0])
 
       }
       //case Where0_0(cond: B0, a: V0, b: V0) => if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]
@@ -81,20 +81,20 @@ trait StdScalarEval {// self: StdVecEval =>
 
     def eval(n: B0): Boolean = n match {
       case Apply00C(l, r, op) => op match {
-        case Eq00  => l.eval[T0] == r.eval[T0]
-        case Neq00 => l.eval[T0] != r.eval[T0]
-        case Lt00  => l.eval[T0] <  r.eval[T0]
-        case Lte00 => l.eval[T0] <= r.eval[T0]
-        case Gt00  => l.eval[T0] >  r.eval[T0]
-        case Gte00 => l.eval[T0] >= r.eval[T0]
+        case Eq  => l.eval[T0] == r.eval[T0]
+        case Neq => l.eval[T0] != r.eval[T0]
+        case Lt  => l.eval[T0] <  r.eval[T0]
+        case Lte => l.eval[T0] <= r.eval[T0]
+        case Gt  => l.eval[T0] >  r.eval[T0]
+        case Gte => l.eval[T0] >= r.eval[T0]
       }
       case Apply0B(v, op) => op match {
-        case Not0 => !v.eval[B]
+        case Not => !v.eval[B]
       }
 
       case Apply00B(l, r, op) => op match {
-        case And00 => l.eval[B] && r.eval[B]
-        case Or00  => l.eval[B] || r.eval[B]
+        case And => l.eval[B] && r.eval[B]
+        case Or  => l.eval[B] || r.eval[B]
       }
     }
   }

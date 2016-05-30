@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.op.{BinaryOp, Op0, Op00, UnaryOp}
-import com.kogecoo.scalaad.{S0, Shape}
+import com.kogecoo.scalaad.{S0, Shape, Shape0}
 
 
 /**
@@ -78,7 +78,7 @@ trait CommonShapedApplication1[S <: Shape] extends Application1[S, S] {
 
 case class Apply1[S <: Shape](v: ValueExpr[S], op: Op0) extends CommonShapedApplication1[S]
 
-case class Fold1[SO <: Shape, SI <: Shape](v: ValueExpr[SI], op: UnaryOp[SO, SI]) extends Application1[SO, SI]
+case class Fold1[SI1 <: Shape](v: ValueExpr[SI1], op: UnaryOp[S0, SI1]) extends Application1[S0, SI1] { def shape: S0 = Shape0() }
 
 case class Fill[SO <: Shape](v: ValueExpr[S0], shape: SO) extends Application1[SO, S0]
 
@@ -87,11 +87,11 @@ case class Fill[SO <: Shape](v: ValueExpr[S0], shape: SO) extends Application1[S
 
 case class Apply2[S <: Shape](l: ValueExpr[S], r: ValueExpr[S], op: Op00) extends CommonShapedApplication2[S]
 
-case class ElementwiseLeft[S <: Shape](l: ValueExpr[S], r: V0, op: Op00) extends LeftShapedApplication2[S0, S]
+case class ElementwiseLeft[S <: Shape](l: ValueExpr[S], r: V0, op: Op00) extends LeftShapedApplication2[S, S0]
 
 case class ElementwiseRight[S <: Shape](l: V0, r: ValueExpr[S], op: Op00) extends RightShapedApplication2[S0, S]
 
-case class Fold2[SO <: Shape, SI <: Shape](l: ValueExpr[SI], r: ValueExpr[SI], op: BinaryOp[SO, SI, SI]) extends Application2[SO, SI, SI]
+case class Fold2[SI1 <: Shape, SI2 <: Shape](l: ValueExpr[SI1], r: ValueExpr[SI2], op: BinaryOp[S0, SI1, SI2]) extends Application2[S0, SI1, SI2] { def shape: S0 = Shape0() }
 
 /*
 case class RowwiseRight(l: V1, r: V2, op: Op00) extends RightShapedApplication2[S1, S2]

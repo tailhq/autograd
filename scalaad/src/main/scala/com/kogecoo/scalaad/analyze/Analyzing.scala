@@ -10,13 +10,13 @@ class Analyzing {
 
   private[this] val paramProjBuilder = Map.newBuilder[Param[_ <: Shape], ValueExpr[_ <: Shape]]
 
-  def addEqn(param: Param[_ <: Shape], eqn: Equation[_ <: Shape]): Param[_ <: Shape]= {
-    eqnProjBuilder += (param, eqn)
+  def addEqn[S <: Shape](param: Param[S], eqn: Equation[S]): Param[S]= {
+    eqnProjBuilder += ((param, eqn))
     param
   }
 
-  def addParam(param: Param[_ <: Shape], v: ValueExpr[_ <: Shape]): Param[_ <: Shape] = {
-    paramProjBuilder += (param, v)
+  def addParam[S <: Shape](param: Param[S], v: ValueExpr[S]): Param[S] = {
+    paramProjBuilder += ((param, v))
     param
   }
 
