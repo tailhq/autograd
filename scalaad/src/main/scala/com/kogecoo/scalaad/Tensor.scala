@@ -2,15 +2,14 @@ package com.kogecoo.scalaad
 
 import com.kogecoo.scalaad.algorithm.Value
 import com.kogecoo.scalaad.impl.std.{StdMat, StdVec}
-import shapeless.Nat
 
 
 //trait ComplexScalar { }
 
-trait Tensor[N <: Nat]
+trait Tensor[S <: Shape]
 
 
-trait Tensor0 extends Tensor[Nat._0] {
+trait Tensor0 extends Tensor[S0] {
 
   def value[V](implicit v: Value[Tensor0, V]): V = v.value(this)
 
@@ -23,7 +22,7 @@ trait Tensor0 extends Tensor[Nat._0] {
 }
 
 
-trait Tensor1 extends Tensor[Nat._1] {
+trait Tensor1 extends Tensor[S1] {
 
   val transposed: Boolean
 
@@ -38,7 +37,7 @@ trait Tensor1 extends Tensor[Nat._1] {
 }
 
 
-trait Tensor2 extends Tensor[Nat._2] {
+trait Tensor2 extends Tensor[S2] {
 
   def value[V](implicit v: Value[Tensor2, V]): V = v.value(this)
 
@@ -51,7 +50,7 @@ trait Tensor2 extends Tensor[Nat._2] {
 }
 
 
-trait BooleanTensor0 extends Tensor[Nat._0] {
+trait BooleanTensor0 extends Tensor[S0] {
 
   def value[V](implicit v: Value[BooleanTensor0, V]): V = v.value(this)
 
@@ -62,7 +61,7 @@ trait BooleanTensor0 extends Tensor[Nat._0] {
 }
 
 
-trait BooleanTensor1 extends Tensor[Nat._1] {
+trait BooleanTensor1 extends Tensor[S1] {
 
   def value[V](implicit v: Value[BooleanTensor1, V]): V = v.value(this)
 
@@ -72,7 +71,7 @@ trait BooleanTensor1 extends Tensor[Nat._1] {
 
 }
 
-trait BooleanTensor2 extends Tensor[Nat._2] {
+trait BooleanTensor2 extends Tensor[S2] {
 
   def value[V](implicit v: Value[BooleanTensor2, V]): V = v.value(this)
 

@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.op
+package com.kogecoo.scalaad.op.bool
 
 import com.kogecoo.scalaad.Shape
 

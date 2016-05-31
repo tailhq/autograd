@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.algorithm
 
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Gt, Ln, Lt, Max, Min, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
+import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Max, Min, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
 
 import scala.Predef.{any2stringadd => _}
 

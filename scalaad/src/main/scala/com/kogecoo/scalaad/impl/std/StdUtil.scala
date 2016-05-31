@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.graph.{S1, S2}
-import com.kogecoo.scalaad.{Shape1, Shape2}
+import com.kogecoo.scalaad.{S1, S2, Shape1, Shape2}
 
 import scala.math.{abs, max}
 

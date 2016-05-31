@@ -1,9 +1,8 @@
 package com.kogecoo.scalaad.impl.breeze
 
 import breeze.linalg.DenseMatrix
-import com.kogecoo.scalaad.graph.S2
 import com.kogecoo.scalaad.impl.std.StdMat
-import com.kogecoo.scalaad.{Shape2, Tensor2}
+import com.kogecoo.scalaad.{S2, Shape2, Tensor2}
 
 
 case class BreezeMatrix(data: DenseMatrix[Double]) extends Tensor2 {

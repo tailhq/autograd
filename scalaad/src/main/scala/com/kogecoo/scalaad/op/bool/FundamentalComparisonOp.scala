@@ -1,4 +1,6 @@
-package com.kogecoo.scalaad.op
+package com.kogecoo.scalaad.op.bool
+
+import com.kogecoo.scalaad.op.Op00C
 
 
 case object Eq  extends Op00C

@@ -11,7 +11,7 @@ import org.nd4s.Implicits._
 
 
 trait Nd4jMatrixEval {
-
+/*
   private[this] type T = Double
   private[this] type V = INDArray
 
@@ -114,4 +114,5 @@ trait Nd4jMatrixEval {
     }
 
   }
+  */
 }

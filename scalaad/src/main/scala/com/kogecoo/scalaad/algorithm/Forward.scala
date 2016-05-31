@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.op._
 
 import scala.Predef.{any2stringadd => _}
 
-
+/*
 trait Forward[N, W, O] {
 
   def forward(n: N, wrt: W): O
@@ -29,14 +29,14 @@ trait Forward[N, W, O] {
   *2 0 2
   *
   **/
-/*
+
 object Forward {
 
-  implicit def forward000: Forward[V0, V0, V0] = new Forward[V0, V0, V0] {
+  implicit def forward000: Forward[VE0, VE0, VE0] = new Forward[VE0, VE0, VE0] {
 
-    private[this] type N = V0
-    private[this] type W = V0
-    private[this] type O = V0
+    private[this] type N = VE0
+    private[this] type W = VE0
+    private[this] type O = VE0
 
     def forward(n: N, wrt: W): O = n match {
 
@@ -49,13 +49,13 @@ object Forward {
       case _: Const0  => Zero0()
 
 
-      case Apply0(v, op) => op match {
-        case Pos0 => +v.forward[W, O](wrt)
-        case Neg0 => -v.forward[W, O](wrt)
+      case Apply1(v, op) => op match {
+        case Pos => +v.forward[W, O](wrt)
+        case Neg => -v.forward[W, O](wrt)
 
-        case Sin => v.forward[W, O](wrt) *  Cos0(v)
-        case Cos => v.forward[W, O](wrt) * -Sin0(v)
-        case Tan => v.forward[W, O](wrt) * (One0() + Tan0(v) * Tan0(v))
+        case Sin => v.forward[W, O](wrt) *  Cos(v)
+        case Cos => v.forward[W, O](wrt) * -Sin(v)
+        case Tan => v.forward[W, O](wrt) * (One() + Tan(v) * Tan(v))
 
         case Asin => v.forward[W, O](wrt) *  (One0() / Sqrt0(One0() - (v * v)))
         case Acos => v.forward[W, O](wrt) * -(One0() / Sqrt0(One0() - (v * v)))
@@ -382,4 +382,5 @@ object Forward {
   }
 */
 }
+
 */

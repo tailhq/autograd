@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.test
 
-import com.kogecoo.scalaad.Shape2
-import com.kogecoo.scalaad.graph.{S1, S2}
+import com.kogecoo.scalaad.{S1, S2, Shape2}
 import com.kogecoo.scalaad.impl.std.StdUtil
 import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.test.helper.impl.std.{StdN0Gen, StdN1Gen, StdN2Gen, StdValueGen}

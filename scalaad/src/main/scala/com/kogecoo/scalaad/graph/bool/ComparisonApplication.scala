@@ -1,7 +1,8 @@
-package com.kogecoo.scalaad.graph
+package com.kogecoo.scalaad.graph.bool
 
+import com.kogecoo.scalaad.graph.{VE, VE0, ValueExpr}
 import com.kogecoo.scalaad.op.Op00C
-import com.kogecoo.scalaad.{S0, S1, S2, Shape}
+import com.kogecoo.scalaad.{S0, Shape}
 
 
 // TODO: code-sharing with Application
@@ -57,18 +58,9 @@ trait CommonShapedComparisonApplication2[S <: Shape] extends ComparisonApplicati
 
 // Binary ComparisonApplication
 
-case class Apply00C(l: V0, r: V0, op: Op00C) extends CommonShapedComparisonApplication2[S0]
+case class Apply2C[S <: Shape](l: VE[S], r: VE[S], op: Op00C) extends CommonShapedComparisonApplication2[S]
 
+case class ElementwiseLeftC[S <: Shape](l: VE[S], r: VE0, op: Op00C) extends LeftShapedComparisonApplication2[S, S0]
 
-case class Elementwise11C(l: V1, r: V1, op: Op00C) extends CommonShapedComparisonApplication2[S1]
-
-case class Elementwise22C(l: V2, r: V2, op: Op00C) extends CommonShapedComparisonApplication2[S2]
-
-case class Elementwise01C(l: V0, r: V1, op: Op00C) extends RightShapedComparisonApplication2[S0, S1]
-
-case class Elementwise02C(l: V0, r: V2, op: Op00C) extends RightShapedComparisonApplication2[S0, S2]
-
-case class Elementwise10C(l: V1, r: V0, op: Op00C) extends LeftShapedComparisonApplication2[S1, S0]
-
-case class Elementwise20C(l: V2, r: V0, op: Op00C) extends LeftShapedComparisonApplication2[S2, S0]
+case class ElementwiseRightC[S <: Shape](l: VE0, r: VE[S], op: Op00C) extends RightShapedComparisonApplication2[S0, S]
 

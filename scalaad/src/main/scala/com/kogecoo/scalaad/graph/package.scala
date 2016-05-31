@@ -1,21 +1,26 @@
 package com.kogecoo.scalaad
 
-import Predef.{ any2stringadd => _ }
+import com.kogecoo.scalaad.graph.bool.BooleanExpr
+
+import Predef.{any2stringadd => _}
 
 
 package object graph {
 
-  type V0 = ValueExpr[S0]
+  type VE0 = ValueExpr[S0]
 
-  type V1 = ValueExpr[S1]
+  type VE1 = ValueExpr[S1]
 
-  type V2 = ValueExpr[S2]
+  type VE2 = ValueExpr[S2]
+
+  type VE[S <: Shape] = ValueExpr[S]
 
 
-  type B0 = BooleanExpr[S0]
+  type BE0 = BooleanExpr[S0]
 
-  type B1 = BooleanExpr[S1]
+  type BE1 = BooleanExpr[S1]
 
-  type B2 = BooleanExpr[S2]
+  type BE2 = BooleanExpr[S2]
 
+  type BE[S <: Shape] = BooleanExpr[S]
 }

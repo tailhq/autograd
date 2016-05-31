@@ -12,6 +12,7 @@ import scala.Predef.{any2stringadd => _, _}
 
 trait Nd4jVectorEval {
 
+  /*
   private[this] type T = Double
   private[this] type V = INDArray
 
@@ -114,5 +115,6 @@ trait Nd4jVectorEval {
     }
   }
 
+*/
 }
 

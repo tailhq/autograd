@@ -1,5 +1,7 @@
 package com.kogecoo.scalaad
 
+import com.kogecoo.scalaad.op.bool.{BinaryBooleanOp, BinaryComparisonOp, UnaryBooleanOp, UnaryComparisonOp}
+
 
 package object op {
 

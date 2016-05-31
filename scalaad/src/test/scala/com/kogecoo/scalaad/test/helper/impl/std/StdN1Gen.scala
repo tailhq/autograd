@@ -1,5 +1,6 @@
 package com.kogecoo.scalaad.test.helper.impl.std
 
+import com.kogecoo.scalaad.S1
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.StdVector
 import com.kogecoo.scalaad.test.helper._

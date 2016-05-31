@@ -2,18 +2,20 @@ package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.graph.bool.{Apply1B, Apply2B, Apply2C}
 import com.kogecoo.scalaad.impl.std.Implicits._
-import com.kogecoo.scalaad.impl.std.StdUtil.{T0, T1}
+import com.kogecoo.scalaad.impl.std.StdUtil.T0
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
-import com.kogecoo.scalaad.op.{Abs, Acos, Add, And, Asin, Atan, Cos, Cosh, Div, Dot, Eq, Exp, Gt, Gte, Ln, Lt, Lte, Max, Min, Mul, Neg, Neq, Not, Or, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
+import com.kogecoo.scalaad.op.bool.{And, Eq, Gt, Gte, Lt, Lte, Neq, Not, Or}
+import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Max, Min, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
 
 
 trait StdScalarEval {// self: StdVecEval =>
 
   // operators/functions convert Node order 0 -> 0
-  implicit val eval00_double: Eval[V0, Double] = new Eval[V0, Double] {
+  implicit val eval00_double: Eval[VE0, Double] = new Eval[VE0, Double] {
 
-    def eval(n: V0): T0 = n match {
+    def eval(n: VE0): T0 = n match {
 
       // Leaf nodes
       case Var0(v)          => v.value[T0]
@@ -75,12 +77,12 @@ trait StdScalarEval {// self: StdVecEval =>
     }
   }
 
-  implicit val eval_bool00_double: Eval[B0, Boolean] = new Eval[B0, Boolean] {
+  implicit val eval_bool00_double: Eval[BE0, Boolean] = new Eval[BE0, Boolean] {
 
     type B = Boolean
 
-    def eval(n: B0): Boolean = n match {
-      case Apply00C(l, r, op) => op match {
+    def eval(n: BE0): Boolean = n match {
+      case Apply2C(l, r, op) => op match {
         case Eq  => l.eval[T0] == r.eval[T0]
         case Neq => l.eval[T0] != r.eval[T0]
         case Lt  => l.eval[T0] <  r.eval[T0]
@@ -88,11 +90,11 @@ trait StdScalarEval {// self: StdVecEval =>
         case Gt  => l.eval[T0] >  r.eval[T0]
         case Gte => l.eval[T0] >= r.eval[T0]
       }
-      case Apply0B(v, op) => op match {
+      case Apply1B(v, op) => op match {
         case Not => !v.eval[B]
       }
 
-      case Apply00B(l, r, op) => op match {
+      case Apply2B(l, r, op) => op match {
         case And => l.eval[B] && r.eval[B]
         case Or  => l.eval[B] || r.eval[B]
       }

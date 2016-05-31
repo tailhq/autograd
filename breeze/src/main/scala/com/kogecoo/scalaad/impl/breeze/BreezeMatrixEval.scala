@@ -11,6 +11,7 @@ import com.kogecoo.scalaad.impl.breeze.Implicits._
 
 trait BreezeMatrixEval {
 
+  /*
   private[this] type T = Double
   private[this] type V = DenseMatrix[Double]
 
@@ -116,5 +117,6 @@ trait BreezeMatrixEval {
       case Not2(v: B2) => !v.eval[DenseMatrix[Boolean]]
     }
   }
+  */
 
 }

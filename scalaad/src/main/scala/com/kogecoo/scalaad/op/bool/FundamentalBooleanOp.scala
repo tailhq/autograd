@@ -1,4 +1,6 @@
-package com.kogecoo.scalaad.op
+package com.kogecoo.scalaad.op.bool
+
+import com.kogecoo.scalaad.op.{Op00B, Op0B}
 
 
 case object Not extends Op0B

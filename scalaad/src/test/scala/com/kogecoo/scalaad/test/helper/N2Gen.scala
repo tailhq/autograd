@@ -1,15 +1,16 @@
 package com.kogecoo.scalaad.test.helper
 
+import com.kogecoo.scalaad.S2
 import com.kogecoo.scalaad.graph._
 import org.scalacheck.Gen
 import org.scalacheck.Gen.oneOf
 
 
-abstract class N2Gen[V] {
+abstract class N2Gen[VG] {
 
-  def genVar2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[Var2]
+  def genVar2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[Var2]
 
-  def genConst2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[Const2]
+  def genConst2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[Const2]
 
   final def genZero2(shapeGen: Gen[S2]): Gen[Zero2] = {
     for (s <- shapeGen; n <- Gen.const(Zero2(s))) yield n
@@ -25,7 +26,7 @@ abstract class N2Gen[V] {
 
   // composite
 
-  final def genNode2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[V2] = {
+  final def genNode2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[VE2] = {
     oneOf(
       genVar2(shapeGen, valueGen),
       genConst2(shapeGen, valueGen),
@@ -35,7 +36,7 @@ abstract class N2Gen[V] {
     )
   }
 
-  final def genNonVar2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[V2] = {
+  final def genNonVar2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[VE2] = {
     oneOf(
       genVar2(shapeGen, valueGen),
       genConst2(shapeGen, valueGen),
@@ -45,7 +46,7 @@ abstract class N2Gen[V] {
     )
   }
 
-  final def genNonzeroNode2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[V2] = {
+  final def genNonzeroNode2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[VE2] = {
     oneOf(
       genConst2(shapeGen, valueGen),
       genHalf2(shapeGen),
@@ -53,7 +54,7 @@ abstract class N2Gen[V] {
     )
   }
 
-  final def genNonzeroNonVar2(shapeGen: Gen[S2], valueGen: Gen[V]): Gen[V2] = {
+  final def genNonzeroNonVar2(shapeGen: Gen[S2], valueGen: Gen[VG]): Gen[VE2] = {
     oneOf(
       genConst2(shapeGen, valueGen),
       genHalf2(shapeGen),

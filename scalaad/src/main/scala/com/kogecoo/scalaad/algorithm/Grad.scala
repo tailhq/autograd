@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.algorithm
 
-import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.{S0, S1, S2, Shape}
 import com.kogecoo.scalaad.graph._
 
 import Predef.{any2stringadd => _, _}
@@ -24,7 +24,7 @@ object Grad {
 
   def empty: Grad = new Grad(Map.empty[ValueExpr[_ <: S], ValueExpr[_ <: S]])
 
-  def where(cond: BooleanExpr[_ <: S], g1: Grad, g2: Grad): Grad = {
+  /*def where(cond: BooleanExpr[_ <: S], g1: Grad, g2: Grad): Grad = {
     val keys = g1.grad.keySet | g2.grad.keySet
     val (m: Map[ValueExpr[_ <: S], ValueExpr[_ <: S]]) = (for (k <- keys) yield {
 
@@ -53,7 +53,7 @@ object Grad {
       case (a: B0 @unchecked, _: S0, b: V2 @unchecked, _: S2, c: V2 @unchecked, _: S2) => Where0_2(a, b, c)
       //case (a: B1 @unchecked, _: S1, b: N0 @unchecked, _: S0, c: N0 @unchecked, _: S0) => Where1_0(a, b, c)
       case (a: B1 @unchecked, _: S1, b: V1 @unchecked, _: S1, c: V1 @unchecked, _: S1) => Where1_1(a, b, c)
-      case (a: B1 @unchecked, _: S1, b: V2 @unchecked, _: S2, c: V2 @unchecked, _: S2) => Where1_2(a, b, c)
+//case (a: B1 @unchecked, _: S1, b: V2 @unchecked, _: S2, c: V2 @unchecked, _: S2) => Where1_2(a, b, c)
       //case (a: B2 @unchecked, _: S2, b: N0 @unchecked, _: S0, c: N0 @unchecked, _: S0) => Where2_0(a, b, c)
       //case (a: B2 @unchecked, _: S2, b: N1 @unchecked, _: S1, c: N1 @unchecked, _: S1) => Where2_1(a, b, c)
       case (a: B2 @unchecked, _: S2, b: V2 @unchecked, _: S2, c: V2 @unchecked, _: S2) => Where2_2(a, b, c)
@@ -96,7 +96,7 @@ object Grad {
       }
     }
   }
-
+*/
 }
 
 

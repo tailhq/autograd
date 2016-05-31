@@ -11,6 +11,7 @@ import com.kogecoo.scalaad.impl.breeze.Implicits._
 
 trait BreezeVectorEval {
 
+  /*
   private[this] type T = Double
   private[this] type V = DenseVector[Double]
 
@@ -122,6 +123,7 @@ trait BreezeVectorEval {
       case Not1(v: B1) => !v.eval[BitVector]
     }
   }
+  */
 
 }
 

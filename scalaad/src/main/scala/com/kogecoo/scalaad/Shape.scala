@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.V1
+import com.kogecoo.scalaad.graph.VE1
 
 /**
   * containers used for carrying
@@ -22,7 +22,7 @@ case class Shape2(_1: Int, _2: Int) extends Shape
 object Shape2 {
 
   def apply(row: Shape1, col: Shape1): Shape2 = Shape2(row._1, col._1)
-  def apply(row: V1, col: V1): Shape2 = Shape2(row.shape._1, col.shape._1)
+  def apply(row: VE1, col: VE1): Shape2 = Shape2(row.shape._1, col.shape._1)
 
 }
 

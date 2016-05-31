@@ -1,5 +1,6 @@
 package com.kogecoo.scalaad.test.helper.impl.std
 
+import com.kogecoo.scalaad.S2
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.{StdMat, StdMatrix}
 import com.kogecoo.scalaad.test.helper._
