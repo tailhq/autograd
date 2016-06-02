@@ -5,18 +5,18 @@ import com.kogecoo.scalaad.op.bool.{BinaryBooleanOp, BinaryComparisonOp, UnaryBo
 
 package object op {
 
-  type Op0 = UnaryOp[S0, S0]
+  type Op0 = UnaryOp[S0]
 
-  type Op1 = UnaryOp[S1, S1]
+  type Op1 = UnaryOp[S1]
 
-  type Op2 = UnaryOp[S2, S2]
+  type Op2 = UnaryOp[S2]
 
 
-  type Op00 = BinaryOp[S0, S0, S0]
+  type Op00 = BinaryOp[S0]
 
-  type Op11 = BinaryOp[S1, S1, S1]
+  type Op11 = BinaryOp[S1]
 
-  type Op22 = BinaryOp[S2, S2, S2]
+  type Op22 = BinaryOp[S2]
 
 
   type Op0B = UnaryBooleanOp[S0, S0]

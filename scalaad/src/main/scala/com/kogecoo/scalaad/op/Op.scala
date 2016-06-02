@@ -8,18 +8,37 @@ sealed trait Operator[SO <: Shape]
 
 trait NullaryOp[SO <: Shape] extends Operator[SO] {
 
-  def deriv[S <: Shape](v: VE[S]): VE[S] = Apply0(Zero)
+  def deriv[S <: Shape]: VE[S] = Apply0[S](Zero)
 
 }
 
-trait UnaryOp[SO <: Shape, SI <: Shape] extends Operator[SO] {
+trait UnaryOp[S <: Shape] extends Operator[S] {
 
   def deriv[VS <: Shape](v: VE[VS]): VE[VS]
 
 }
 
-trait BinaryOp[SO <: Shape, SI1 <: Shape, SI2 <: Shape] extends Operator[SO] {
+trait BinaryOp[S <: Shape] extends Operator[S] {
 
-  def deriv[S <: Shape](l: VE[S], r: VE[S]): (VE[S], VE[S])
+  def deriv[VS <: Shape](l: VE[VS], r: VE[VS]): (VE[VS], VE[VS])
 
 }
+
+trait AsymmetricUnaryOp[SO <: Shape, SI <: Shape] extends Operator[SO] {
+
+  def deriv(v: VE[SI]): VE[SO]
+
+}
+
+trait AsymmetricLeftBinaryOp[SL <: Shape, SR <: Shape] extends Operator[SL] {
+
+  def deriv(l: VE[SL], r: VE[SR]): (VE[SL], VE[SL])
+
+}
+
+trait AsymmetricRightBinaryOp[SL <: Shape, SR <: Shape] extends Operator[SR] {
+
+  def deriv(l: VE[SL], r: VE[SR]): (VE[SR], VE[SR])
+
+}
+

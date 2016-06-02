@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply0, Apply1, Apply2, ElementwiseRight, VE}
+import com.kogecoo.scalaad.graph.{Apply0, Apply1, Apply2, VE}
 import com.kogecoo.scalaad.{S0, Shape, Tensor}
 
 
@@ -66,7 +66,7 @@ case object Div extends Op00 {
 
 }
 
-case object ElementwiseDiv extends Op00 {
+case object Div extends {
 
   override def deriv[S <: Shape](l: VE[S], r: VE[S]): (VE[S], VE[S]) = {
     val first = Apply2(Apply0(One), r, Div)

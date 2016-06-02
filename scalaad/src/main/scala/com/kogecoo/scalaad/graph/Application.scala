@@ -120,6 +120,7 @@ case class Fill[SO <: Shape](v: VE0, shape: SO) extends Application1[SO, S0] {
 case class Apply2[S <: Shape](l: VE[S], r: VE[S], op: Op00) extends CommonShapedApplication2[S] {
 
   def analyze(a: Analyzing): Param[S] = a.addEqn(Eqn2(l.analyze(a), r.analyze(a), op))
+
 }
 
 
