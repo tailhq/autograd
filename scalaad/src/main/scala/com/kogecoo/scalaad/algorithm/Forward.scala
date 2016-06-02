@@ -5,10 +5,10 @@ import com.kogecoo.scalaad.op._
 
 import scala.Predef.{any2stringadd => _}
 
-/*
-trait Forward[N, W, O] {
 
-  def forward(n: N, wrt: W): O
+trait Forward[S, SW, SO] {
+
+  def forward(n: VE[S], wrt: VE[SW]): VE[SO]
 
 }
 
@@ -32,6 +32,7 @@ trait Forward[N, W, O] {
 
 object Forward {
 
+  /*
   implicit def forward000: Forward[VE0, VE0, VE0] = new Forward[VE0, VE0, VE0] {
 
     private[this] type N = VE0
@@ -381,6 +382,7 @@ object Forward {
     }
   }
 */
+*/
 }
 
-*/
+

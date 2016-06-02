@@ -1,8 +1,8 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.analyze.{Analyzing, ElementwiseEqn2, Eqn1, Eqn2, FillEqn1, FoldEqn1, FoldEqn2, Param, WhereEqn}
+import com.kogecoo.scalaad.analyze.{Analyzing, ElementwiseLeftEqn2, ElementwiseRightEqn2, Eqn0, Eqn1, Eqn2, FillEqn1, FoldEqn1, FoldEqn2, Param, WhereEqn}
 import com.kogecoo.scalaad.graph.bool.BooleanExpr
-import com.kogecoo.scalaad.op.{BinaryOp, Op0, Op00, UnaryOp}
+import com.kogecoo.scalaad.op.{BinaryOp, NullaryOp, Op0, Op00, UnaryOp, Zero}
 import com.kogecoo.scalaad.{S0, Shape, Shape0}
 
 
@@ -63,6 +63,7 @@ trait CommonShapedApplication2[S <: Shape] extends Application2[S, S, S] {
 trait Application1[O <: Shape, S <: Shape] extends ValueExpr[O] {
   def shape: O
   def v: ValueExpr[S]
+
 }
 
 /**
@@ -75,12 +76,24 @@ trait CommonShapedApplication1[S <: Shape] extends Application1[S, S] {
   def v: ValueExpr[S]
 }
 
+// Nullary Application
+
+case class Apply0[S <: Shape](op: NullaryOp[S0]) extends CommonShapedApplication1[S] {
+
+  def analyze(a: Analyzing): Param[S] = a.addEqn(Eqn0[S](op))
+
+  def forward[W, O] = Apply0(Zero)
+
+}
+
 
 // Unary Application
 
 case class Apply1[S <: Shape](v: VE[S], op: Op0) extends CommonShapedApplication1[S] {
 
   def analyze(a: Analyzing): Param[S] = a.addEqn(Eqn1(v.analyze(a), op))
+
+  def forward[W, O] = v.forward * op.deriv(v)
 
 }
 
@@ -112,13 +125,13 @@ case class Apply2[S <: Shape](l: VE[S], r: VE[S], op: Op00) extends CommonShaped
 
 case class ElementwiseLeft[S <: Shape](l: VE[S], r: VE0, op: Op00) extends LeftShapedApplication2[S, S0] {
 
-  def analyze(a: Analyzing): Param[S] = a.addEqn(ElementwiseEqn2(l.analyze(a), r.analyze(a), op))
+  def analyze(a: Analyzing): Param[S] = a.addEqn(ElementwiseLeftEqn2(l.analyze(a), r.analyze(a), op))
 }
 
 
 case class ElementwiseRight[S <: Shape](l: VE0, r: VE[S], op: Op00) extends RightShapedApplication2[S0, S] {
 
-  def analyze(a: Analyzing): Param[S] = a.addEqn(ElementwiseEqn2(l.analyze(a), r.analyze(a), op))
+  def analyze(a: Analyzing): Param[S] = a.addEqn(ElementwiseRightEqn2(l.analyze(a), r.analyze(a), op))
 }
 
 

@@ -19,7 +19,8 @@ trait ValueExpr[S <: Shape]  extends Expr[S]{
 
   def analyze(analyzing: Analyzing): Param[S]
 
-  def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
+  //def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
+  def forward[SW, SO](w: ValueExpr[SW])(implicit F: Forward[ValueExpr[S], SW, SO]): ValueExpr[SO] = F.forward(this, w)
 
   def reverse[G](g: G)(implicit R: Reverse[ValueExpr[S], G]): Grad = R.reverse(this, g)
 
