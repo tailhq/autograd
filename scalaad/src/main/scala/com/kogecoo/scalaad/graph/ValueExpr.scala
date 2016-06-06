@@ -1,37 +1,50 @@
 package com.kogecoo.scalaad.graph
 
 
-import com.kogecoo.scalaad.algorithm.{Eval, Forward, Grad, Reverse}
-import com.kogecoo.scalaad.analyze.{Analyzed, Analyzing, Param}
+import com.kogecoo.scalaad.ShapeCheckException
+import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph.bool.{Apply2C, ElementwiseLeftC, ElementwiseRightC}
 import com.kogecoo.scalaad.op.bool.{Eq, Gt, Gte, Lt, Lte, Neq}
-import com.kogecoo.scalaad.op.{Add, Div, Dot, Mul, Neg, Operator, Pos, Sub}
-import com.kogecoo.scalaad.{Shape, ShapeCheckException}
+import com.kogecoo.scalaad.op.{Add, AddLeft, AddRight, Div, DivLeft, DivRight, Mul, MulLeft, MulRight, Neg, Pos, Sub, SubLeft, SubRight}
+import shapeless.Nat
+import shapeless.ops.nat.LT.<
+import shapeless.ops.nat.Sum
 
 
-trait ValueExpr[S <: Shape]  extends Expr[S]{
-
-  def analyze(): Analyzed = {
-    val analyzing = new Analyzing()
-    this.analyze(analyzing)
-    analyzing.result()
-  }
-
-  def analyze(analyzing: Analyzing): Param[S]
+trait ValueExpr[N <: Nat]  extends Expr[N]{
 
   //def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
-  def forward[SW, SO](w: ValueExpr[SW])(implicit F: Forward[ValueExpr[S], SW, SO]): ValueExpr[SO] = F.forward(this, w)
+  def forward[W <: Nat, O <: Nat](w: ValueExpr[W])(implicit sum: Sum.Aux[N, W, O]): ValueExpr[O]
 
-  def reverse[G](g: G)(implicit R: Reverse[ValueExpr[S], G]): Grad = R.reverse(this, g)
+  //def reverse[G](g: G)(implicit R: Reverse[ValueExpr[N], G]): Grad = R.reverse(this, g)
 
-  def eval[R](implicit E: Eval[ValueExpr[S], R]): R = E.eval(this)
+  def eval[R](implicit E: Eval[ValueExpr[N], R]): R = E.eval(this)
 
-  def grad(implicit R: Reverse[ValueExpr[S], VE0]): Grad = reverse[VE0](One0())
+  //def grad(implicit R: Reverse[ValueExpr[N], VE0]): Grad = reverse[VE0](One0())
 
 }
 
 
 object ValueExpr {
+
+  implicit class RichValueExpr[N <: Nat](val self: VE[N]) extends AnyVal {
+
+    def +(rhs: VE[N]): VE[N] = Apply2(self, rhs, Add)
+    def -(rhs: VE[N]): VE[N] = Apply2(self, rhs, Sub)
+    def *(rhs: VE[N]): VE[N] = Apply2(self, rhs, Mul)
+    def /(rhs: VE[N]): VE[N] = Apply2(self, rhs, Div)
+
+    def :+[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, AddRight)
+    def :-[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, SubRight)
+    def :*[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, MulRight)
+    def :/[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, DivRight)
+
+    def :+[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, AddLeft)
+    def :-[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, SubLeft)
+    def :*[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, MulLeft)
+    def :/[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, DivLeft)
+
+  }
 
   implicit class RichValueExpr0(val self: VE0) extends AnyVal {
 
@@ -40,15 +53,15 @@ object ValueExpr {
     def *(rhs: VE0): VE0 = Apply2(self, rhs, Mul)
     def /(rhs: VE0): VE0 = Apply2(self, rhs, Div)
 
-    def :+(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Add)
-    def :-(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Sub)
-    def :*(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Mul)
-    def :/(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Div)
+    def :+(rhs: VE1): VE1 = ElementwiseRight(self, rhs, AddRight)
+    def :-(rhs: VE1): VE1 = ElementwiseRight(self, rhs, SubRight)
+    def :*(rhs: VE1): VE1 = ElementwiseRight(self, rhs, MulRight)
+    def :/(rhs: VE1): VE1 = ElementwiseRight(self, rhs, DivRight)
 
-    def :+(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Add)
-    def :-(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Sub)
-    def :*(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Mul)
-    def :/(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Div)
+    def :+(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, AddRight)
+    def :-(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, SubRight)
+    def :*(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, MulRight)
+    def :/(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, DivRight)
 
     def unary_+(): VE0 = Apply1(self, Pos)
     def unary_-(): VE0 = Apply1(self, Neg)
@@ -85,19 +98,19 @@ object ValueExpr {
     }
 
     def check(a: VE2, op: String)(implicit d: DummyImplicit): Unit = {
-      if (self.shape._1 != a.shape._1) throw new ShapeCheckException(self, a, op)
+      if (self.shape(0) != a.shape(0)) throw new ShapeCheckException(self, a, op)
     }
 
     def +(rhs: VE1): VE1 = { check(rhs, Add.toString); Apply2(self, rhs, Add) }
     def -(rhs: VE1): VE1 = { check(rhs, Sub.toString); Apply2(self, rhs, Sub) }
     def *(rhs: VE1): VE1 = { check(rhs, Mul.toString); Apply2(self, rhs, Mul) }
     def /(rhs: VE1): VE1 = { check(rhs, Div.toString); Apply2(self, rhs, Div) }
-    def dot(rhs: VE1): VE0 = { check(rhs, Dot.toString); Fold2(self, rhs, Dot) }
+    //def dot(rhs: VE1): VE0 = { check(rhs, Dot.toString); Fold2(self, rhs, Dot) }
 
-    def :+(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Add)
-    def :-(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Sub)
-    def :*(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Mul)
-    def :/(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Div)
+    def :+(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, AddLeft)
+    def :-(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, SubLeft)
+    def :*(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, MulLeft)
+    def :/(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, DivLeft)
 
     def unary_+(): VE1 = Apply1(self, Pos)
     def unary_-(): VE1 = Apply1(self, Neg)
@@ -125,11 +138,11 @@ object ValueExpr {
     }
 
     def check(rhs: VE1, op: String)(implicit d: DummyImplicit): Unit = {
-      if (self.shape._1 != rhs.shape._1) throw new ShapeCheckException(self, rhs, op)
+      if (self.shape(0) != rhs.shape(0)) throw new ShapeCheckException(self, rhs, op)
     }
 
     private[this] def matmulCheck(rhs: VE2, op: String): Unit = {
-      if (self.shape._2 != rhs.shape._1) throw new ShapeCheckException(self, rhs, op)
+      if (self.shape(1) != rhs.shape(0)) throw new ShapeCheckException(self, rhs, op)
     }
 
     def +(rhs: VE2): VE2 = { check(rhs, "Add22"); Apply2(self, rhs, Add) }
@@ -137,10 +150,10 @@ object ValueExpr {
     def *(rhs: VE2): VE2 = { check(rhs, "Mul22"); Apply2(self, rhs, Mul) }
     def /(rhs: VE2): VE2 = { check(rhs, "Div22"); Apply2(self, rhs, Div) }
 
-    def :+(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Add)
-    def :-(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Sub)
-    def :*(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Mul)
-    def :/(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Div)
+    def :+(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, AddLeft)
+    def :-(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, SubLeft)
+    def :*(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, MulLeft)
+    def :/(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, DivLeft)
 
     //def matmul(rhs: V2): V2 = { matmulCheck(rhs, MatMul22.toString()); MatMul22(self, rhs) }
 

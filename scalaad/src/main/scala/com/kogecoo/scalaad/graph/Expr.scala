@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Shape
+import shapeless.Nat
 
 
-trait Expr[S <: Shape] { def shape: S }
+trait Expr[N <: Nat] { def shape: Shape[N] }

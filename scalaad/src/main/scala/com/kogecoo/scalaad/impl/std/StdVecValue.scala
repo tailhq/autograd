@@ -12,11 +12,13 @@ trait StdVecValue {
     }
   }
 
+  /*
   implicit val value_stdtransvec_double: Value[Tensor1, StdTransVec[Double]] = new Value[Tensor1, StdTransVec[Double]] {
     def value(t: Tensor1): StdTransVec[Double] = t match {
       case t => t.toStdDouble.map(Seq(_))
     }
   }
+  */
 
   implicit val value_stdvec_boolean: Value[BooleanTensor1, StdVec[Boolean]] = new Value[BooleanTensor1, StdVec[Boolean]] {
     def value(t: BooleanTensor1): StdVec[Boolean] = t match {

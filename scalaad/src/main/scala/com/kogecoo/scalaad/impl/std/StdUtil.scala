@@ -1,6 +1,7 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.{S1, S2, Shape1, Shape2}
+import com.kogecoo.scalaad.{Shape, Shape1, Shape2}
+import shapeless.Nat.{_1, _2}
 
 import scala.math.{abs, max}
 
@@ -18,8 +19,8 @@ object StdUtil {
   // |7, 8, 9|      Seq(7, 8, 9)
   //              )
 
-  final def shapeOf(a: T1): S1 = Shape1(a.size)
-  final def shapeOf(a: T2): S2 = Shape2(a.size, a.head.size)
+  final def shapeOf(a: T1): Shape[_1] = Shape1(a.size)
+  final def shapeOf(a: T2): Shape[_2] = Shape2(a.size, a.head.size)
 
   final def shapeCheck1(a: T1, b: T1): Boolean = a.size == b.size
   final def shapeCheck2(a: T2, b: T2): Boolean = a.size == b.size && a.head.size == b.head.size
@@ -112,8 +113,8 @@ object StdUtil {
 
 
   // construct collections
-  final def const1(v: T0, s1: S1): T1 = Seq.fill(s1._1)(v)
-  final def const2(v: T0, s2: S2): T2 = Seq.fill(s2._1, s2._2)(v)
+  final def const1(v: T0, s1: Shape[_1]): T1 = Seq.fill(s1(0))(v)
+  final def const2(v: T0, s2: Shape[_2]): T2 = Seq.fill(s2(0), s2(1))(v)
 
   final def one0: T0 = 1.0
   final def zero0: T0 = 0.0
@@ -127,10 +128,10 @@ object StdUtil {
     val s = v.indices
     s.map { i => s.map { j => if (i == j) v(i) else zero0 } }
   }
-  final def diag(v: T0, s: Shape2): T2 = {
-    if (s._1 != s._2) {
-      throw new Exception(s"Shape for diag required square but passed (${s._1}, ${s._2}")
-    } else diag(v, s._1)
+  final def diag(v: T0, s: Shape[_2]): T2 = {
+    if (s(0) != s(1)) {
+      throw new Exception(s"Shape for diag required square but passed (${s(0)}, ${s(1)}")
+    } else diag(v, s(0))
   }
 
 }

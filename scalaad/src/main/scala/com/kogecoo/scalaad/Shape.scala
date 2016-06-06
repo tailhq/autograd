@@ -1,30 +1,39 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.VE1
+import shapeless.Nat.{_0, _1, _2}
+import shapeless.ops.nat.Sum
+import shapeless.{Nat, Sized}
 
 /**
   * containers used for carrying
   * tensor shape (dimensions for each axis) parameter(s).
   */
-trait Shape
+class Shape[N <: Nat](val underlying: Sized[Array[Int], N]) {
 
-case class Shape0() extends Shape
+  def apply(i: Int): Int = underlying.unsized(i)
 
-// default shape is a column vector
-case class Shape1(_1: Int) extends Shape
+  def append[M <: Nat](other: Shape[M])(implicit sum: Sum[N, M]): Shape[sum.Out] = {
+    val concat = underlying.unsized ++ other.underlying.unsized
+    new Shape[sum.Out](Sized.wrap[Array[Int], sum.Out](concat))
+  }
+}
 
-case class Shape2(_1: Int, _2: Int) extends Shape
+object Shape0 {
 
-
-/**
-  * shorthands for making Shape2 from two Shape1
-  */
-object Shape2 {
-
-  def apply(row: Shape1, col: Shape1): Shape2 = Shape2(row._1, col._1)
-  def apply(row: VE1, col: VE1): Shape2 = Shape2(row.shape._1, col.shape._1)
+  def apply(): Shape[_0] = new Shape[_0](Sized.wrap[Array[Int], _0](Array[Int]()))
 
 }
 
+// default shape is a column vector
+object Shape1 {
 
-// Future work: case class Shape[K <: Nat](s: Sized[Seq[Int], K]) extends Shape
+  def apply(l: Int): Shape[_1] = new Shape[_1](Sized.wrap[Array[Int], _1](Array(l)))
+
+}
+
+object Shape2 {
+
+  def apply(r: Int, c: Int): Shape[_2] = new Shape[_2](Sized.wrap[Array[Int], _2](Array(r, c)))
+
+}
+

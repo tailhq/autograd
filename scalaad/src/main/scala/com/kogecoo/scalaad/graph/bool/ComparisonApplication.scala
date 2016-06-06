@@ -1,8 +1,9 @@
 package com.kogecoo.scalaad.graph.bool
 
-import com.kogecoo.scalaad.graph.{VE, VE0, ValueExpr}
-import com.kogecoo.scalaad.op.Op00C
-import com.kogecoo.scalaad.{S0, Shape}
+import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.graph.{VE, ValueExpr}
+import com.kogecoo.scalaad.op.bool.BinaryComparisonOp
+import shapeless.Nat
 
 
 // TODO: code-sharing with Application
@@ -10,12 +11,12 @@ import com.kogecoo.scalaad.{S0, Shape}
 /**
   * represents applying binary comparing operation, which takes 2 Exprs arguments.
   *
-  * @tparam S a shape of this  BooleanExpr
+  * @tparam N a shape of this  BooleanExpr
   * @tparam L a shape of left  ValueExpr
   * @tparam R a shape of right ValueExpr
   */
-trait ComparisonApplication2[S <: Shape, L <: Shape, R <: Shape] extends BooleanExpr[S] {
-  val shape: S
+trait ComparisonApplication2[N <: Nat, L <: Nat, R <: Nat] extends BooleanExpr[N] {
+  val shape: Shape[N]
   def l: ValueExpr[L]
   def r: ValueExpr[R]
 }
@@ -26,8 +27,8 @@ trait ComparisonApplication2[S <: Shape, L <: Shape, R <: Shape] extends Boolean
   * @tparam L a shape of left ValueExpr and output BooleanExpr
   * @tparam R a shape of right ValueExpr
   */
-trait LeftShapedComparisonApplication2[L <: Shape, R <: Shape] extends ComparisonApplication2[L, L, R] {
-  override val shape: L = l.shape
+trait LeftShapedComparisonApplication2[L <: Nat, R <: Nat] extends ComparisonApplication2[L, L, R] {
+  override val shape: Shape[L] = l.shape
   override def l: ValueExpr[L]
   override def r: ValueExpr[R]
 }
@@ -38,8 +39,8 @@ trait LeftShapedComparisonApplication2[L <: Shape, R <: Shape] extends Compariso
   * @tparam L a shape of left ValueExpr
   * @tparam R a shape of right ValueExpr and output BooleanExpr
   */
-trait RightShapedComparisonApplication2[L <: Shape, R <: Shape] extends ComparisonApplication2[R, L, R] {
-  override val shape: R = r.shape
+trait RightShapedComparisonApplication2[L <: Nat, R <: Nat] extends ComparisonApplication2[R, L, R] {
+  override val shape: Shape[R] = r.shape
   override def l: ValueExpr[L]
   override def r: ValueExpr[R]
 }
@@ -47,20 +48,20 @@ trait RightShapedComparisonApplication2[L <: Shape, R <: Shape] extends Comparis
 /**
   * specialized ComparisonApplication2, its left, right ValueExpr and output BooleanExpr are the same type of shape.
   *
-  * @tparam S type of shape for left, right and output Expr
+  * @tparam N type of shape for left, right and output Expr
   */
-trait CommonShapedComparisonApplication2[S <: Shape] extends ComparisonApplication2[S, S, S] {
-  override val shape: S = l.shape
-  override def l: ValueExpr[S]
-  override def r: ValueExpr[S]
+trait CommonShapedComparisonApplication2[N <: Nat] extends ComparisonApplication2[N, N, N] {
+  override val shape: Shape[N] = l.shape
+  override def l: ValueExpr[N]
+  override def r: ValueExpr[N]
 }
 
 
 // Binary ComparisonApplication
 
-case class Apply2C[S <: Shape](l: VE[S], r: VE[S], op: Op00C) extends CommonShapedComparisonApplication2[S]
+case class Apply2C[S <: Nat](l: VE[S], r: VE[S], op: BinaryComparisonOp) extends CommonShapedComparisonApplication2[S]
 
-case class ElementwiseLeftC[S <: Shape](l: VE[S], r: VE0, op: Op00C) extends LeftShapedComparisonApplication2[S, S0]
+case class ElementwiseLeftC[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: BinaryComparisonOp) extends LeftShapedComparisonApplication2[L, R]
 
-case class ElementwiseRightC[S <: Shape](l: VE0, r: VE[S], op: Op00C) extends RightShapedComparisonApplication2[S0, S]
+case class ElementwiseRightC[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: BinaryComparisonOp) extends RightShapedComparisonApplication2[L, R]
 

@@ -6,11 +6,11 @@ import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, 
 import scala.Predef.{any2stringadd => _}
 
 
-trait Reverse[N, G] {
+/*trait Reverse[N, G] {
 
   def reverse(n: N, g: G): Grad
 
-}
+}*/
 
 /**
   * Supported combinations of Node's tensor order

@@ -1,14 +1,14 @@
 package com.kogecoo.scalaad.graph.bool
 
-import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph.{BE0, BE1, BE2, Expr}
-import com.kogecoo.scalaad.op.bool.{And, Not, Or}
+import com.kogecoo.scalaad.op.bool.{And, AndLeft, AndRight, Not, Or, OrLeft, OrRight}
+import shapeless.Nat
 
 
-trait BooleanExpr[S <: Shape] extends Expr[S] {
+trait BooleanExpr[N <: Nat] extends Expr[N] {
 
-  def eval[R](implicit E: Eval[BooleanExpr[S], R]): R = E.eval(this)
+  def eval[R](implicit E: Eval[BooleanExpr[N], R]): R = E.eval(this)
 
 }
 
@@ -20,11 +20,11 @@ object BooleanExpr {
     def &(rhs: BE0): BE0 = Apply2B(self, rhs, And)
     def |(rhs: BE0): BE0 = Apply2B(self, rhs, Or)
 
-    def :&(rhs: BE1): BE1 = ElementwiseRightB(self, rhs, And)
-    def :|(rhs: BE1): BE1 = ElementwiseRightB(self, rhs, Or)
+    def :&(rhs: BE1): BE1 = ElementwiseRightB(self, rhs, AndRight)
+    def :|(rhs: BE1): BE1 = ElementwiseRightB(self, rhs, OrRight)
 
-    def :&(rhs: BE2)(implicit d: DummyImplicit): BE2 = ElementwiseRightB(self, rhs, And)
-    def :|(rhs: BE2)(implicit d: DummyImplicit): BE2 = ElementwiseRightB(self, rhs, Or)
+    def :&(rhs: BE2)(implicit d: DummyImplicit): BE2 = ElementwiseRightB(self, rhs, AndRight)
+    def :|(rhs: BE2)(implicit d: DummyImplicit): BE2 = ElementwiseRightB(self, rhs, OrRight)
 
     def unary_!(): BE0 = Apply1B(self, Not)
 
@@ -35,8 +35,8 @@ object BooleanExpr {
     def &(rhs: BE1): BE1 = Apply2B(self, rhs, And)
     def |(rhs: BE1): BE1 = Apply2B(self, rhs, Or)
 
-    def :&(rhs: BE0): BE1 = ElementwiseLeftB(self, rhs, And)
-    def :|(rhs: BE0): BE1 = ElementwiseLeftB(self, rhs, Or)
+    def :&(rhs: BE0): BE1 = ElementwiseLeftB(self, rhs, AndLeft)
+    def :|(rhs: BE0): BE1 = ElementwiseLeftB(self, rhs, OrLeft)
 
     def unary_!(): BE1 = Apply1B(self, Not)
 
@@ -47,8 +47,8 @@ object BooleanExpr {
     def &(rhs: BE2): BE2 = Apply2B(self, rhs, And)
     def |(rhs: BE2): BE2 = Apply2B(self, rhs, Or)
 
-    def :&(rhs: BE0): BE2 = ElementwiseLeftB(self, rhs, And)
-    def :|(rhs: BE0): BE2 = ElementwiseLeftB(self, rhs, Or)
+    def :&(rhs: BE0): BE2 = ElementwiseLeftB(self, rhs, AndLeft)
+    def :|(rhs: BE0): BE2 = ElementwiseLeftB(self, rhs, OrLeft)
 
     def unary_!(): BE2 = Apply1B(self, Not)
 

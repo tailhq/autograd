@@ -1,13 +1,13 @@
 package com.kogecoo.scalaad.algorithm
 
-import com.kogecoo.scalaad.{S0, S1, S2, Shape}
+import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.graph._
 
-import Predef.{any2stringadd => _, _}
+import scala.Predef.{any2stringadd => _, _}
 import scala.language.higherKinds
 
 
-class Grad(val grad: Map[ValueExpr[_ <: Shape], ValueExpr[_ <: Shape]]) {
+/*class Grad(val grad: Map[ValueExpr[_ <: Shape], ValueExpr[_ <: Shape]]) {
 
   def size: Int = grad.size
 
@@ -99,4 +99,5 @@ object Grad {
 */
 }
 
+*/
 

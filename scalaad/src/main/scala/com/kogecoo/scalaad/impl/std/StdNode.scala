@@ -2,6 +2,7 @@ package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad._
 import com.kogecoo.scalaad.graph._
+import shapeless.Nat.{_0, _1, _2}
 
 import scala.language.implicitConversions
 
@@ -15,9 +16,9 @@ trait StdNode {
     def apply(data: StdMat[Double]): Var2 = Var2(StdMatrix(data), Shape2(data.size, data(0).size))
 
     // Experimental
-    def arbitrary(name: String, shape: S0): ArbVar0 = ArbVar0(name, None)
-    def arbitrary(name: String, shape: S1): ArbVar1 = ArbVar1(name, None, shape)
-    def arbitrary(name: String, shape: S2): ArbVar2 = ArbVar2(name, None, shape)
+    def arbitrary(name: String, shape: Shape[_0]): ArbVar0 = ArbVar0(name, None)
+    def arbitrary(name: String, shape: Shape[_1]): ArbVar1 = ArbVar1(name, None, shape)
+    def arbitrary(name: String, shape: Shape[_2]): ArbVar2 = ArbVar2(name, None, shape)
   }
 
   object Const {

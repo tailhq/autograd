@@ -1,10 +1,17 @@
 package com.kogecoo.scalaad.op.bool
 
-import com.kogecoo.scalaad.op.{Op00B, Op0B}
+
+case object Not extends UnaryBooleanOp
+
+case object And extends BinaryBooleanOp
+
+case object Or  extends BinaryBooleanOp
 
 
-case object Not extends Op0B
+case object AndLeft extends AsymmetricLeftBinaryBooleanOp
 
-case object And extends Op00B
+case object OrLeft  extends AsymmetricLeftBinaryBooleanOp
 
-case object Or  extends Op00B
+case object AndRight extends AsymmetricRightBinaryBooleanOp
+
+case object OrRight  extends AsymmetricRightBinaryBooleanOp
