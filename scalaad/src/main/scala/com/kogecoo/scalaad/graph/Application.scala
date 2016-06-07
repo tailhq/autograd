@@ -82,8 +82,11 @@ trait CommonShapedApplication1[N <: Nat] extends Application1[N, N] {
 
 case class Apply0[N <: Nat](shape: Shape[N], op: NullaryOp) extends ValueExpr[N] {
 
-  def forward[W <: Nat, O <: Nat](wrt: VE[W])(implicit s: Sum.Aux[N, W, O]): VE[O] = {
-    val newShape = shape.append(wrt.shape)
+
+  def forward[W <: Nat](wrt: VE[W]): VE[Nat] = {
+    implicit def a[O <: Nat](implicit s: Sum.Aux[N, W, O]) = new Sum[N, W] { type Out = O }
+
+    val newShape = shape.append[W, ](wrt.shape)
     Apply0(newShape, Zero)
   }
 
@@ -94,8 +97,8 @@ case class Apply0[N <: Nat](shape: Shape[N], op: NullaryOp) extends ValueExpr[N]
 
 case class Apply1[N <: Nat](v: VE[N], op: UnaryOp) extends CommonShapedApplication1[N] {
 
-  def forward[W <: Nat, O <: Nat](wrt: VE[W])(implicit s: Sum.Aux[N, W, O]): VE[O] = {
-    ElementwiseLeft(v.forward[W, O](wrt), op.deriv[N](v), MulLeft)
+  def forward[W <: Nat](wrt: VE[W]): VE[Nat] = {
+    ElementwiseLeft(v.forward(wrt), op.deriv[N](v), MulLeft)
   }
 
 }
@@ -118,10 +121,10 @@ case class Fill[SO <: Nat](v: VE0, shape: SO) extends Application1[SO, S0] {
 
 case class Apply2[N <: Nat](l: VE[N], r: VE[N], op: BinaryOp) extends CommonShapedApplication2[N] {
 
-  def forward[W <: Nat, O <: Nat](wrt: VE[W])(implicit sum: Sum.Aux[N, W, O]) = {
+  def forward[W <: Nat](wrt: VE[W]): VE[Nat] = {
     val (dl: VE[N], dr: VE[N]) = op.deriv[N](l, r)
-    val a = ElementwiseLeft(l.forward[W, O](wrt), dr, MulLeft)
-    val b = ElementwiseRight(dl, r.forward[W, O](wrt), MulRight)
+    val a = ElementwiseLeft(l.forward(wrt), dr, MulLeft)
+    val b = ElementwiseRight(dl, r.forward(wrt), MulRight)
     Apply2(a, b, Add)
   }
 
@@ -130,10 +133,10 @@ case class Apply2[N <: Nat](l: VE[N], r: VE[N], op: BinaryOp) extends CommonShap
 
 case class ElementwiseLeft[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: AsymmetricLeftBinaryOp) extends LeftShapedApplication2[L, R] {
 
-  def forward[W <: Nat, O <: Nat](wrt: VE[W])(implicit sum: Sum.Aux[L, W, O]) = {
+  def forward[W <: Nat](wrt: VE[W]): VE[Nat] = {
     val (dl, dr) = op.deriv[L, R](l, r)
-    val a = ElementwiseLeft(l.forward[W, O](wrt), dr, MulLeft)
-    val b = ElementwiseRight(dl, r.forward[W, O](wrt), MulRight)
+    val a = ElementwiseLeft(l.forward(wrt), dr, MulLeft)
+    val b = ElementwiseRight(dl, r.forward(wrt), MulRight)
     Apply2(a, b, Add)
   }
 
@@ -142,10 +145,10 @@ case class ElementwiseLeft[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: Asymmetri
 
 case class ElementwiseRight[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: AsymmetricRightBinaryOp) extends RightShapedApplication2[L, R] {
 
-  def forward[W <: Nat, O <: Nat](wrt: VE[W])(implicit sum: Sum.Aux[R, W, O]) = {
+  def forward[W <: Nat](wrt: VE[W]): VE[Nat] = {
     val (dl, dr) = op.deriv[L, R](l, r)
-    val a = ElementwiseLeft(l.forward[W, O](wrt), dr, MulLeft)
-    val b = ElementwiseRight(dl, r.forward[W, O](wrt), MulRight)
+    val a = ElementwiseLeft(l.forward(wrt), dr, MulLeft)
+    val b = ElementwiseRight(dl, r.forward(wrt), MulRight)
     Apply2(a, b, Add)
   }
 

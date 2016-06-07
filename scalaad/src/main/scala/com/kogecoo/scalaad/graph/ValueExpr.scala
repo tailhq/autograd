@@ -14,7 +14,7 @@ import shapeless.ops.nat.Sum
 trait ValueExpr[N <: Nat]  extends Expr[N]{
 
   //def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
-  def forward[W <: Nat, O <: Nat](w: ValueExpr[W])(implicit sum: Sum.Aux[N, W, O]): ValueExpr[O]
+  def forward[W <: Nat](w: ValueExpr[W]): ValueExpr[Nat]
 
   //def reverse[G](g: G)(implicit R: Reverse[ValueExpr[N], G]): Grad = R.reverse(this, g)
 

@@ -12,9 +12,9 @@ class Shape[N <: Nat](val underlying: Sized[Array[Int], N]) {
 
   def apply(i: Int): Int = underlying.unsized(i)
 
-  def append[M <: Nat](other: Shape[M])(implicit sum: Sum[N, M]): Shape[sum.Out] = {
+  def append[M <: Nat, O <: Nat](other: Shape[M])(implicit sum: Sum.Aux[N, M, O]): Shape[O] = {
     val concat = underlying.unsized ++ other.underlying.unsized
-    new Shape[sum.Out](Sized.wrap[Array[Int], sum.Out](concat))
+    new Shape[O](Sized.wrap[Array[Int], O](concat))
   }
 }
 
