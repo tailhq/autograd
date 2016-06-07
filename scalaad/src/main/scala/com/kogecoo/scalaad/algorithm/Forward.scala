@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.op._
 
 import scala.Predef.{any2stringadd => _}
 
-
+/*
 trait Forward[S, SW, SO] {
 
   def forward(n: VE[S], wrt: VE[SW]): VE[SO]
@@ -385,4 +385,4 @@ object Forward {
 */
 }
 
-
+*/

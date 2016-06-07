@@ -8,7 +8,11 @@ import shapeless.Nat.{_0, _1, _2}
 
 //trait ComplexScalar { }
 
-trait Tensor[N <: Nat]
+trait Tensor[N <: Nat] {
+
+  def shape: Shape[N]
+
+}
 
 
 trait Tensor0 extends Tensor[_0] {

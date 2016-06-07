@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.ShapeCheckException
 import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph.bool.{Apply2C, ElementwiseLeftC, ElementwiseRightC}
 import com.kogecoo.scalaad.op.bool.{Eq, Gt, Gte, Lt, Lte, Neq}
-import com.kogecoo.scalaad.op.{Add, AddLeft, AddRight, Div, DivLeft, DivRight, Mul, MulLeft, MulRight, Neg, Pos, Sub, SubLeft, SubRight}
+import com.kogecoo.scalaad.op.{Add, Div, Mul, Neg, Pos, Sub}
 import shapeless.Nat
 import shapeless.ops.nat.LT.<
 import shapeless.ops.nat.Sum
@@ -14,7 +14,9 @@ import shapeless.ops.nat.Sum
 trait ValueExpr[N <: Nat]  extends Expr[N]{
 
   //def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
-  def forward[W <: Nat](w: ValueExpr[W]): ValueExpr[Nat]
+  def forward[W <: Nat, O <: Nat](wrt: ValueExpr[W])(implicit s: Sum.Aux[N, W, O]): ValueExpr[O] = _forward[W, O](wrt)
+
+  def _forward[W <: Nat, O <: Nat](wrt: ValueExpr[W]): ValueExpr[O]
 
   //def reverse[G](g: G)(implicit R: Reverse[ValueExpr[N], G]): Grad = R.reverse(this, g)
 
@@ -34,15 +36,15 @@ object ValueExpr {
     def *(rhs: VE[N]): VE[N] = Apply2(self, rhs, Mul)
     def /(rhs: VE[N]): VE[N] = Apply2(self, rhs, Div)
 
-    def :+[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, AddRight)
-    def :-[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, SubRight)
-    def :*[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, MulRight)
-    def :/[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, DivRight)
+    def :+[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, Add)
+    def :-[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, Sub)
+    def :*[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, Mul)
+    def :/[M <: Nat](rhs: VE[M])(implicit ev: N < M): VE[M] = ElementwiseRight(self, rhs, Div)
 
-    def :+[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, AddLeft)
-    def :-[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, SubLeft)
-    def :*[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, MulLeft)
-    def :/[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, DivLeft)
+    def :+[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, Add)
+    def :-[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, Sub)
+    def :*[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, Mul)
+    def :/[M <: Nat](rhs: VE[M])(implicit ev: M < N, d: DummyImplicit): VE[N] = ElementwiseLeft(self, rhs, Div)
 
   }
 
@@ -53,15 +55,15 @@ object ValueExpr {
     def *(rhs: VE0): VE0 = Apply2(self, rhs, Mul)
     def /(rhs: VE0): VE0 = Apply2(self, rhs, Div)
 
-    def :+(rhs: VE1): VE1 = ElementwiseRight(self, rhs, AddRight)
-    def :-(rhs: VE1): VE1 = ElementwiseRight(self, rhs, SubRight)
-    def :*(rhs: VE1): VE1 = ElementwiseRight(self, rhs, MulRight)
-    def :/(rhs: VE1): VE1 = ElementwiseRight(self, rhs, DivRight)
+    def :+(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Add)
+    def :-(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Sub)
+    def :*(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Mul)
+    def :/(rhs: VE1): VE1 = ElementwiseRight(self, rhs, Div)
 
-    def :+(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, AddRight)
-    def :-(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, SubRight)
-    def :*(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, MulRight)
-    def :/(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, DivRight)
+    def :+(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Add)
+    def :-(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Sub)
+    def :*(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Mul)
+    def :/(rhs: VE2)(implicit d: DummyImplicit): VE2 = ElementwiseRight(self, rhs, Div)
 
     def unary_+(): VE0 = Apply1(self, Pos)
     def unary_-(): VE0 = Apply1(self, Neg)
@@ -107,10 +109,10 @@ object ValueExpr {
     def /(rhs: VE1): VE1 = { check(rhs, Div.toString); Apply2(self, rhs, Div) }
     //def dot(rhs: VE1): VE0 = { check(rhs, Dot.toString); Fold2(self, rhs, Dot) }
 
-    def :+(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, AddLeft)
-    def :-(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, SubLeft)
-    def :*(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, MulLeft)
-    def :/(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, DivLeft)
+    def :+(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Add)
+    def :-(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Sub)
+    def :*(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Mul)
+    def :/(rhs: VE0): VE1 = ElementwiseLeft(self, rhs, Div)
 
     def unary_+(): VE1 = Apply1(self, Pos)
     def unary_-(): VE1 = Apply1(self, Neg)
@@ -150,10 +152,10 @@ object ValueExpr {
     def *(rhs: VE2): VE2 = { check(rhs, "Mul22"); Apply2(self, rhs, Mul) }
     def /(rhs: VE2): VE2 = { check(rhs, "Div22"); Apply2(self, rhs, Div) }
 
-    def :+(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, AddLeft)
-    def :-(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, SubLeft)
-    def :*(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, MulLeft)
-    def :/(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, DivLeft)
+    def :+(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Add)
+    def :-(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Sub)
+    def :*(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Mul)
+    def :/(rhs: VE0): VE2 = ElementwiseLeft(self, rhs, Div)
 
     //def matmul(rhs: V2): V2 = { matmulCheck(rhs, MatMul22.toString()); MatMul22(self, rhs) }
 

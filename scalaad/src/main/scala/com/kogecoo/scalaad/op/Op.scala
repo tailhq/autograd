@@ -5,46 +5,39 @@ import com.kogecoo.scalaad.graph.{Apply0, VE}
 import shapeless.Nat
 
 
-sealed trait Operator
+sealed trait Op
 
-trait NullaryOp extends Operator {
 
-  def deriv[N <: Nat](shape: Shape[N]): VE[N] = Apply0(shape, Zero)
+trait NullaryOp extends Op {
+
+  def deriv[N <: Nat](shape: Shape[N]): VE[N] = Apply0(shape, ZeroOp)
 
 }
 
-trait UnaryOp extends Operator {
+
+trait UnaryOp extends Op {
 
   def deriv[N <: Nat](v: VE[N]): VE[N]
 
 }
 
-trait FoldUnaryOp[O <: Nat, I <: Nat] extends Operator {
+
+trait FoldUnaryOp[O <: Nat, I <: Nat] extends Op {
 
 }
 
-trait ExpandUnaryOp[O <: Nat, I <: Nat] extends Operator {
+
+trait ExpandUnaryOp[O <: Nat, I <: Nat] extends Op {
 
 }
 
-trait BinaryOp extends Operator {
 
-  def deriv[N <: Nat](l: VE[N], r: VE[N]): (VE[N], VE[N])
+trait BinaryOp extends Op {
 
-}
-
-trait AsymmetricLeftBinaryOp extends Operator {
-
-  def deriv[L <: Nat, R <: Nat](l: VE[L], r: VE[R]): (VE[L], VE[L])
+  def deriv[L <: Nat, R <: Nat](l: VE[L], r: VE[R]): (VE[L], VE[R])
 
 }
 
-trait AsymmetricRightBinaryOp extends Operator {
-
-  def deriv[L <: Nat, R <: Nat](l: VE[L], r: VE[R]): (VE[R], VE[R])
-
-}
-
-trait FoldBinaryOp[O <: Nat, I <: Nat] extends Operator {
+trait FoldBinaryOp[O <: Nat, I <: Nat] extends Op {
 
 }

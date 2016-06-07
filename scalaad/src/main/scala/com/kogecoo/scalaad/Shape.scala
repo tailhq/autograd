@@ -16,6 +16,8 @@ class Shape[N <: Nat](val underlying: Sized[Array[Int], N]) {
     val concat = underlying.unsized ++ other.underlying.unsized
     new Shape[O](Sized.wrap[Array[Int], O](concat))
   }
+
+  def order: Int = underlying.unsized.length
 }
 
 object Shape0 {
