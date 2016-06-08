@@ -6,8 +6,7 @@ import com.kogecoo.scalaad.graph.bool.{Apply1B, Apply2B, Apply2C}
 import com.kogecoo.scalaad.impl.std.StdUtil.T0
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
 import com.kogecoo.scalaad.op.bool.{And, Eq, Gt, Gte, Lt, Lte, Neq, Not, Or}
-import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
-import shapeless.Nat._0
+import com.kogecoo.scalaad.op.{Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Mul, Neg, Pos, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
 
 
 trait StdScalarEval {// self: StdVecEval =>
@@ -18,12 +17,13 @@ trait StdScalarEval {// self: StdVecEval =>
     def eval(n: V0): T0 = n match {
 
       // Leaf nodes
-      case Var0(v)      => v.value[T0]
+      /*case Var0(v)      => v.value[T0]
       case a: ArbVar0   => a.data.get.value[T0]
       case _: Zero[_0]  => 0.0
       case _: Half[_0]  => 0.5
       case _: One[_0]   => 1.0
       case c: Const[_0] => c.v.value[T0]
+      */
 
       // Unary ops
       case Apply1(v, op) => op match {
@@ -46,7 +46,7 @@ trait StdScalarEval {// self: StdVecEval =>
         case Exp  => math.exp(v.eval[T0])
         case Sqrt => math.sqrt(v.eval[T0])
 
-        case Abs  => math.abs(v.eval[T0])
+        //case Abs  => math.abs(v.eval[T0])
       }
 
       // Binary ops
@@ -56,16 +56,17 @@ trait StdScalarEval {// self: StdVecEval =>
         case Mul => l.eval[T0] * r.eval[T0]
         case Div => l.eval[T0] / r.eval[T0]
 
-        case Pow => math.pow(l.eval[T0], r.eval[T0])
+        //case Pow => math.pow(l.eval[T0], r.eval[T0])
 
         // Experimental
 
         /*case Dot01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] * _).sum
         case Dot10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ * r.eval[T0]).sum
-        case Dot11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ * _).sum*/
+        case Dot11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ * _).sum
 
         case Max => math.max(l.eval[T0], r.eval[T0])
         case Min => math.min(l.eval[T0], r.eval[T0])
+        */
 
       }
       //case Where0_0(cond: B0, a: V0, b: V0) => if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]

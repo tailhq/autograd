@@ -8,7 +8,6 @@ import shapeless.Nat._2
 // Apply0(NullaryOp) is redundant expression of constant Expr.
 //
 // For example, Apply0[N](ZeroOp) is equivalent to Zero[N]
-//
 
 case object ZeroOp extends NullaryOp
 

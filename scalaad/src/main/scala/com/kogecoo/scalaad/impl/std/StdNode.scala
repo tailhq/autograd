@@ -17,15 +17,15 @@ trait StdNode {
 
     // Experimental
     def arbitrary(name: String, shape: Shape[_0]): ArbVar0 = ArbVar0(name)
-    def arbitrary(name: String, shape: Shape[_1]): ArbVar1 = ArbVar1(name, shape)
-    def arbitrary(name: String, shape: Shape[_2]): ArbVar2 = ArbVar2(name, shape)
+    def arbitrary(name: String, shape: Shape[_1])(implicit d: DummyImplicit): ArbVar1 = ArbVar1(name, shape)
+    def arbitrary(name: String, shape: Shape[_2])(implicit d1: DummyImplicit, d2: DummyImplicit): ArbVar2 = ArbVar2(name, shape)
   }
 
   object Const {
 
     def apply(data: Double): Const_[_0] = Const_[_0](StdScalar(data))
     def apply(data: StdVec[Double]): Const_[_1] = Const_[_1](StdVector(data))
-    def apply(data: StdMat[Double]): Const_[_2] = Const_[_2](StdMatrix(data))
+    def apply(data: StdMat[Double])(implicit d: DummyImplicit): Const_[_2] = Const_[_2](StdMatrix(data))
 
   }
 

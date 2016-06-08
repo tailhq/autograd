@@ -5,10 +5,9 @@ import com.kogecoo.scalaad.ShapeCheckException
 import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph.bool.{Apply2C, ElementwiseLeftC, ElementwiseRightC}
 import com.kogecoo.scalaad.op.bool.{Eq, Gt, Gte, Lt, Lte, Neq}
-import com.kogecoo.scalaad.op.{Add, BinaryOp, Div, Mul, Neg, Pos, Sub}
+import com.kogecoo.scalaad.op.{Add, Div, Mul, Neg, Pos, Sub}
 import shapeless.Nat
 import shapeless.ops.nat.LT.<
-import shapeless.ops.nat.LTEq.<=
 import shapeless.ops.nat.Sum
 
 
@@ -62,29 +61,11 @@ object ValueExpr {
     def /<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Div)
 
     // type unsafe operations
-    def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = unsafeApply[O, N, M](self, rhs, Add)
-    def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = unsafeApply[O, N, M](self, rhs, Sub)
-    def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = unsafeApply[O, N, M](self, rhs, Mul)
-    def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = unsafeApply[O, N, M](self, rhs, Div)
+    def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Add)
+    def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Sub)
+    def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Mul)
+    def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Div)
 
-    // workaround: type unsafe
-    private[this] def unsafeApply[O <: Nat, A <: Nat, B <: Nat](a: V[A], b: V[B], op: BinaryOp): V[O] = {
-      (a, b) match {
-        case _ if a.shape.order == b.shape.order => {
-          val a_ = a.asInstanceOf[V[O]]
-          val b_ = b.asInstanceOf[V[O]]
-          Apply2[O](a_, b_, op)
-        }
-        case _ if a.shape.order > b.shape.order => {
-          val a_ = a.asInstanceOf[V[O]]
-          ElementwiseLeft[O, B](a_, b, op)
-        }
-        case _ => {
-          val b_ = b.asInstanceOf[V[O]]
-          ElementwiseRight[A, O](a, b_, op)
-        }
-      }
-    }
 
   }
 

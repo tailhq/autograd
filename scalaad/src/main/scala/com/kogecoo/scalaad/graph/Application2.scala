@@ -1,9 +1,10 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph.bool.BooleanExpr
-import com.kogecoo.scalaad.op.{Add, BinaryFoldOp, BinaryOp, Mul}
+import com.kogecoo.scalaad.op.BinaryOp
 import shapeless.Nat
+
+import scala.language.existentials
 
 
 /**
@@ -21,7 +22,50 @@ trait Application2[N <: Nat, L <: Nat, R <: Nat] extends ValueExpr[N] {
 
   def r: ValueExpr[R]
 
+  protected[this] def derivOp(op: BinaryOp) = {
+    val lo = l.shape.order
+    val ro = r.shape.order
+    val (a: V[_], b: V[_]) = op.deriv[L, R](l, r)
+
+    val dl = a.shape.order match {
+      case o if o == lo => a.asInstanceOf[V[L]]
+      case o if o == ro => a.asInstanceOf[V[R]]
+      case o            => throw new Exception(s"unknown shape $o for Application2($l, $r, $op)")
+    }
+    val dr = b.shape.order match {
+      case o if o == lo => b.asInstanceOf[V[L]]
+      case o if o == ro => b.asInstanceOf[V[R]]
+      case o            => throw new Exception(s"unknown shape $o for Application2($l, $r, $op)")
+    }
+    (dl, dr)
+  }
+
 }
+
+
+object UnsafeApply2 {
+
+  // workaround: type unsafe
+  def apply[O <: Nat, A <: Nat, B <: Nat](a: V[A], b: V[B], op: BinaryOp): V[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        val b_ = b.asInstanceOf[V[O]]
+        Apply2[O](a_, b_, op)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        ElementwiseLeft[O, B](a_, b, op)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[V[O]]
+        ElementwiseRight[A, O](a, b_, op)
+      }
+    }
+  }
+
+}
+
 
 // Binary Application
 
@@ -52,14 +96,14 @@ case class ElementwiseLeft[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) e
   def shape: Shape[L] = l.shape
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl: V[L], dr: V[R]) = op.deriv[L, R](l, r)
+    val (dl, dr) = derivOp(op)
     val fl: V[O] = l._forward[W, O](wrt)
     val fr: V[RO] = r._forward[W, RO](wrt)
     (fl :* dr) :+ (dl :* fr)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    val (dl: V[L], dr: V[R]) = op.deriv[L, R](l, r)
+    val (dl, dr) = derivOp(op)
     l._reverse[G](g  :* dr, builder)
     r._reverse[G](dl :* g,  builder)
   }
@@ -74,14 +118,14 @@ case class ElementwiseRight[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) 
   def shape: Shape[R] = r.shape
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl: V[L], dr: V[R]) = op.deriv[L, R](l, r)
+    val (dl, dr) = derivOp(op)
     val fl: V[LO] = l._forward[W, LO](wrt)
     val fr: V[O] = r._forward[W, O](wrt)
     (fl :* dr) :+ (dl :* fr)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    val (dl: V[L], dr: V[R]) = op.deriv[L, R](l, r)
+    val (dl, dr) = derivOp(op)
     l._reverse[G](g  :* dr, builder)
     r._reverse[G](dl :* g,  builder)
   }
@@ -107,3 +151,4 @@ case class Where[N <:  Nat](cond: BooleanExpr[N], l: V[N], r: V[N]) extends Appl
 
 }
 */
+

@@ -1,6 +1,8 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply1, Apply2, Half, One, V}
+import com.kogecoo.scalaad.graph.{UnsafeApply2, V}
+import com.kogecoo.scalaad.op.Shorthands.Const._
+import com.kogecoo.scalaad.op.Shorthands.Math._
 import shapeless.Nat
 
 
@@ -8,95 +10,80 @@ import shapeless.Nat
 
 case object Sin  extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = Apply1[N](v, Cos)
+  def deriv[N <: Nat](v: V[N]): V[N] = cos(v)
 
 }
 
 case object Cos  extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = Apply1[N](Apply1[N](v, Sin), Neg)
+  def deriv[N <: Nat](v: V[N]): V[N] = -sin(v)
 
 }
 
 case object Tan  extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    One(v.shape) - (Apply1[N](v, Tan) * Apply1[N](v, Tan))
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v) - (tan(v) * tan(v))
 
 }
 
 case object Asin extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    One(v.shape) / Apply1[N](One[N](v.shape) - v * v, Sqrt)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v) / sqrt(one(v) - (v * v))
 
 }
 
 case object Acos extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    Apply1(One(v.shape) / Apply1[N](One[N](v.shape) - (v * v), Sqrt), Neg)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = -(one(v) / sqrt(one(v) - (v * v)))
+
 }
 
 case object Atan extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    One(v.shape) / (One[N](v.shape) + (v * v))
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v) :/ (one(v) :+ (v :* v))
 
 }
 
 case object Sinh extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    Apply1[N](v, Cosh)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = cosh(v)
 
 }
 
 case object Cosh extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    Apply1[N](v, Sinh)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = sinh(v)
+
 }
 
 case object Tanh extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    One(v.shape) - (Apply1[N](v, Tanh) * Apply1[N](v, Tanh))
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v) - (tan(v) * tan(v))
+
 }
 
 case object Ln   extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    One(v.shape) / v
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v) / v
 }
 
 case object Exp  extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    Apply1[N](v, Exp)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = exp(v)
+
 }
 
 case object Sqrt extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = {
-    Half(v.shape) / Apply1[N](v, Sqrt)
-  }
+  def deriv[N <: Nat](v: V[N]): V[N] = half(v) / sqrt(v)
 }
-
+/*
 case object Abs  extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
   }
 }
+*/
 
 
 // Expr[Shape1] -> Expr[Shape0]
@@ -126,11 +113,12 @@ case class Min2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
 // (Expr[Shape0], Expr[Shape0]) -> Expr[Shape0]
 
+
 case object Pow extends BinaryOp {
 
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-    val dl = Apply1[L](l, Ln) * Apply2[L, R](l, r, Pow)
-    val dr = r :* Apply2[L, R](l, r :- One(r), Pow)
+  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
+    val dl = ln(l) :* UnsafeApply2(l, r, Pow)
+    val dr = r :* UnsafeApply2(l, r :- one(r), Pow)
     (dl, dr)
   }
 

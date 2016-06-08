@@ -20,7 +20,7 @@ object StdUtil {
   //              )
 
   final def shapeOf(a: T1): Shape[_1] = Shape1(a.size)
-  final def shapeOf(a: T2): Shape[_2] = Shape2(a.size, a.head.size)
+  final def shapeOf(a: T2)(implicit d: DummyImplicit): Shape[_2] = Shape2(a.size, a.head.size)
 
   final def shapeCheck1(a: T1, b: T1): Boolean = a.size == b.size
   final def shapeCheck2(a: T2, b: T2): Boolean = a.size == b.size && a.head.size == b.head.size

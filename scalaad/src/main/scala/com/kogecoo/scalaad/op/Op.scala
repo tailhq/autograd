@@ -35,7 +35,7 @@ trait UnaryExpandOp extends Op
 
 trait BinaryOp extends Op {
 
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R])
+  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat])
 
 }
 

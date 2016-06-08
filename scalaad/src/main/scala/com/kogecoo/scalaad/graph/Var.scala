@@ -40,6 +40,6 @@ class ArbVar[N <: Nat](name: String, override val shape: Shape[N]) extends VarBa
 // FIXME: make it to be immutable style
 case class ArbVar0(name: String) extends ArbVar[_0](name, Shape0())
 
-case class ArbVar1(name: String, shape: Shape[_1]) extends ArbVar[_1](name, shape)
+case class ArbVar1(name: String, override val shape: Shape[_1]) extends ArbVar[_1](name, shape)
 
-case class ArbVar2(name: String, shape: Shape[_2]) extends ArbVar[_2](name, shape)
+case class ArbVar2(name: String, override val shape: Shape[_2]) extends ArbVar[_2](name, shape)

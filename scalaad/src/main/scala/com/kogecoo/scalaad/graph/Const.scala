@@ -2,7 +2,6 @@ package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad._
 import shapeless.Nat
-import shapeless.Nat._2
 
 
 // These constant Expr are shorthanded expression of Apply0[N](NullaryOp)
