@@ -3,11 +3,11 @@ package com.kogecoo.scalaad.impl.std
 import com.kogecoo.scalaad.algorithm.Eval
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.graph.bool.{Apply1B, Apply2B, Apply2C}
-import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.impl.std.StdUtil.T0
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
 import com.kogecoo.scalaad.op.bool.{And, Eq, Gt, Gte, Lt, Lte, Neq, Not, Or}
-import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Max, Min, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
+import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, Ln, Mul, Neg, Pos, Pow, Sin, Sinh, Sqrt, Sub, Tan, Tanh}
+import shapeless.Nat._0
 
 
 trait StdScalarEval {// self: StdVecEval =>
@@ -18,12 +18,12 @@ trait StdScalarEval {// self: StdVecEval =>
     def eval(n: V0): T0 = n match {
 
       // Leaf nodes
-      case Var0(v)          => v.value[T0]
-      case ArbVar0(_, data) => data.get.value[T0]
-      case Zero0()          => 0.0
-      case Half0()          => 0.5
-      case One0()           => 1.0
-      case Const0(v)        => v.value[T0]
+      case Var0(v)      => v.value[T0]
+      case a: ArbVar0   => a.data.get.value[T0]
+      case _: Zero[_0]  => 0.0
+      case _: Half[_0]  => 0.5
+      case _: One[_0]   => 1.0
+      case c: Const[_0] => c.v.value[T0]
 
       // Unary ops
       case Apply1(v, op) => op match {

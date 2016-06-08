@@ -13,7 +13,7 @@ trait VarBase[N <: Nat] extends ValueExpr[N] {
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    builder += (this, g)
+    builder += ((this, g))
   }
 }
 
@@ -38,8 +38,8 @@ class ArbVar[N <: Nat](name: String, override val shape: Shape[N]) extends VarBa
 }
 
 // FIXME: make it to be immutable style
-case class ArbVar0(name: String) extends VarBase[_0] { def shape: Shape[_0] = Shape0() }
+case class ArbVar0(name: String) extends ArbVar[_0](name, Shape0())
 
-case class ArbVar1(name: String, shape: Shape[_1]) extends VarBase[_1]
+case class ArbVar1(name: String, shape: Shape[_1]) extends ArbVar[_1](name, shape)
 
-case class ArbVar2(name: String, shape: Shape[_2]) extends VarBase[_2]
+case class ArbVar2(name: String, shape: Shape[_2]) extends ArbVar[_2](name, shape)

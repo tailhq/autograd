@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply0, Apply1, Apply2, One, V}
+import com.kogecoo.scalaad.graph.{One, V}
 import shapeless.Nat
 
 
@@ -15,7 +15,7 @@ case object Add extends BinaryOp {
 case object Sub extends BinaryOp {
 
   override def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-    (One[L](l.shape), Apply1[R](One(r.shape), Neg))
+    (One[L](l.shape), -One(r.shape))
   }
 
 }
@@ -31,8 +31,8 @@ case object Mul extends BinaryOp {
 case object Div extends BinaryOp {
 
   override def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-    val first = Apply2[L](One[L](l.shape), r, Div)
-    val second = Apply2[R](Apply1[L](l, Neg), Apply2[R](r, r, Mul), Div)
+    val first = One[L](l.shape) :/ r
+    val second = -l :/ (r :* r)
     (first, second)
   }
 

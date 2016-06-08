@@ -12,10 +12,10 @@ import shapeless.Nat._2
 
 case object ZeroOp extends NullaryOp
 
-case object OneOp extends NullaryOp
+case object OneOp  extends NullaryOp
 
 case object HalfOp extends NullaryOp
 
 case class ConstOp[N <: Nat](v: Tensor[N]) extends NullaryOp
 
-case class EyeOp(shape: Shape[_2])
+case class EyeOp[N <: Nat](shape: Shape[N])

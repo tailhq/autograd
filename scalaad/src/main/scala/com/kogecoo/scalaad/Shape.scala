@@ -7,17 +7,20 @@ import shapeless.{Nat, Sized}
   * containers used for carrying
   * tensor shape (dimensions for each axis) parameter(s).
   */
-class Shape[N <: Nat](val underlying: Sized[List[Int], N]) {
+class Shape[N <: Nat](shape: Sized[List[Int], N]) {
 
-  def apply(i: Int): Int = underlying.unsized(i)
+  def apply(i: Int): Int = shape.unsized(i)
 
   //def extend[M <: Nat, O <: Nat](other: Shape[M])(implicit sum: Sum.Aux[N, M, O]): Shape[O] = {
   def extend[M <: Nat, O <: Nat](other: Shape[M]): Shape[O] = {
-    val extend = underlying.unsized ++ other.underlying.unsized
+    val extend = underlying ++ other.underlying
     new Shape[O](Sized.wrap[List[Int], O](extend))
   }
 
-  def order: Int = underlying.unsized.length
+  def order: Int = shape.unsized.length
+
+  def underlying: List[Int] = shape.unsized
+
 }
 
 

@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.op
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph.{Apply0, Fold1, V}
+import com.kogecoo.scalaad.graph.{Apply0, V}
 import shapeless.Nat
 
 

@@ -41,7 +41,7 @@ case object Acos extends UnaryOp {
   }
 }
 
-case object Atan extends  {
+case object Atan extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     One(v.shape) / (One[N](v.shape) + (v * v))
@@ -49,7 +49,7 @@ case object Atan extends  {
 
 }
 
-case object Sinh extends  {
+case object Sinh extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     Apply1[N](v, Cosh)
@@ -57,42 +57,42 @@ case object Sinh extends  {
 
 }
 
-case object Cosh extends  {
+case object Cosh extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     Apply1[N](v, Sinh)
   }
 }
 
-case object Tanh extends  {
+case object Tanh extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     One(v.shape) - (Apply1[N](v, Tanh) * Apply1[N](v, Tanh))
   }
 }
 
-case object Ln   extends  {
+case object Ln   extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     One(v.shape) / v
   }
 }
 
-case object Exp  extends  {
+case object Exp  extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     Apply1[N](v, Exp)
   }
 }
 
-case object Sqrt extends  {
+case object Sqrt extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
     Half(v.shape) / Apply1[N](v, Sqrt)
   }
 }
 
-case object Abs  extends  {
+case object Abs  extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
   }
@@ -101,7 +101,7 @@ case object Abs  extends  {
 
 // Expr[Shape1] -> Expr[Shape0]
 
-case class L0Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
+/*case class L0Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
 case class L1Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
@@ -112,16 +112,16 @@ case class Sum1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 case class Max1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
 case class Min1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
+*/
 
 // Expr[Shape2] -> Expr[Shape0]
 
-case class Sum2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
+/*case class Sum2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
 case class Max2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 
 case class Min2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
+*/
 
 
 // (Expr[Shape0], Expr[Shape0]) -> Expr[Shape0]
@@ -129,13 +129,13 @@ case class Min2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 case object Pow extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-    val l = Apply1[L](l, Ln) * Apply2[L, R](l, r),
-    val r = r * Apply2[L, R](l, r - One(r))
-    (l, r)
+    val dl = Apply1[L](l, Ln) * Apply2[L, R](l, r, Pow)
+    val dr = r :* Apply2[L, R](l, r :- One(r), Pow)
+    (dl, dr)
   }
 
 }
-
+/*
 case object Max extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
@@ -154,9 +154,12 @@ case object Min extends BinaryOp {
 
 // (Expr[Shape1], Expr[Shape1]) -> Expr[Shape0]
 
-case class Dot[O <: Nat, I <: Nat]() extends BinaryFoldOp[O, I, I]
+case class Dot[O <: Nat, I <: Nat]() extends BinaryFoldOp[O, I, I] {
+
+}
 
 
 // (Expr[Shape2], Expr[Shape2]) -> Expr[Shape2]
 
 case class MatMul[O <: Nat, I <: Nat]() extends BinaryFoldOp[O, I, I]
+*/

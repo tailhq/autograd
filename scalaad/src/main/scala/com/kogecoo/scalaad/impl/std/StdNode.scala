@@ -12,13 +12,13 @@ trait StdNode {
   object Var {
 
     def apply(data: Double): Var0 = Var0(StdScalar(data))
-    def apply(data: StdVec[Double]): Var1 = Var1(StdVector(data), Shape1(data.size))
-    def apply(data: StdMat[Double]): Var2 = Var2(StdMatrix(data), Shape2(data.size, data(0).size))
+    def apply(data: StdVec[Double]): Var1 = Var1(StdVector(data))
+    def apply(data: StdMat[Double]): Var2 = Var2(StdMatrix(data))
 
     // Experimental
-    def arbitrary(name: String, shape: Shape[_0]): ArbVar0 = ArbVar0(name, None)
-    def arbitrary(name: String, shape: Shape[_1]): ArbVar1 = ArbVar1(name, None, shape)
-    def arbitrary(name: String, shape: Shape[_2]): ArbVar2 = ArbVar2(name, None, shape)
+    def arbitrary(name: String, shape: Shape[_0]): ArbVar0 = ArbVar0(name)
+    def arbitrary(name: String, shape: Shape[_1]): ArbVar1 = ArbVar1(name, shape)
+    def arbitrary(name: String, shape: Shape[_2]): ArbVar2 = ArbVar2(name, shape)
   }
 
   object Const {
