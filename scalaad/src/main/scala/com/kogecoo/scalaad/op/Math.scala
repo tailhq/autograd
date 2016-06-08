@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{UnsafeApply2, V}
+import com.kogecoo.scalaad.graph.{Unsafe, V}
 import com.kogecoo.scalaad.op.Shorthands.Const._
 import com.kogecoo.scalaad.op.Shorthands.Math._
 import shapeless.Nat
@@ -117,8 +117,8 @@ case class Min2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
 case object Pow extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
-    val dl = ln(l) :* UnsafeApply2(l, r, Pow)
-    val dr = r :* UnsafeApply2(l, r :- one(r), Pow)
+    val dl = ln(l) :* pow(l, r)
+    val dr = r :* pow(l, r :- one(r))
     (dl, dr)
   }
 

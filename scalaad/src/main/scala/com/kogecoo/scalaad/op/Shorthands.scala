@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply1, Half, One, V}
+import com.kogecoo.scalaad.graph.{Apply1, Half, One, Unsafe, V}
 import shapeless.Nat
 
 
@@ -15,6 +15,8 @@ object Shorthands {
   }
 
   object Math {
+
+    // unary
 
     def sin[N <: Nat](v: V[N]): V[N] = Apply1[N](v, Sin)
 
@@ -39,6 +41,11 @@ object Shorthands {
     def exp[N <: Nat](v: V[N]): V[N] = Apply1[N](v, Exp)
 
     def sqrt[N <: Nat](v: V[N]): V[N] = Apply1[N](v, Sqrt)
+
+
+    // binary
+
+    def pow[L <: Nat, R <: Nat](l: V[L], r: V[R]): V[_ <: Nat] = Unsafe.apply2(l, r, Pow)
 
 
   }

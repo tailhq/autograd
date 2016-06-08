@@ -61,10 +61,10 @@ object ValueExpr {
     def /<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Div)
 
     // type unsafe operations
-    def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Add)
-    def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Sub)
-    def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Mul)
-    def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = UnsafeApply2[O, N, M](self, rhs, Div)
+    def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Add)
+    def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Sub)
+    def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Mul)
+    def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Div)
 
 
   }
