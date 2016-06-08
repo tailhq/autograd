@@ -9,13 +9,13 @@ import scala.Predef.{any2stringadd => _}
 
 package object graph {
 
-  type VE0 = ValueExpr[_0]
+  type V0 = ValueExpr[_0]
 
-  type VE1 = ValueExpr[_1]
+  type V1 = ValueExpr[_1]
 
-  type VE2 = ValueExpr[_2]
+  type V2 = ValueExpr[_2]
 
-  type VE[N <: Nat] = ValueExpr[N]
+  type V[N <: Nat] = ValueExpr[N]
 
 
   type BE0 = BooleanExpr[_0]

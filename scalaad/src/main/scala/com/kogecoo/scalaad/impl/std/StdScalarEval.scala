@@ -13,9 +13,9 @@ import com.kogecoo.scalaad.op.{Abs, Acos, Add, Asin, Atan, Cos, Cosh, Div, Exp, 
 trait StdScalarEval {// self: StdVecEval =>
 
   // operators/functions convert Node order 0 -> 0
-  implicit val eval00_double: Eval[VE0, Double] = new Eval[VE0, Double] {
+  implicit val eval00_double: Eval[V0, Double] = new Eval[V0, Double] {
 
-    def eval(n: VE0): T0 = n match {
+    def eval(n: V0): T0 = n match {
 
       // Leaf nodes
       case Var0(v)          => v.value[T0]

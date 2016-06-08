@@ -1,21 +1,40 @@
-package com.kogecoo.scalaad.algorithm
+package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph._
+import shapeless.Nat
 
 import scala.Predef.{any2stringadd => _, _}
+import scala.collection.mutable
 import scala.language.higherKinds
 
 
-/*class Grad(val grad: Map[ValueExpr[_ <: Shape], ValueExpr[_ <: Shape]]) {
+class GradBuilder[G <: Nat] {
 
-  def size: Int = grad.size
+  type K = ValueExpr[_ <: Nat]
+  type V = ValueExpr[G]
 
-  def apply(node: ValueExpr[_ <: Shape]): Option[ValueExpr[_ <: Shape]] = grad.get(node)
+  val builder = mutable.Map.empty[K, V]
+
+  def +=(x: (K, V)): Unit = {
+    val g = builder.get(x._1) match {
+      case Some(v) => v + x._2
+      case None    => x._2
+    }
+    builder.update(x._1, g)
+  }
+
+  def result(): Grad[G] = new Grad[G](builder.toMap[K, V])
 
 }
 
+class Grad[G <: Nat](val grad: Map[ValueExpr[_ <: Nat], ValueExpr[G]]) {
 
+  def size: Int = grad.size
+
+  def apply(x: ValueExpr[_ <: Nat]): Option[ValueExpr[_ <: Nat]] = grad.get(x)
+
+}
+
+/*
 object Grad {
 
   private[this] type S = Shape
@@ -97,7 +116,6 @@ object Grad {
     }
   }
 */
+
 }
-
 */
-

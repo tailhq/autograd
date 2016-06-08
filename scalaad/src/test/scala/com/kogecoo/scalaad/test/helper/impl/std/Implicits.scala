@@ -45,7 +45,7 @@ object Implicits {
   }
 
 
-  implicit class N0Ops(val self: VE0) extends AnyVal { def toT0: T0 = self.eval[T0] }
+  implicit class N0Ops(val self: V0) extends AnyVal { def toT0: T0 = self.eval[T0] }
 
   //implicit class N1Ops(val self: V1) extends AnyVal { def toT1: T1 = self.eval[T1] }
 

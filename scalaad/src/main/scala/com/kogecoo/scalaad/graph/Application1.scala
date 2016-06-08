@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.op.{BinaryOp, Mul, UnaryOp}
+import com.kogecoo.scalaad.op.{Mul, UnaryFoldOp, UnaryOp}
 import shapeless.Nat
 
 
@@ -32,24 +32,32 @@ trait CommonShapedApplication1[N <: Nat] extends Application1[N, N] {
 
 // Unary Application
 
-case class Apply1[N <: Nat](v: VE[N], op: UnaryOp) extends CommonShapedApplication1[N] {
+case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends CommonShapedApplication1[N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: VE[W]): VE[O] = {
-    ElementwiseLeft(v._forward(wrt), op.deriv[N](v), Mul)
+
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
+    ElementwiseLeft(v._forward[W, O](wrt), op.deriv[N](v), Mul)
+  }
+
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+    v._reverse[G](g * op.deriv[N](v), builder)
   }
 
 }
 
-/*
-case class Fold1[SI1 <: Nat](v: VE[SI1], op: UnaryOp) extends Application1[S0, SI1] {
+case class Fold1[N <: Nat, I <: Nat](v: V[I], override val shape: Shape[N], op: UnaryFoldOp) extends Application1[N, I] {
 
-  def shape: Shape[S0] = Shape0()
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = { }
 
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
 }
 
 
-case class Fill[SO <: Nat](v: VE0, shape: SO) extends Application1[SO, S0] {
+case class Expand1[N <: Nat, I <: Nat](v: V[I], shape: Shape[N]) extends Application1[N, I] {
+
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = { }
+
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
 
 }
-*/
 

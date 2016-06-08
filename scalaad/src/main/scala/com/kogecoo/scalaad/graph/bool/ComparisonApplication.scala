@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.graph.bool
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph.{VE, ValueExpr}
+import com.kogecoo.scalaad.graph.{V, ValueExpr}
 import com.kogecoo.scalaad.op.bool.BinaryComparisonOp
 import shapeless.Nat
 
@@ -59,9 +59,9 @@ trait CommonShapedComparisonApplication2[N <: Nat] extends ComparisonApplication
 
 // Binary ComparisonApplication
 
-case class Apply2C[S <: Nat](l: VE[S], r: VE[S], op: BinaryComparisonOp) extends CommonShapedComparisonApplication2[S]
+case class Apply2C[S <: Nat](l: V[S], r: V[S], op: BinaryComparisonOp) extends CommonShapedComparisonApplication2[S]
 
-case class ElementwiseLeftC[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: BinaryComparisonOp) extends LeftShapedComparisonApplication2[L, R]
+case class ElementwiseLeftC[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends LeftShapedComparisonApplication2[L, R]
 
-case class ElementwiseRightC[L <: Nat, R <: Nat](l: VE[L], r: VE[R], op: BinaryComparisonOp) extends RightShapedComparisonApplication2[L, R]
+case class ElementwiseRightC[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends RightShapedComparisonApplication2[L, R]
 

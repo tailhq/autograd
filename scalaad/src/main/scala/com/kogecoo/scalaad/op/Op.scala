@@ -1,43 +1,42 @@
 package com.kogecoo.scalaad.op
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph.{Apply0, VE}
+import com.kogecoo.scalaad.graph.{Apply0, Fold1, V}
 import shapeless.Nat
 
 
 sealed trait Op
 
+// () -> z
 
 trait NullaryOp extends Op {
 
-  def deriv[N <: Nat](shape: Shape[N]): VE[N] = Apply0(shape, ZeroOp)
+  def deriv[N <: Nat](shape: Shape[N]): V[N] = Apply0(shape, ZeroOp)
 
 }
 
+// x -> z
 
 trait UnaryOp extends Op {
 
-  def deriv[N <: Nat](v: VE[N]): VE[N]
+  def deriv[N <: Nat](v: V[N]): V[N]
 
 }
 
 
-trait FoldUnaryOp[O <: Nat, I <: Nat] extends Op {
-
-}
+trait UnaryFoldOp extends Op
 
 
-trait ExpandUnaryOp[O <: Nat, I <: Nat] extends Op {
+trait UnaryExpandOp extends Op
 
-}
 
+
+// (x, y) -> z
 
 trait BinaryOp extends Op {
 
-  def deriv[L <: Nat, R <: Nat](l: VE[L], r: VE[R]): (VE[L], VE[R])
+  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R])
 
 }
 
-trait FoldBinaryOp[O <: Nat, I <: Nat] extends Op {
-
-}
+trait BinaryFoldOp[O <: Nat, I1 <: Nat, I2 <: Nat] extends Op
