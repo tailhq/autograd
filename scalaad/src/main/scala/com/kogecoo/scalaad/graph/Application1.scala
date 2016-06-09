@@ -45,7 +45,9 @@ case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
 abstract class Fold1[N <: Nat, I <: Nat](v: V[I], op: UnaryFoldOp) extends Application1[N, I]
 
 
-case class Fold1_1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Nat) extends Fold1[N, Succ[N]](v, op) {
+case class Fold1_1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends Fold1[N, Succ[N]](v, op) {
+
+  def shape: Shape[N] = v.shape.shrink(List(axis))
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
     Fold1_1[O](v._forward[W, Succ[O]](wrt), op, axis)
@@ -56,7 +58,9 @@ case class Fold1_1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Nat) extends 
 }
 
 
-case class Fold1_2[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Nat, axis2: Nat) extends Fold1[N, Succ[Succ[N]]](v, op) {
+case class Fold1_2[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, axis2: Int) extends Fold1[N, Succ[Succ[N]]](v, op) {
+
+  def shape: Shape[N] = v.shape.shrink(List(axis1, axis2))
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
     Fold1_2[O](v._forward[W, Succ[Succ[O]]](wrt), op, axis1, axis2)

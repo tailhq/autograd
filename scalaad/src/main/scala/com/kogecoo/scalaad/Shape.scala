@@ -19,10 +19,10 @@ class Shape[N <: Nat](shape: Sized[List[Int], N]) {
     new Shape[O](Sized.wrap[List[Int], O](extend))
   }
 
-  def shrink[O <: Nat](axis: Int): Shape[O] = {
+  def shrink[O <: Nat](axes: List[Int]): Shape[O] = {
     val shrunk = for (
       (s, i) <- underlying.zipWithIndex
-      if i != axis
+      if axes.contains(i)
     ) yield s
     new Shape[O](Sized.wrap[List[Int], O](shrunk))
   }
