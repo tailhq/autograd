@@ -3,6 +3,7 @@ package com.kogecoo.scalaad.graph
 import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.op.{UnaryExpandOp, UnaryFoldOp, UnaryOp}
 import shapeless.{Nat, Succ}
+import shapeless.Nat.{_1, _2}
 
 
 /**
@@ -53,7 +54,9 @@ case class Fold1_1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends 
     Fold1_1[O](v._forward[W, Succ[O]](wrt), op, axis)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+    v._reverse[G](g :* Fold1_1[N](op.deriv[Succ[N]](v), op, axis), builder)
+  }
 
 }
 
@@ -66,33 +69,46 @@ case class Fold1_2[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, a
     Fold1_2[O](v._forward[W, Succ[Succ[O]]](wrt), op, axis1, axis2)
   }
 
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+    v._reverse[G](g :* Fold1_2(op.deriv[Succ[Succ[N]]](v), op, axis1, axis2), builder)
+  }
+
 }
 
 
 abstract class Expand1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp) extends Application1[N, I]
 
 
-case class Expand1_1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp) extends Expand1[N, I](v, op) {
+case class Expand1_1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1]) extends Expand1[N, I](v, op) {
 
   type I_ <: Nat
 
+  def shape: Shape[N] = v.shape.extend(s)
+
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_1[O, I_](v._forward[W, I_](wrt), op)
+    Expand1_1[O, I_](v._forward[W, I_](wrt), op, s)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+    v._reverse[G](g :* Expand1_1[N, I](op.deriv[I](v), op, s), builder)
+  }
+
 }
 
 
-case class Expand1_2[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp) extends Expand1[N, I](v, op) {
+case class Expand1_2[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_2]) extends Expand1[N, I](v, op) {
 
   type I_ <: Nat
 
+  def shape: Shape[N] = v.shape.extend(s)
+
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_1[O, I_](v._forward[W, I_](wrt), op)
+    Expand1_2[O, I_](v._forward[W, I_](wrt), op, s)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
+  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+    v._reverse[G](g :* Expand1_2[N, I](op.deriv[I](v), op, s), builder)
+  }
 
 }
 

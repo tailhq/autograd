@@ -24,10 +24,18 @@ trait UnaryOp extends Op {
 }
 
 
-trait UnaryFoldOp extends Op
+trait UnaryFoldOp extends Op {
+
+  def deriv[N <: Nat](v: V[N]): V[N]
+
+}
 
 
-trait UnaryExpandOp extends Op
+trait UnaryExpandOp extends Op {
+
+  def deriv[N <: Nat](v: V[N]): V[N]
+
+}
 
 
 
