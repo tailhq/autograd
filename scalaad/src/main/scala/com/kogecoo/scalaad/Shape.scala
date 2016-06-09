@@ -1,7 +1,9 @@
 package com.kogecoo.scalaad
 
 import shapeless.Nat.{_0, _1, _2}
+import shapeless.ops.nat.LT.<
 import shapeless.{Nat, Sized}
+
 
 /**
   * containers used for carrying
@@ -15,6 +17,14 @@ class Shape[N <: Nat](shape: Sized[List[Int], N]) {
   def extend[M <: Nat, O <: Nat](other: Shape[M]): Shape[O] = {
     val extend = underlying ++ other.underlying
     new Shape[O](Sized.wrap[List[Int], O](extend))
+  }
+
+  def shrink[O <: Nat](axis: Int): Shape[O] = {
+    val shrunk = for (
+      (s, i) <- underlying.zipWithIndex
+      if i != axis
+    ) yield s
+    new Shape[O](Sized.wrap[List[Int], O](shrunk))
   }
 
   def order: Int = shape.unsized.length
