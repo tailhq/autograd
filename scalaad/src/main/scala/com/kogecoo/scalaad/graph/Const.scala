@@ -10,7 +10,7 @@ trait ConstBase[N <: Nat] extends ValueExpr[N] {
 
   def _forward[W <: Nat, O <: Nat](wrt: ValueExpr[W]): ValueExpr[O] = Zero(shape.extend(wrt.shape))
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = () // nop for constants
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = Grad.empty[G]
 
 }
 

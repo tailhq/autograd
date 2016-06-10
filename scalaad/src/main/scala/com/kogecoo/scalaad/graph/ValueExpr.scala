@@ -21,11 +21,7 @@ trait ValueExpr[N <: Nat]  extends Expr[N]{
   }
 
   //def reverse[G](g: G)(implicit R: Reverse[ValueExpr[N], G]): Grad = R.reverse(this, g)
-  final def reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
-    val builder = new GradBuilder[G]
-    _reverse(g, builder)
-    builder.result()
-  }
+  final def reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = _reverse(g)
 
   def eval[R](implicit E: Eval[ValueExpr[N], R]): R = E.eval(this)
 
@@ -33,7 +29,7 @@ trait ValueExpr[N <: Nat]  extends Expr[N]{
 
   def _forward[W <: Nat, O <: Nat](wrt: ValueExpr[W]): ValueExpr[O]
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G]
 
 }
 

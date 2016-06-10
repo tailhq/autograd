@@ -12,9 +12,8 @@ trait VarBase[N <: Nat] extends ValueExpr[N] {
     One(shape.extend(wrt.shape))
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    builder += ((this, g))
-  }
+  def _reverse[G <: Nat](g: ValueExpr[G]): Unit = Grad[G](this, g)
+
 }
 
 class Var[N <: Nat](data: Tensor[N]) extends VarBase[N] { def shape: Shape[N] = data.shape }

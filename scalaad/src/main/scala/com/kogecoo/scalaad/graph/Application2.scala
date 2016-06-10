@@ -1,8 +1,9 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.op.BinaryOp
-import shapeless.Nat
+import com.kogecoo.scalaad.graph.bool.BooleanExpr
+import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp}
+import shapeless.{Nat, Succ}
 
 import scala.language.existentials
 
@@ -82,10 +83,9 @@ case class Apply2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends Application2
     (fl :* dr) :+ (dl :* fr)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
     val (dl: V[N], dr: V[N]) = op.deriv[N, N](l, r)
-    l._reverse[G](g  :* dr, builder)
-    r._reverse[G](dl :* g,  builder)
+    l._reverse[G](g  :* dr) ++ r._reverse[G](dl :* g)
   }
 }
 
@@ -103,10 +103,9 @@ case class ElementwiseLeft[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) e
     (fl :* dr) :+ (dl :* fr)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
     val (dl, dr) = Unsafe.derivOp(l, r, op)
-    l._reverse[G](g  :* dr, builder)
-    r._reverse[G](dl :* g,  builder)
+    l._reverse[G](g  :* dr) ++ r._reverse[G](dl :* g)
   }
 
 }
@@ -125,31 +124,47 @@ case class ElementwiseRight[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) 
     (fl :* dr) :+ (dl :* fr)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
     val (dl, dr) = Unsafe.derivOp(l, r, op)
-    l._reverse[G](g  :* dr, builder)
-    r._reverse[G](dl :* g,  builder)
+    l._reverse[G](g  :* dr) ++ r._reverse[G](dl :* g)
   }
 
 }
 
 
-/*
-case class Fold2[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryFoldOp[N, L, R]) extends Application2[N, L, R] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = { }
+// Experimental
+// Fold seems to be broken
+abstract class Fold2[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryFoldOp) extends Application2[N, L, R]
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
+
+case class Fold2_-[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axis: Int) extends Application2[N, N, N] {
+
+  def shape: Shape[N] = l.shape.shrink(List(axis))
+
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
+    val fl = l._forward[W, Succ[O]](wrt)
+    val fr = r._forward[W, Succ[O]](wrt)
+    Fold2_-[O](fl, fr, op, axis)
+  }
+
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    val (dl, dr) = op.deriv[Succ[N]](l, r)
+    // FIXME l._reverse[G](Fold2_-[N](g, dr, op, axis)), r._reverse[G](Fold2_-[N](dl, g, op, axis))
+  }
 
 }
 
 
 case class Where[N <:  Nat](cond: BooleanExpr[N], l: V[N], r: V[N]) extends Application2[N, N, N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = { }
+  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = { }
+  }
+
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+   // FIXME Where[N](cond, l._reverse[G](g), r._reverse[G](g))
+  }
 
 }
-*/
 

@@ -18,5 +18,5 @@ case class Apply0[N <: Nat](shape: Shape[N], op: NullaryOp) extends Application0
     Apply0(newShape, ZeroOp)
   }
 
-  def _reverse[G <: Nat](g: V[G], builder: GradBuilder[G]): Unit = () // nop for constant node
+  def _reverse[G <: Nat](g: V[G]): Grad[G] = Grad.empty[G] // nop for constant node
 }

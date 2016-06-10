@@ -31,8 +31,8 @@ case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
     v._forward[W, O](wrt) :* op.deriv[N](v)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    v._reverse[G](g :* op.deriv[N](v), builder)
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    v._reverse[G](g :* op.deriv[N](v))
   }
 
 }
@@ -42,35 +42,36 @@ case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
   *
   * This is a particular variation of Apply that is accompanied by a reduction of 1 order of input's shape.
   * i.e. Here we want to express: V[I] => V[I-X] == V[N]
+  *
   */
 abstract class Fold1[N <: Nat, I <: Nat](v: V[I], op: UnaryFoldOp) extends Application1[N, I]
 
 
-case class Fold1_1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends Fold1[N, Succ[N]](v, op) {
+case class Fold1_-[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends Fold1[N, Succ[N]](v, op) {
 
   def shape: Shape[N] = v.shape.shrink(List(axis))
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Fold1_1[O](v._forward[W, Succ[O]](wrt), op, axis)
+    Fold1_-[O](v._forward[W, Succ[O]](wrt), op, axis)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    v._reverse[G](g :* Fold1_1[N](op.deriv[Succ[N]](v), op, axis), builder)
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    v._reverse[G](g :* Fold1_-[N](op.deriv[Succ[N]](v), op, axis))
   }
 
 }
 
 
-case class Fold1_2[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, axis2: Int) extends Fold1[N, Succ[Succ[N]]](v, op) {
+case class Fold1_--[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, axis2: Int) extends Fold1[N, Succ[Succ[N]]](v, op) {
 
   def shape: Shape[N] = v.shape.shrink(List(axis1, axis2))
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Fold1_2[O](v._forward[W, Succ[Succ[O]]](wrt), op, axis1, axis2)
+    Fold1_--[O](v._forward[W, Succ[Succ[O]]](wrt), op, axis1, axis2)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    v._reverse[G](g :* Fold1_2(op.deriv[Succ[Succ[N]]](v), op, axis1, axis2), builder)
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    v._reverse[G](g :* Fold1_--(op.deriv[Succ[Succ[N]]](v), op, axis1, axis2))
   }
 
 }
@@ -79,35 +80,35 @@ case class Fold1_2[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, a
 abstract class Expand1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp) extends Application1[N, I]
 
 
-case class Expand1_1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1]) extends Expand1[N, I](v, op) {
+case class Expand1_+[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1]) extends Expand1[N, I](v, op) {
 
   type I_ <: Nat
 
   def shape: Shape[N] = v.shape.extend(s)
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_1[O, I_](v._forward[W, I_](wrt), op, s)
+    Expand1_+[O, I_](v._forward[W, I_](wrt), op, s)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    v._reverse[G](g :* Expand1_1[N, I](op.deriv[I](v), op, s), builder)
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    v._reverse[G](g :* Expand1_+[N, I](op.deriv[I](v), op, s))
   }
 
 }
 
 
-case class Expand1_2[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_2]) extends Expand1[N, I](v, op) {
+case class Expand1_++[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_2]) extends Expand1[N, I](v, op) {
 
   type I_ <: Nat
 
   def shape: Shape[N] = v.shape.extend(s)
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_2[O, I_](v._forward[W, I_](wrt), op, s)
+    Expand1_++[O, I_](v._forward[W, I_](wrt), op, s)
   }
 
-  def _reverse[G <: Nat](g: ValueExpr[G], builder: GradBuilder[G]): Unit = {
-    v._reverse[G](g :* Expand1_2[N, I](op.deriv[I](v), op, s), builder)
+  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
+    v._reverse[G](g :* Expand1_++[N, I](op.deriv[I](v), op, s))
   }
 
 }

@@ -47,4 +47,7 @@ trait BinaryOp extends Op {
 
 }
 
-trait BinaryFoldOp[O <: Nat, I1 <: Nat, I2 <: Nat] extends Op
+trait BinaryFoldOp extends Op {
+
+  def deriv[N <: Nat](l: V[N], r: V[N]): (V[N], V[N])
+}
