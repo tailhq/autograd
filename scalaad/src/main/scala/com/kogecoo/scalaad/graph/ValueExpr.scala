@@ -17,7 +17,7 @@ trait ValueExpr[N <: Nat]  extends Expr[N]{
   //def forward[W, O](w: W)(implicit F: Forward[ValueExpr[S], W, O]): O = F.forward(this, w)
 
   final def forward[W <: Nat, O <: Nat](wrt: ValueExpr[W])(implicit s: Sum.Aux[N, W, O]): ValueExpr[O] = {
-    _forward[W, O](wrt)
+    _forward[W](wrt)
   }
 
   //def reverse[G](g: G)(implicit R: Reverse[ValueExpr[N], G]): Grad = R.reverse(this, g)
@@ -27,7 +27,7 @@ trait ValueExpr[N <: Nat]  extends Expr[N]{
 
   //def grad(implicit R: Reverse[ValueExpr[N], VE0]): Grad = reverse[VE0](One0())
 
-  def _forward[W <: Nat, O <: Nat](wrt: ValueExpr[W]): ValueExpr[O]
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N]
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G]
 
@@ -46,21 +46,31 @@ object ValueExpr {
     def *(rhs: V[N]): V[N] = Apply2[N](self, rhs, Mul)
     def /(rhs: V[N]): V[N] = Apply2[N](self, rhs, Div)
 
-    def +>[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Add)
-    def ->[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Sub)
-    def *>[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Mul)
-    def />[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Div)
+    def +<[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Add)
+    def -<[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Sub)
+    def *<[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Mul)
+    def /<[M <: Nat](rhs: V[M])(implicit ev: N < M): V[M] = ElementwiseRight[N, M](self, rhs, Div)
 
-    def +<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Add)
-    def -<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Sub)
-    def *<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Mul)
-    def /<[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Div)
+    def +>[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Add)
+    def ->[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Sub)
+    def *>[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Mul)
+    def />[M <: Nat](rhs: V[M])(implicit ev: M < N): V[N] = ElementwiseLeft[N, M](self, rhs, Div)
 
     // type unsafe operations
     def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Add)
     def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Sub)
     def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Mul)
     def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Div)
+
+    def :+<[M <: Nat](rhs: V[M]): V[M] = ElementwiseRight[N, M](self, rhs, Add)
+    def :-<[M <: Nat](rhs: V[M]): V[M] = ElementwiseRight[N, M](self, rhs, Sub)
+    def :*<[M <: Nat](rhs: V[M]): V[M] = ElementwiseRight[N, M](self, rhs, Mul)
+    def :/<[M <: Nat](rhs: V[M]): V[M] = ElementwiseRight[N, M](self, rhs, Div)
+
+    def :+>[M <: Nat](rhs: V[M]): V[N] = ElementwiseLeft[N, M](self, rhs, Add)
+    def :->[M <: Nat](rhs: V[M]): V[N] = ElementwiseLeft[N, M](self, rhs, Sub)
+    def :*>[M <: Nat](rhs: V[M]): V[N] = ElementwiseLeft[N, M](self, rhs, Mul)
+    def :/>[M <: Nat](rhs: V[M]): V[N] = ElementwiseLeft[N, M](self, rhs, Div)
 
     def ==(rhs: V[N]): BE[N] = Apply2C(self, rhs, Eq)
     def !=(rhs: V[N]): BE[N] = Apply2C(self, rhs, Neq)

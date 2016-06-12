@@ -27,8 +27,8 @@ case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
 
   def shape: Shape[N] = v.shape
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    v._forward[W, O](wrt) :* op.deriv[N](v)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    v._forward[W](wrt) * op.deriv[N](v)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -51,8 +51,8 @@ case class Fold1_-[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends 
 
   def shape: Shape[N] = v.shape.shrink(List(axis))
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Fold1_-[O](v._forward[W, Succ[O]](wrt), op, axis)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    Fold1_-[N](v._forward[W](wrt), op, axis)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -66,8 +66,8 @@ case class Fold1_--[N <: Nat](v: V[Succ[Succ[N]]], op: UnaryFoldOp, axis1: Int, 
 
   def shape: Shape[N] = v.shape.shrink(List(axis1, axis2))
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Fold1_--[O](v._forward[W, Succ[Succ[O]]](wrt), op, axis1, axis2)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    Fold1_--[N](v._forward[W](wrt), op, axis1, axis2)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -82,12 +82,10 @@ abstract class Expand1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp) extends A
 
 case class Expand1_+[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1]) extends Expand1[N, I](v, op) {
 
-  type I_ <: Nat
-
   def shape: Shape[N] = v.shape.extend(s)
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_+[O, I_](v._forward[W, I_](wrt), op, s)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    Expand1_+[N, I](v._forward[W](wrt), op, s)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -99,12 +97,10 @@ case class Expand1_+[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1
 
 case class Expand1_++[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_2]) extends Expand1[N, I](v, op) {
 
-  type I_ <: Nat
-
   def shape: Shape[N] = v.shape.extend(s)
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Expand1_++[O, I_](v._forward[W, I_](wrt), op, s)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    Expand1_++[N, I](v._forward[W](wrt), op, s)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {

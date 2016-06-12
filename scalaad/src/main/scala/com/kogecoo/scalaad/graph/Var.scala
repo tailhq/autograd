@@ -7,9 +7,9 @@ import shapeless.Nat.{_0, _1, _2}
 
 trait VarBase[N <: Nat] extends ValueExpr[N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: ValueExpr[W]): ValueExpr[O] = {
+  def _forward[W <: Nat](wrt: ValueExpr[N]): ValueExpr[N] = {
     // FIXME: wrong
-    One(shape.extend(wrt.shape))
+    if (this == wrt) One(shape) else Zero(shape)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Unit = Grad[G](this, g)

@@ -5,6 +5,7 @@ import com.kogecoo.scalaad.graph.bool.{Apply2C, BooleanExpr, ElementwiseLeftC, E
 import com.kogecoo.scalaad.op.bool.BinaryComparisonOp
 import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp}
 import shapeless.{Nat, Succ}
+import Predef.{any2stringadd => _}
 
 import scala.language.existentials
 
@@ -94,12 +95,12 @@ case class Apply2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends Application2
 
   def shape: Shape[N] = l.shape
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
     val (dl: V[N], dr: V[N]) = op.deriv[N, N](l, r)
-    val fl: V[O] = l._forward[W, O](wrt)
-    val fr: V[O] = r._forward[W, O](wrt)
+    val fl: V[N] = l._forward[W](wrt)
+    val fr: V[N] = r._forward[W](wrt)
 
-    (fl :* dr) :+ (dl :* fr)
+    (fl * dr) + (dl * fr)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -115,11 +116,11 @@ case class ElementwiseLeft[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) e
 
   def shape: Shape[L] = l.shape
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[L] = {
     val (dl, dr) = Unsafe.derivOp(l, r, op)
-    val fl: V[O] = l._forward[W, O](wrt)
-    val fr: V[RO] = r._forward[W, RO](wrt)
-    (fl :* dr) :+ (dl :* fr)
+    val fl: V[L] = l._forward[W](wrt)
+    val fr: V[R] = r._forward[W](wrt)
+    (fl :*> dr) :+> (dl :*> fr)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -136,11 +137,11 @@ case class ElementwiseRight[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) 
 
   def shape: Shape[R] = r.shape
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[R] = {
     val (dl, dr) = Unsafe.derivOp(l, r, op)
-    val fl: V[LO] = l._forward[W, LO](wrt)
-    val fr: V[O] = r._forward[W, O](wrt)
-    (fl :* dr) :+ (dl :* fr)
+    val fl: V[L] = l._forward[W](wrt)
+    val fr: V[R] = r._forward[W](wrt)
+    (fl :*< dr) :+< (dl :*< fr)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -161,10 +162,10 @@ case class Fold2_-[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axi
 
   def shape: Shape[N] = l.shape.shrink(List(axis))
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val fl = l._forward[W, Succ[O]](wrt)
-    val fr = r._forward[W, Succ[O]](wrt)
-    Fold2_-[O](fl, fr, op, axis)
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    val fl: V[Succ[N]] = l._forward[W](wrt)
+    val fr: V[Succ[N]] = r._forward[W](wrt)
+    Fold2_-[N](fl, fr, op, axis)
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {

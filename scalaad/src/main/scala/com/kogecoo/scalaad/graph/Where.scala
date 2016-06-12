@@ -6,8 +6,8 @@ import shapeless.Nat
 
 case class Where[N <:  Nat](cond: BooleanExpr[N], l: V[N], r: V[N]) extends ValueExpr[N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    Where[O](cond, l._forward[W, O](wrt), r._forward[W, O](wrt))
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    Where[N](cond, l._forward[W](wrt), r._forward[W](wrt))
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -35,8 +35,8 @@ case class Where[N <:  Nat](cond: BooleanExpr[N], l: V[N], r: V[N]) extends Valu
 
 case class If[N <: Nat](cond: BooleanExpr[N], v: V[N]) extends ValueExpr[N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    If[O](cond, v._forward[W, O](wrt))
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    If[N](cond, v._forward[W](wrt))
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
@@ -53,8 +53,8 @@ case class If[N <: Nat](cond: BooleanExpr[N], v: V[N]) extends ValueExpr[N] {
 
 case class NotIf[N <: Nat](cond: BooleanExpr[N], v: V[N]) extends ValueExpr[N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    NotIf[O](cond, v._forward[W, O](wrt))
+  def _forward[W <: Nat](wrt: ValueExpr[W]): ValueExpr[N] = {
+    NotIf[N](cond, v._forward[W](wrt))
   }
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
