@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Unsafe, V}
+import com.kogecoo.scalaad.graph.{If, One, V, Where, Zero}
 import com.kogecoo.scalaad.op.Shorthands.Const._
 import com.kogecoo.scalaad.op.Shorthands.Math._
 import shapeless.Nat
@@ -8,19 +8,19 @@ import shapeless.Nat
 
 // Expr[Shape0] -> Expr[Shape0]
 
-case object Sin  extends UnaryOp {
+case object Sin extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = cos(v)
 
 }
 
-case object Cos  extends UnaryOp {
+case object Cos extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = -sin(v)
 
 }
 
-case object Tan  extends UnaryOp {
+case object Tan extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = one(v) - (tan(v) * tan(v))
 
@@ -62,12 +62,12 @@ case object Tanh extends UnaryOp {
 
 }
 
-case object Ln   extends UnaryOp {
+case object Ln extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = one(v) / v
 }
 
-case object Exp  extends UnaryOp {
+case object Exp extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = exp(v)
 
@@ -77,42 +77,17 @@ case object Sqrt extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = half(v) / sqrt(v)
 }
-/*
-case object Abs  extends UnaryOp {
+
+case object Abs extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
+    Where[N](v >= zero(v), one(v), -one(v))
   }
+
 }
-*/
-
-
-// Expr[Shape1] -> Expr[Shape0]
-
-/*case class L0Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class L1Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class L2Norm[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class Sum1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class Max1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class Min1[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-*/
-
-// Expr[Shape2] -> Expr[Shape0]
-
-/*case class Sum2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class Max2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-
-case class Min2[O <: Nat, I <: Nat]() extends UnaryFoldOp[O, I]
-*/
 
 
 // (Expr[Shape0], Expr[Shape0]) -> Expr[Shape0]
-
 
 case object Pow extends BinaryOp {
 
@@ -123,31 +98,53 @@ case object Pow extends BinaryOp {
   }
 
 }
-/*
+
 case object Max extends BinaryOp {
 
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-
+  def deriv[N <: Nat](l: V[N], r: V[N]): (V[N], V[N]) = {
+    (If[N](l >= r, one(l)), If[N](l < r, one(r)))
   }
 
 }
 
 case object Min extends BinaryOp {
 
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[L], V[R]) = {
-
+  def deriv[N <: Nat](l: V[N], r: V[N]): (V[N], V[N]) = {
+    (If[N](l <= r, one(l)), If[N](l > r, one(r)))
   }
+
 }
+
+
+// Expr[Shape1] -> Expr[Shape0]
+
+case object L0Norm extends UnaryFoldOp
+
+case object L1Norm extends UnaryFoldOp
+
+case object L2Norm extends UnaryFoldOp
+
+case object Sum1 extends UnaryFoldOp
+
+case object Max1 extends UnaryFoldOp
+
+case object Min1 extends UnaryFoldOp
+
+
+// Expr[Shape2] -> Expr[Shape0]
+
+case object Sum2 extends UnaryFoldOp
+
+case object Max2 extends UnaryFoldOp
+
+case object Min2 extends UnaryFoldOp
 
 
 // (Expr[Shape1], Expr[Shape1]) -> Expr[Shape0]
 
-case class Dot[O <: Nat, I <: Nat]() extends BinaryFoldOp[O, I, I] {
-
-}
+case object Dot extends BinaryFoldOp
 
 
 // (Expr[Shape2], Expr[Shape2]) -> Expr[Shape2]
 
-case class MatMul[O <: Nat, I <: Nat]() extends BinaryFoldOp[O, I, I]
-*/
+case object MatMul extends BinaryFoldOp

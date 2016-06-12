@@ -1,7 +1,8 @@
 package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph.bool.BooleanExpr
+import com.kogecoo.scalaad.graph.bool.{Apply2C, BooleanExpr, ElementwiseLeftC, ElementwiseRightC}
+import com.kogecoo.scalaad.op.bool.BinaryComparisonOp
 import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp}
 import shapeless.{Nat, Succ}
 
@@ -43,6 +44,24 @@ object Unsafe {
       case _ => {
         val b_ = b.asInstanceOf[V[O]]
         ElementwiseRight[A, O](a, b_, op)
+      }
+    }
+  }
+
+  def apply2C[O <: Nat, A <: Nat, B <: Nat](a: V[A], b: V[B], op: BinaryComparisonOp): BE[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        val b_ = b.asInstanceOf[V[O]]
+        Apply2C[O](a_, b_, op)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        ElementwiseLeftC[O, B](a_, b, op)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[V[O]]
+        ElementwiseRightC[A, O](a, b_, op)
       }
     }
   }
@@ -150,21 +169,14 @@ case class Fold2_-[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axi
 
   def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
     val (dl, dr) = op.deriv[Succ[N]](l, r)
-    // FIXME l._reverse[G](Fold2_-[N](g, dr, op, axis)), r._reverse[G](Fold2_-[N](dl, g, op, axis))
+    l._reverse[G](Fold2_-[N](g, dr, op, axis)) ++ r._reverse[G](Fold2_-[N](dl, g, op, axis))
   }
 
 }
 
 
-case class Where[N <:  Nat](cond: BooleanExpr[N], l: V[N], r: V[N]) extends Application2[N, N, N] {
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
 
-  }
 
-  def _reverse[G <: Nat](g: ValueExpr[G]): Grad[G] = {
-   // FIXME Where[N](cond, l._reverse[G](g), r._reverse[G](g))
-  }
 
-}
 

@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply1, Half, One, Unsafe, V}
+import com.kogecoo.scalaad.graph.{Apply1, Half, One, Unsafe, V, Zero}
 import shapeless.Nat
 
 
@@ -11,6 +11,8 @@ object Shorthands {
     def half[N <: Nat](v: V[N]): V[N] = Half[N](v.shape)
 
     def one[N <: Nat](v: V[N]): V[N] = One[N](v.shape)
+
+    def zero[N <: Nat](v: V[N]): V[N] = Zero[N](v.shape)
 
   }
 

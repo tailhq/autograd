@@ -62,6 +62,19 @@ object ValueExpr {
     def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Mul)
     def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = Unsafe.apply2[O, N, M](self, rhs, Div)
 
+    def ==(rhs: V[N]): BE[N] = Apply2C(self, rhs, Eq)
+    def !=(rhs: V[N]): BE[N] = Apply2C(self, rhs, Neq)
+    def < (rhs: V[N]): BE[N] = Apply2C(self, rhs, Lt)
+    def <=(rhs: V[N]): BE[N] = Apply2C(self, rhs, Lte)
+    def > (rhs: V[N]): BE[N] = Apply2C(self, rhs, Gt)
+    def >=(rhs: V[N]): BE[N] = Apply2C(self, rhs, Gte)
+
+    def :==(rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Eq)
+    def :!=(rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Neq)
+    def :< (rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Lt)
+    def :<=(rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Lte)
+    def :> (rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Gt)
+    def :>=(rhs: V[N]): BE[N] = ElementwiseLeftC(self, rhs, Gte)
 
   }
 
