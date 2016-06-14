@@ -209,6 +209,7 @@ object StdUtil {
     s.map { i => s.map { j => if (i == j) v(i) else zero0 } }
   }
 
+  @throws[Exception]
   final def diag(v: T0, s: Shape[_2]): T2 = {
     if (s.at(0) != s.at(1)) {
       throw new Exception(s"Shape for diag required square but passed (${s.at(0)}, ${s.at(1)}")

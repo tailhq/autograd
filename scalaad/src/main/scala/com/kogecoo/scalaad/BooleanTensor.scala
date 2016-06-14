@@ -5,6 +5,8 @@ import com.kogecoo.scalaad.impl.std.{Mat, Vec}
 import shapeless.Nat
 import shapeless.Nat.{_0, _1, _2}
 
+import scala.language.higherKinds
+
 
 trait BooleanTensor[N <: Nat] {
 

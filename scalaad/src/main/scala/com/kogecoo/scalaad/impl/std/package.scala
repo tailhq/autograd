@@ -7,7 +7,8 @@ package object std {
   type T1 = Vec[T0]
   type T2 = Mat[T0]
 
-  type Vec[T] = Seq[T]
-  type Mat[T] = Seq[Vec[T]]
+  type Scalar[T] = T
+  type Vec[T]    = Seq[T]
+  type Mat[T]    = Seq[Vec[T]]
 
 }

@@ -8,5 +8,4 @@ object Implicits extends StdScalarEval
                     with StdMatEval
                     with StdMatValue
                     with StdNode
-                    with StdMath
 

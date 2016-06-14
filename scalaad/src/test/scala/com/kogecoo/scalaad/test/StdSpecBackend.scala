@@ -93,9 +93,9 @@ trait StdSpecBackend extends SpecBackend {
 
   override final def toT0: SpecBackendHelper.ToT0[T0] = SpecBackendHelper.ToT0(_.eval[T0])
 
-  override final def toT1: SpecBackendHelper.ToT1[T1] = SpecBackendHelper.ToT1(_.eval[T1])
+  //override final def toT1: SpecBackendHelper.ToT1[T1] = SpecBackendHelper.ToT1(_.eval[T1])
 
-  override final def toT2: SpecBackendHelper.ToT2[T2] = SpecBackendHelper.ToT2(_.eval[T2])
+  //override final def toT2: SpecBackendHelper.ToT2[T2] = SpecBackendHelper.ToT2(_.eval[T2])
 
   override final def eps: SpecBackendHelper.Eps[T0] = SpecBackendHelper.Eps(1e-5)
 

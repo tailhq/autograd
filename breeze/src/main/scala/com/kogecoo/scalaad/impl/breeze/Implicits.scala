@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.breeze
 
-import com.kogecoo.scalaad.impl.std.{StdMath, StdScalarEval, StdScalarValue}
+import com.kogecoo.scalaad.impl.std.{StdScalarEval, StdScalarValue}
 
 
 object Implicits extends StdScalarEval

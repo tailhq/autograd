@@ -2,8 +2,7 @@ package com.kogecoo.scalaad.test.helper.impl.std
 
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.std.Implicits._
-import com.kogecoo.scalaad.impl.std.StdUtil
-import com.kogecoo.scalaad.impl.std.{T0, T1, T2}
+import com.kogecoo.scalaad.impl.std.{StdUtil, T0, T1, T2}
 
 
 
