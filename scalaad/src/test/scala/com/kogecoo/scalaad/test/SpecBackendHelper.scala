@@ -7,9 +7,13 @@ import org.scalacheck.Prop
 object SpecBackendHelper {
 
   case class Eps[T](value: T)
+
   case class ToT0[T0](toT0: V0 => T0)
+
   case class ToT1[T1](toT1: V1 => T1)
+
   case class ToT2[T2](toT2: V2 => T2)
+
 
   object Implicits {
 

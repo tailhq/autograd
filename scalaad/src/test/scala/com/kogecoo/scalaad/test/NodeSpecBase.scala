@@ -2,6 +2,7 @@ package com.kogecoo.scalaad.test
 
 import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.test.helper.{Shape1Gen, Shape2Gen}
 import com.kogecoo.scalaad.test.helper.impl.std._
 import org.scalacheck.Gen
 import shapeless.Nat.{_1, _2}
@@ -31,23 +32,23 @@ trait NodeSpecBase { self: SpecBackend =>
   // alias
   private[this] def dom = genDefaultDomainValue
 
-  final def genS1() = S1Gen(defaultS1SizeConstraint, defaultS1ShapeConstraint, defaultS1SizeMin, defaultS1SizeMax)
-  final def genS1(size: Int) = S1Gen(size, defaultS1ShapeConstraint)
-  final def genS2() = S2Gen(
-    defaultS2RowConstraint,
-    defaultS2ColConstraint,
-    defaultS2ShapeConstraint,
+  final def genS1() = Shape1Gen(defaultS1SizeMin, defaultS1SizeMax, defaultS1SizeConstraint, defaultS1ShapeConstraint)
+  final def genS1(size: Int) = Shape1Gen(size, defaultS1ShapeConstraint)
+  final def genS2() = Shape2Gen(
     defaultS2RowMin,
     defaultS2RowMax,
+    defaultS2RowConstraint,
     defaultS2ColMin,
-    defaultS2ColMax
-  )
-  final def genS2(row: Int) = S2Gen(
-    row,
+    defaultS2ColMax,
     defaultS2ColConstraint,
-    defaultS2ShapeConstraint,
+    defaultS2ShapeConstraint
+  )
+  final def genS2(row: Int) = Shape2Gen(
+    row,
     defaultS2ColMin,
-    defaultS2ColMax
+    defaultS2ColMax,
+    defaultS2ColConstraint,
+    defaultS2ShapeConstraint
   )
   final def genS2(shape: Shape[_1]): Gen[Shape[_2]] = genS2(shape.at(0))
 

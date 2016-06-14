@@ -1,11 +1,11 @@
-package com.kogecoo.scalaad.test.helper.impl.std
+package com.kogecoo.scalaad.test.helper
 
 import com.kogecoo.scalaad.{Shape, Shape2}
 import org.scalacheck.Gen
 import shapeless.Nat._2
 
 
-object S2Gen {
+object Shape2Gen {
 
   private[this] val noShapeConstraint: Shape[_2] => Boolean = _ => true
   private[this] val defaultRowSizeMin = 1
@@ -18,13 +18,13 @@ object S2Gen {
   }
 
   def apply(
-      rowCons: Int => Boolean,
-      columnCons: Int => Boolean,
-      shapeConstraint: Shape[_2] => Boolean,
       sizeRowMin: Int,
       sizeRowMax: Int,
+      rowCons: Int => Boolean,
       sizeColMin: Int,
-      sizeColMax: Int
+      sizeColMax: Int,
+      columnCons: Int => Boolean,
+      shapeConstraint: Shape[_2] => Boolean
   ): Gen[Shape[_2]] = {
     for {
       row   <- genSize(sizeRowMin, sizeRowMax, rowCons)
@@ -35,10 +35,10 @@ object S2Gen {
 
   def apply(
       row: Int,
-      columnCons: Int => Boolean,
-      shapeConstraint: Shape[_2] => Boolean,
       sizeColMin: Int,
-      sizeColMax: Int
+      sizeColMax: Int,
+      columnCons: Int => Boolean,
+      shapeConstraint: Shape[_2] => Boolean
   ): Gen[Shape[_2]] = {
     for {
       row   <- Gen.const[Int](row)
@@ -48,11 +48,11 @@ object S2Gen {
   }
 
   def apply(
+     sizeRowMin: Int,
+     sizeRowMax: Int,
      rowCons: Int => Boolean,
      column: Int,
-     shapeCons: Shape[_2] => Boolean,
-     sizeRowMin: Int,
-     sizeRowMax: Int
+     shapeCons: Shape[_2] => Boolean
   ): Gen[Shape[_2]] = {
      for {
       row   <- genSize(sizeRowMin, sizeRowMax, rowCons)

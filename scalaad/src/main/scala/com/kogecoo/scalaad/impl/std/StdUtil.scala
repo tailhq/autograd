@@ -5,6 +5,7 @@ import shapeless.Nat.{_1, _2}
 
 import scala.math.{abs, max}
 
+
 object StdUtil {
 
   // Matrix is expressed by following

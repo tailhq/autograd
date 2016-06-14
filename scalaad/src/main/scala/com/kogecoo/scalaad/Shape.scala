@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad
 
 import shapeless.Nat.{_0, _1, _2}
-import shapeless.ops.nat.LT.<
 import shapeless.{Nat, Sized}
 
 
