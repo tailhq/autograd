@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.graph.bool
 
-import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.{Constraint, Shape}
 import com.kogecoo.scalaad.graph.{V, ValueExpr}
 import com.kogecoo.scalaad.op.bool.BinaryComparisonOp
 import shapeless.Nat
@@ -28,19 +28,56 @@ trait ComparisonApplication2[N <: Nat, L <: Nat, R <: Nat] extends BooleanExpr[N
 
 // Binary ComparisonApplication
 
-case class Apply2C[S <: Nat](l: V[S], r: V[S], op: BinaryComparisonOp) extends ComparisonApplication2[S, S, S] {
+object InferElementwise2C {
 
-  def shape: Shape[S] = l.shape
+  def apply[O <: Nat, X <: Nat, Y <: Nat](a: V[X], b: V[Y], op: BinaryComparisonOp): BooleanExpr[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        val b_ = b.asInstanceOf[V[O]]
+        Elementwise2C[O](a_, b_, op)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        BroadcastLeft2C[O, Y](a_, b, op)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[V[O]]
+        BroadcastRight2C[X, O](a, b_, op)
+      }
+    }
+  }
 
 }
 
-case class Apply2LeftC[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends ComparisonApplication2[L, L, R] {
+
+@throws[Exception]
+case class Elementwise2C[N <: Nat](l: V[N], r: V[N], op: BinaryComparisonOp) extends ComparisonApplication2[N, N, N] {
+
+  Constraint.commonShape(l, r)
+
+  def shape: Shape[N] = l.shape
+
+}
+
+
+@throws[Exception]
+case class BroadcastLeft2C[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends ComparisonApplication2[L, L, R] {
+
+  Constraint.leftOrderBiggerThanRight(l, r)
+
+  Constraint.broadcastableToLeft(l, r)
 
   def shape: Shape[L] = l.shape
 
 }
 
-case class Apply2RightC[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends ComparisonApplication2[R, L, R] {
+@throws[Exception]
+case class BroadcastRight2C[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryComparisonOp) extends ComparisonApplication2[R, L, R] {
+
+  Constraint.rightOrderBiggerThanLeft(l, r)
+
+  Constraint.broadcastableToRight(l, r)
 
   def shape: Shape[R] = r.shape
 

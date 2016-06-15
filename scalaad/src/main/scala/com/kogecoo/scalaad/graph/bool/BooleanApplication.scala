@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.graph.bool
 
-import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.{Constraint, Shape}
 import com.kogecoo.scalaad.graph.B
 import com.kogecoo.scalaad.op.bool.{BinaryBooleanOp, UnaryBooleanExpandOp, UnaryBooleanOp}
 import shapeless.Nat
@@ -43,20 +43,56 @@ case class Apply1B[N <: Nat](v: B[N], op: UnaryBooleanOp) extends BooleanApplica
 }
 
 
-case class Apply2B[N <: Nat](l: B[N], r: B[N], op: BinaryBooleanOp) extends BooleanApplication2[N, N, N] {
+object InferElementwise2B {
+
+  def apply[O <: Nat, X <: Nat, Y <: Nat](a: B[X], b: B[Y], op: BinaryBooleanOp): B[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[B[O]]
+        val b_ = b.asInstanceOf[B[O]]
+        Elementwise2B[O](a_, b_, op)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[B[O]]
+        BroadcastLeft2B[O, Y](a_, b, op)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[B[O]]
+        BroadcastRight2B[X, O](a, b_, op)
+      }
+    }
+  }
+
+}
+
+
+@throws[Exception]
+case class Elementwise2B[N <: Nat](l: B[N], r: B[N], op: BinaryBooleanOp) extends BooleanApplication2[N, N, N] {
+
+  Constraint.commonShape(l, r)
 
   def shape: Shape[N] = l.shape
 }
 
 
-case class ApplyLeftB[L <: Nat, R <: Nat](l: B[L], r: B[R], op: BinaryBooleanOp) extends BooleanApplication2[L, L, R] {
+@throws[Exception]
+case class BroadcastLeft2B[L <: Nat, R <: Nat](l: B[L], r: B[R], op: BinaryBooleanOp) extends BooleanApplication2[L, L, R] {
+
+  Constraint.leftOrderBiggerThanRight(l, r)
+
+  Constraint.broadcastableToLeft(l, r)
 
   def shape: Shape[L] = l.shape
 
 }
 
 
-case class ApplyRightB[L <: Nat, R <: Nat](l: B[L], r: B[R], op: BinaryBooleanOp) extends BooleanApplication2[R, L, R] {
+@throws[Exception]
+case class BroadcastRight2B[L <: Nat, R <: Nat](l: B[L], r: B[R], op: BinaryBooleanOp) extends BooleanApplication2[R, L, R] {
+
+  Constraint.rightOrderBiggerThanLeft(l, r)
+
+  Constraint.broadcastableToRight(l, r)
 
   def shape: Shape[R] = r.shape
 

@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.graph.bool
 
 import com.kogecoo.scalaad.{Eval, Shape}
-import com.kogecoo.scalaad.graph.{B, Expr, Unsafe}
+import com.kogecoo.scalaad.graph.{B, Expr}
 import com.kogecoo.scalaad.op.bool.{And, ExpandEvery, Not, Or}
 import shapeless.Nat
 
@@ -17,17 +17,17 @@ object BooleanExpr {
 
   implicit class RichValueExpr[N <: Nat](val self: B[N]) extends AnyVal {
 
-    def &(rhs: B[N]): B[N] = Apply2B[N](self, rhs, And)
-    def |(rhs: B[N]): B[N] = Apply2B[N](self, rhs, Or)
+    def &(rhs: B[N]): B[N] = Elementwise2B[N](self, rhs, And)
+    def |(rhs: B[N]): B[N] = Elementwise2B[N](self, rhs, Or)
 
-    def &:<[M <: Nat](rhs: B[M]): B[M] = ApplyRightB[N, M](self, rhs, And)
-    def |:<[M <: Nat](rhs: B[M]): B[M] = ApplyRightB[N, M](self, rhs, Or)
+    def &:<[M <: Nat](rhs: B[M]): B[M] = BroadcastRight2B[N, M](self, rhs, And)
+    def |:<[M <: Nat](rhs: B[M]): B[M] = BroadcastRight2B[N, M](self, rhs, Or)
 
-    def &:>[M <: Nat](rhs: B[M]): B[M]= ApplyRightB[N, M](self, rhs, And)
-    def |:>[M <: Nat](rhs: B[M]): B[M]= ApplyRightB[N, M](self, rhs, Or)
+    def &:>[M <: Nat](rhs: B[M]): B[M]= BroadcastRight2B[N, M](self, rhs, And)
+    def |:>[M <: Nat](rhs: B[M]): B[M]= BroadcastRight2B[N, M](self, rhs, Or)
 
-    def :&[M <: Nat, O <: Nat](rhs: B[M]): B[O]= Unsafe.apply2B[O, N, M](self, rhs, And)
-    def :|[M <: Nat, O <: Nat](rhs: B[M]): B[O]= Unsafe.apply2B[O, N, M](self, rhs, Or)
+    def :&[M <: Nat, O <: Nat](rhs: B[M]): B[O]= InferElementwise2B[O, N, M](self, rhs, And)
+    def :|[M <: Nat, O <: Nat](rhs: B[M]): B[O]= InferElementwise2B[O, N, M](self, rhs, Or)
 
     def unary_!(): B[N] = Apply1B[N](self, Not)
 

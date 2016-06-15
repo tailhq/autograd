@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.graph
 
-import com.kogecoo.scalaad.Shape
+import com.kogecoo.scalaad.{Constraint, Shape}
 import com.kogecoo.scalaad.op.{UnaryExpandOp, UnaryFoldOp, UnaryOp}
 import shapeless.Nat.{_1, _2}
 import shapeless.{Nat, Succ}
@@ -21,7 +21,7 @@ abstract class Application1[N <: Nat, I <: Nat] extends V[N] {
 }
 
 
-case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
+case class Elementwise1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
 
   def shape: Shape[N] = v.shape
 
@@ -39,8 +39,9 @@ case class Apply1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, N] {
 @throws[Exception]
 case class Fold1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends Application1[N, Succ[N]] {
 
-  if (v.shape.order <= 0)       throw new Exception(s"Invalid ValueExpr order ${v.shape.order} for Fold1_-. It must be > 0.")
-  if (v.shape.order - 1 < axis) throw new Exception(s"Invalid axis $axis indication for $v")
+  Constraint.foldable(v)
+
+  Constraint.validAxis(v, axis)
 
   def shape: Shape[N] = v.shape.shrink(List(axis))
 

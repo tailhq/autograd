@@ -1,8 +1,9 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply1, If, One, V, Where, Zero}
-import com.kogecoo.scalaad.op.Shorthands.Const._
-import com.kogecoo.scalaad.op.Shorthands.Math._
+import com.kogecoo.scalaad.graph.{V, CommonShapedWhere}
+import com.kogecoo.scalaad.op.shorthands.const._
+import com.kogecoo.scalaad.op.shorthands.math._
+import com.kogecoo.scalaad.op.shorthands.syntax._
 import shapeless.Nat
 
 
@@ -81,7 +82,7 @@ case object Sqrt extends UnaryOp {
 case object Abs extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
-    Where[N](v >= zero(v), one(v), -one(v))
+    CommonShapedWhere[N](v >= zero(v), one(v), -one(v))
   }
 
 }
@@ -133,7 +134,7 @@ case object Pow extends BinaryOp {
 case object Max extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
-    (If[L](l :>= r, one(l)), If[R](l :< r, one(r)))
+    (where[L](l :>= r, one(l)), If[R](l :< r, one(r)))
   }
 
 }

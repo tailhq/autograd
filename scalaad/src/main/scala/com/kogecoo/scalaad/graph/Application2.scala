@@ -1,5 +1,6 @@
 package com.kogecoo.scalaad.graph
 
+import com.kogecoo.scalaad.Constraint
 import com.kogecoo.scalaad.Shape
 import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp}
 import shapeless.{Nat, Succ}
@@ -24,177 +25,181 @@ trait Application2[N <: Nat, L <: Nat, R <: Nat] extends V[N] {
 
 }
 
-
 // Binary Application
 
-@throws[Exception]
-case class Apply2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends Application2[N, N, N] {
+abstract class ElementwiseApply2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Application2[N, L, R] {
 
-  if (l.shape != r.shape)
-    throw new Exception(s"Shapes of the left (${l.shape}) and the right (${r.shape}) V must be equivalent.")
-
-  def shape: Shape[N] = l.shape
-
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl: V[N], dr: V[N]) = op.deriv[N, N](l, r)
-    val fl: V[O] = l._forward[W, O](wrt)
-    val fr: V[O] = r._forward[W, O](wrt)
-    (fl :* dr) :+ (dl :* fr)
+  def shape: Shape[N] = (l.shape, r.shape) match {
+    case (ls, rs) if ls.order >= rs.order => ls.asInstanceOf[Shape[N]]
+    case (ls, rs)                         => rs.asInstanceOf[Shape[N]]
   }
 
-  def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    val (dl: V[N], dr: V[N]) = op.deriv[N, N](l, r)
-    l._reverse[G](adj  :* dr) ++ r._reverse[G](dl :* adj)
-  }
-}
-
-
-@throws[Exception]
-case class LeftShapedApply2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Application2[L, L, R] {
-
-  if (l.shape.order <= r.shape.order)
-    throw new Exception(s"The order of left (${l.shape}) must be larger than right's (${r.shape}).")
-
-  if (l.shape.underlying.take(r.shape.order) != r.shape.underlying) {
-    val expectedShape = l.shape.shrink(l.shape.underlying.indices.toList.drop(r.shape.order))
-    val msg = s"Shapes of the left (${l.shape}) and the right (${r.shape}) are not aligned." +
-              s" The right shape must be $expectedShape."
-    throw new Exception(msg)
-  }
+  type LO <: Nat
 
   type RO <: Nat
 
-  def shape: Shape[L] = l.shape
-
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl, dr) = Unsafe.derivOp(l, r, op)
-    val fl: V[O] = l._forward[W, O](wrt)
+    val (dl, dr) = op.deriv[L, R](l, r)
+    val fl: V[LO] = l._forward[W, LO](wrt)
     val fr: V[RO] = r._forward[W, RO](wrt)
     (fl :* dr) :+ (dl :* fr)
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    val (dl, dr) = Unsafe.derivOp(l, r, op)
+    val (dl, dr) = op.deriv[L, R](l, r)
     l._reverse[G](adj  :* dr) ++ r._reverse[G](dl :* adj)
   }
 
 }
 
 
-@throws[Exception]
-case class RightShapedApply2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Application2[R, L, R] {
+object InferElementwise2 {
 
-  if (l.shape.order >= r.shape.order)
-    throw new Exception(s"The order of the left (${l.shape}) must be smaller than the right's (${r.shape}).")
-
-  if (r.shape.underlying.take(l.shape.order) != l.shape.underlying) {
-    val expectedShape = r.shape.shrink(r.shape.underlying.indices.toList.drop(l.shape.order))
-    val msg = s"Shapes of the left (${l.shape}) and the right (${r.shape}) are not aligned." +
-              s" The left shape must be $expectedShape."
-    throw new Exception(msg)
+    def apply[O <: Nat, X <: Nat, Y <: Nat](a: V[X], b: V[Y], op: BinaryOp): V[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        val b_ = b.asInstanceOf[V[O]]
+        Elementwise2[O](a_, b_, op)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[V[O]]
+        BroadcastLeft2[O, Y](a_, b, op)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[V[O]]
+        BroadcastRight2[X, O](a, b_, op)
+      }
+    }
   }
+
+}
+
+
+@throws[Exception]
+case class Elementwise2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends ElementwiseApply2Base[N, N, N](l, r, op) {
+
+  Constraint.commonShape(l, r)
+
+  override def shape: Shape[N] = l.shape
+
+}
+
+
+@throws[Exception]
+case class BroadcastLeft2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends ElementwiseApply2Base[L, L, R](l, r, op) {
+
+  Constraint.leftOrderBiggerThanRight(l, r)
+
+  Constraint.broadcastableToLeft(l, r)
+
+  override def shape: Shape[L] = l.shape
+
+}
+
+
+@throws[Exception]
+case class BroadcastRight2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends ElementwiseApply2Base[R, L, R](l, r, op) {
+
+  Constraint.rightOrderBiggerThanLeft(l, r)
+
+  Constraint.broadcastableToRight(l, r)
+
+  override def shape: Shape[R] = r.shape
+
+}
+
+
+abstract class Fold2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryFoldOp, axis: Int) extends Application2[N, L, R] {
 
   type LO <: Nat
 
-  def shape: Shape[R] = r.shape
+  type RO <: Nat
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl, dr) = Unsafe.derivOp(l, r, op)
-    val fl: V[LO] = l._forward[W, LO](wrt)
-    val fr: V[O] = r._forward[W, O](wrt)
-    (fl :* dr) :+ (dl :* fr)
+  @throws[Exception]
+  def shape: Shape[N] = (l.shape, r.shape) match {
+    case (ls, rs) if ls.order >= rs.order => ls.shrink(List(axis)).asInstanceOf[Shape[N]]
+    case (ls, rs)                         => rs.shrink(List(axis)).asInstanceOf[Shape[N]]
   }
 
-  def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    val (dl, dr) = Unsafe.derivOp(l, r, op)
-    l._reverse[G](adj  :* dr) ++ r._reverse[G](dl :* adj)
-  }
-
-}
-
-
-@throws[Exception]
-case class Fold2[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axis: Int) extends Application2[N, Succ[N], Succ[N]] {
-
-  if (l.shape != r.shape)
-    throw new Exception(s"Shapes of the left (${l.shape}) and the right (${r.shape}) must be equivalent.")
-
-  def shape: Shape[N] = l.shape.shrink(List(axis))
-
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl, dr) = op.deriv[Succ[N], Succ[N]](l, r)
-    val fl = l._forward[W, Succ[O]](wrt)
-    val fr = r._forward[W, Succ[O]](wrt)
-    Unsafe.fold2_-(fl, dr, op, axis) :+ Unsafe.fold2_-(dl, fr, op, axis)
+    val (dl, dr) = op.deriv(l, r)
+    val fl = l._forward[W, LO](wrt)
+    val fr = r._forward[W, RO](wrt)
+    InferFold2(fl, dr, op, axis) :+ InferFold2(dl, fr, op, axis)
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
     val (dl, dr) = op.deriv(l, r)
-    l._reverse[G](adj :* Unsafe.fold2_-(dl, r, op, axis)) ++ r._reverse[G](adj :* Unsafe.fold2_-(l, dr, op, axis))
+    l._reverse[G](adj :* InferFold2(dl, r, op, axis)) ++ r._reverse[G](adj :* InferFold2(l, dr, op, axis))
   }
 
 }
 
-@throws[Exception]
-case class LeftShapedFold2[L <: Nat, R <: Nat](l: V[Succ[L]], r: V[R], op: BinaryFoldOp, axis: Int) extends Application2[L, Succ[L], R] {
 
-  if (l.shape.order <= r.shape.order)
-    throw new Exception(s"The order of left (${l.shape}) must be larger than right's (${r.shape}).")
+object InferFold2 {
 
-  if (l.shape.underlying.take(r.shape.order) != r.shape.underlying) {
-    val expectedShape = l.shape.shrink(l.shape.underlying.indices.toList.drop(r.shape.order))
-    val msg = s"Shapes of the left (${l.shape}) and the right (${r.shape}) are not aligned." +
-              s" The right shape must be $expectedShape."
-    throw new Exception(msg)
-  }
-
-  type RO <: Nat
-
-  def shape: Shape[L] = l.shape.shrink(List(axis))
-
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl, dr) = op.deriv[Succ[L], R](l, r)
-    val fl = l._forward[W, Succ[O]](wrt)
-    val fr = r._forward[W, RO](wrt)
-    Unsafe.fold2_-(fl, dr, op, axis) :+ Unsafe.fold2_-(dl, fr, op, axis)
-  }
-
-  def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    val (dl, dr) = op.deriv[Succ[L], R](l, r)
-    l._reverse[G](adj :* Unsafe.fold2_-(dl, r, op, axis)) ++ r._reverse[G](adj :* Unsafe.fold2_-(l, dr, op, axis))
+  def apply[O <: Nat, X <: Nat, Y <: Nat](a: V[X], b: V[Y], op: BinaryFoldOp, axis: Int): V[O] = {
+    (a, b) match {
+      case _ if a.shape.order == b.shape.order => {
+        val a_ = a.asInstanceOf[V[Succ[O]]]
+        val b_ = b.asInstanceOf[V[Succ[O]]]
+        Fold2[O](a_, b_, op, axis)
+      }
+      case _ if a.shape.order > b.shape.order => {
+        val a_ = a.asInstanceOf[V[Succ[O]]]
+        BroadcastLeftFold2[O, Y](a_, b, op, axis)
+      }
+      case _ => {
+        val b_ = b.asInstanceOf[V[Succ[O]]]
+        BroadcastRightFold2[X, O](a, b_, op, axis)
+      }
+    }
   }
 
 }
 
 
 @throws[Exception]
-case class RightShapedFold2[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: BinaryFoldOp, axis: Int) extends Application2[R, L, Succ[R]] {
+case class Fold2[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axis: Int) extends Fold2Base[N, Succ[N], Succ[N]](l, r, op, axis) {
 
-  if (l.shape.order >= r.shape.order)
-    throw new Exception(s"The order of the left (${l.shape}) must be smaller than the right's (${r.shape}).")
+  Constraint.validAxis(l, axis)
 
-  if (r.shape.underlying.take(l.shape.order) != l.shape.underlying) {
-    val expectedShape = r.shape.shrink(r.shape.underlying.indices.toList.drop(l.shape.order))
-    val msg = s"Shapes of the left (${l.shape}) and the right (${r.shape}) are not aligned." +
-              s" The left shape must be $expectedShape."
-    throw new Exception(msg)
-  }
+  Constraint.commonShape(l, r)
 
-  type LO <: Nat
+  override def shape: Shape[N] = l.shape.shrink(List(axis))
 
-  def shape: Shape[R] = l.shape.shrink(List(axis))
+}
 
-  def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    val (dl, dr) = op.deriv[L, Succ[R]](l, r)
-    val fl = l._forward[W, LO](wrt)
-    val fr = r._forward[W, Succ[R]](wrt)
-    Unsafe.fold2_-(fl, dr, op, axis) :+ Unsafe.fold2_-(dl, fr, op, axis)
-  }
 
-  def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    val (dl, dr) = op.deriv[L, Succ[R]](l, r)
-    l._reverse[G](adj :* Unsafe.fold2_-(dl, r, op, axis)) ++ r._reverse[G](adj :* Unsafe.fold2_-(l, dr, op, axis))
-  }
+@throws[Exception]
+case class BroadcastLeftFold2[L <: Nat, R <: Nat](l: V[Succ[L]], r: V[R], op: BinaryFoldOp, axis: Int) extends Fold2Base[L, Succ[L], R](l, r, op, axis) {
+
+  Constraint.validAxis(l, axis)
+
+  Constraint.validAxis(r, axis)
+
+  Constraint.leftOrderBiggerThanRight(l, r)
+
+  Constraint.broadcastableToLeft(l, r)
+
+  override def shape: Shape[L] = l.shape.shrink(List(axis))
+
+}
+
+
+@throws[Exception]
+case class BroadcastRightFold2[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: BinaryFoldOp, axis: Int) extends Fold2Base[R, L, Succ[R]](l, r, op, axis) {
+
+  Constraint.validAxis(l, axis)
+
+  Constraint.validAxis(r, axis)
+
+  Constraint.rightOrderBiggerThanLeft(l, r)
+
+  Constraint.broadcastableToRight(l, r)
+
+  override def shape: Shape[R] = l.shape.shrink(List(axis))
 
 }
 

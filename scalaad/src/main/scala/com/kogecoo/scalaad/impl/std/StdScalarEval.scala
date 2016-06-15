@@ -35,7 +35,7 @@ trait StdScalarEval {
       }
 
       // Unary ops
-      case Apply1(v, op) => op match {
+      case Elementwise1(v, op) => op match {
         case Pos      => +v.eval[T0]
         case Neg      => -v.eval[T0]
         case Identity =>  v.eval[T0]
@@ -67,7 +67,7 @@ trait StdScalarEval {
       }
 
       // Binary ops
-      case Apply2(l, r, op) => op match {
+      case Elementwise2(l, r, op) => op match {
         case Add => l.eval[T0] + r.eval[T0]
         case Sub => l.eval[T0] - r.eval[T0]
         case Mul => l.eval[T0] * r.eval[T0]
@@ -86,7 +86,7 @@ trait StdScalarEval {
 
       }
 
-      case Where(cond, a, b) => if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]
+      case CommonShapedWhere(cond, a, b) => if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]
     }
   }
 
@@ -95,7 +95,7 @@ trait StdScalarEval {
     type B = Boolean
 
     def eval(n: B0): Boolean = n match {
-      case Apply2C(l, r, op) => op match {
+      case CommonShapedApply2C(l, r, op) => op match {
         case Eq  => l.eval[T0] == r.eval[T0]
         case Neq => l.eval[T0] != r.eval[T0]
         case Lt  => l.eval[T0] <  r.eval[T0]
@@ -107,7 +107,7 @@ trait StdScalarEval {
         case Not => !v.eval[B]
       }
 
-      case Apply2B(l, r, op) => op match {
+      case Elementwise2B(l, r, op) => op match {
         case And => l.eval[B] && r.eval[B]
         case Or  => l.eval[B] || r.eval[B]
       }
