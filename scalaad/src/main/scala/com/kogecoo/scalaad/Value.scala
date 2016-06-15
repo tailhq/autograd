@@ -1,8 +1,18 @@
 package com.kogecoo.scalaad
 
+import shapeless.Nat
 
-trait Value[T, V] {
+import scala.language.higherKinds
 
-  def value(t: T): V
+
+trait Value[N <: Nat, A] {
+
+  def value(t: Tensor[N]): A
+
+}
+
+trait BooleanValue[N <: Nat, A] {
+
+  def value(t: BooleanTensor[N]): A
 
 }

@@ -1,13 +1,13 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.{BooleanTensor, BooleanTensor1, Tensor, Value}
+import com.kogecoo.scalaad.{BooleanTensor, BooleanValue, Tensor, Value}
 import shapeless.Nat._1
 
 
 trait StdVecValue {
 
-  implicit val value_stdvec_double: Value[Tensor[_1], T1] = {
-    new Value[Tensor[_1], T1] {
+  implicit val value_stdvec_double: Value[_1, T1] = {
+    new Value[_1, T1] {
 
       def value(t: Tensor[_1]): T1 = t match {
         case StdVector(data) => data
@@ -15,11 +15,11 @@ trait StdVecValue {
     }
   }
 
-  implicit val value_stdvec_boolean: Value[BooleanTensor[_1], Vec[Boolean]] = {
-    new Value[BooleanTensor[_1], Vec[Boolean]] {
+  implicit val value_stdvec_boolean: BooleanValue[_1, Vec[Boolean]] = {
+    new BooleanValue[_1, Vec[Boolean]] {
 
       def value(t: BooleanTensor[_1]): Vec[Boolean] = t match {
-        case b: BooleanTensor1 => b.toStd
+        case StdBooleanVector(data) => data
       }
     }
   }

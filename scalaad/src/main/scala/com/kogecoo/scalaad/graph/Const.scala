@@ -25,7 +25,7 @@ case class One[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 case class Two[N <: Nat](shape: Shape[N]) extends ConstBase[N]
 
 
-case class Const[N <: Nat](v: Tensor[N]) extends ConstBase[N] { def shape: Shape[N] = v.shape }
+case class Const[N <: Nat](data: Tensor[N]) extends ConstBase[N] { def shape: Shape[N] = data.shape }
 
 @throws[Exception]
 case class Eye[N <: Nat](shape: Shape[N]) extends ConstBase[N]

@@ -29,7 +29,7 @@ object BooleanExpr {
     def :&[M <: Nat, O <: Nat](rhs: B[M]): B[O]= InferElementwise2B[O, N, M](self, rhs, And)
     def :|[M <: Nat, O <: Nat](rhs: B[M]): B[O]= InferElementwise2B[O, N, M](self, rhs, Or)
 
-    def unary_!(): B[N] = Apply1B[N](self, Not)
+    def unary_!(): B[N] = Elementwise1B[N](self, Not)
 
     def expand[M <: Nat, O <: Nat](s: Shape[M]): B[O] = Expand1B[O, N, M](self, s, ExpandEvery)
   }

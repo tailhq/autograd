@@ -37,8 +37,8 @@ object Where {
 
   def apply[O <: Nat, C <: Nat, X <: Nat, Y <: Nat](cond: B[C], x: V[X], y: V[Y]): V[O] = {
     (cond.shape.order, x.shape.order, y.shape.order) match {
-      case (co, xo, yo) if co == xo && xo == yo => CommonShapedWhere[O](cond.asInstanceOf[B[O]], x.asInstanceOf[V[O]], y.asInstanceOf[V[O]])
-      case (co, xo, yo) if co <  xo && xo == yo => AsymmetricWhere[O, C](cond, x.asInstanceOf[V[O]], y.asInstanceOf[V[O]])
+      case (co, xo, yo) if co == xo && xo == yo => ElementwiseWhere[O](cond.asInstanceOf[B[O]], x.asInstanceOf[V[O]], y.asInstanceOf[V[O]])
+      case (co, xo, yo) if co <  xo && xo == yo => BroadcastWhere[O, C](cond, x.asInstanceOf[V[O]], y.asInstanceOf[V[O]])
       case (co, xo, yo)                         => throw new Exception(s"Illegal shape order combination for Where operator ($co, $xo, $yo)")
     }
   }
@@ -47,7 +47,7 @@ object Where {
 
 
 @throws[Exception]
-case class CommonShapedWhere[N <:  Nat](cond: B[N], l: V[N], r: V[N]) extends Where[N, N, N, N](cond, l, r) {
+case class ElementwiseWhere[N <:  Nat](cond: B[N], l: V[N], r: V[N]) extends Where[N, N, N, N](cond, l, r) {
 
   if (cond.shape == l.shape && l.shape == r.shape)
     throw new Exception(s"Shapes of the cond (${cond.shape}), left (${l.shape}) and the right (${r.shape}) ValueExpr must be equivalent.")
@@ -58,7 +58,7 @@ case class CommonShapedWhere[N <:  Nat](cond: B[N], l: V[N], r: V[N]) extends Wh
 
 
 @throws[Exception]
-case class AsymmetricWhere[N <:  Nat, C <: Nat](cond: B[C], l: V[N], r: V[N]) extends Where[N, C, N, N](cond, l, r) {
+case class BroadcastWhere[N <:  Nat, C <: Nat](cond: B[C], l: V[N], r: V[N]) extends Where[N, C, N, N](cond, l, r) {
 
   if (l.shape == r.shape)
     throw new Exception(s"Shapes of the l (${l.shape}) and the r (${r.shape}) ValueExpr must be equivalent.")

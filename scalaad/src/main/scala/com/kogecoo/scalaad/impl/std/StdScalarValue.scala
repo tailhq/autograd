@@ -1,25 +1,25 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.{BooleanTensor, BooleanTensor0, Tensor, Value}
+import com.kogecoo.scalaad.{BooleanTensor, BooleanValue, Tensor, Value}
 import shapeless.Nat._0
 
 
 trait StdScalarValue {
 
-  implicit val value_double: Value[Tensor[_0], Double] = {
-    new Value[Tensor[_0], Double] {
+  implicit val value_double: Value[_0, T0] = {
+    new Value[_0, T0] {
 
-      def value(t: Tensor[_0]): Double = t match {
+      def value(t: Tensor[_0]): T0 = t match {
         case StdScalar(data) => data
       }
     }
   }
 
-  implicit val value_boolean: Value[BooleanTensor[_0], Boolean] = {
-    new Value[BooleanTensor[_0], Boolean] {
+  implicit val value_boolean: BooleanValue[_0, Boolean] = {
+    new BooleanValue[_0, Boolean] {
 
       def value(t: BooleanTensor[_0]): Boolean = t match {
-        case b: BooleanTensor0 => b.toStd
+        case StdBooleanScalar(data) => data
       }
     }
   }

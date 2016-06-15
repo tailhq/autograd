@@ -36,7 +36,7 @@ trait BooleanApplication1[N <: Nat, I <: Nat] extends B[N] {
 
 // Unary BooleanApplication
 
-case class Apply1B[N <: Nat](v: B[N], op: UnaryBooleanOp) extends BooleanApplication1[N, N] {
+case class Elementwise1B[N <: Nat](v: B[N], op: UnaryBooleanOp) extends BooleanApplication1[N, N] {
 
   def shape: Shape[N] = v.shape
 

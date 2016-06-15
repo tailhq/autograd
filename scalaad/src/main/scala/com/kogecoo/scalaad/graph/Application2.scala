@@ -27,7 +27,7 @@ trait Application2[N <: Nat, L <: Nat, R <: Nat] extends V[N] {
 
 // Binary Application
 
-abstract class ElementwiseApply2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Application2[N, L, R] {
+abstract class Elementwise2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Application2[N, L, R] {
 
   def shape: Shape[N] = (l.shape, r.shape) match {
     case (ls, rs) if ls.order >= rs.order => ls.asInstanceOf[Shape[N]]
@@ -77,7 +77,7 @@ object InferElementwise2 {
 
 
 @throws[Exception]
-case class Elementwise2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends ElementwiseApply2Base[N, N, N](l, r, op) {
+case class Elementwise2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends Elementwise2Base[N, N, N](l, r, op) {
 
   Constraint.commonShape(l, r)
 
@@ -87,7 +87,7 @@ case class Elementwise2[N <: Nat](l: V[N], r: V[N], op: BinaryOp) extends Elemen
 
 
 @throws[Exception]
-case class BroadcastLeft2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends ElementwiseApply2Base[L, L, R](l, r, op) {
+case class BroadcastLeft2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Elementwise2Base[L, L, R](l, r, op) {
 
   Constraint.leftOrderBiggerThanRight(l, r)
 
@@ -99,7 +99,7 @@ case class BroadcastLeft2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) ex
 
 
 @throws[Exception]
-case class BroadcastRight2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends ElementwiseApply2Base[R, L, R](l, r, op) {
+case class BroadcastRight2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp) extends Elementwise2Base[R, L, R](l, r, op) {
 
   Constraint.rightOrderBiggerThanLeft(l, r)
 
@@ -200,6 +200,20 @@ case class BroadcastRightFold2[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: B
   Constraint.broadcastableToRight(l, r)
 
   override def shape: Shape[R] = l.shape.shrink(List(axis))
+
+}
+
+
+//TODO
+case class BroadcastLeft2_-[N <: Nat](l: V[Succ[N]], r: V[N], op: BinaryOp) extends Elementwise2Base[Succ[N], Succ[N], N](l, r, op) {
+
+  override def shape: Shape[Succ[N]] = l.shape
+
+}
+
+case class BroadcastRight2_-[N <: Nat](l: V[N], r: V[Succ[N]], op: BinaryOp) extends Elementwise2Base[Succ[N], N, Succ[N]](l, r, op) {
+
+  override def shape: Shape[Succ[N]] = r.shape
 
 }
 

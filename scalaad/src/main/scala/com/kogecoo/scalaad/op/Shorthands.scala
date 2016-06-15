@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Elementwise1, Apply2, B, Fold1, Half, One, Two, V, CommonShapedWhere, Zero}
+import com.kogecoo.scalaad.graph.{B, Elementwise1, ElementwiseWhere, Fold1, Half, InferElementwise2, One, Two, V, Zero}
 import shapeless.{Nat, Succ}
 
 
@@ -52,14 +52,14 @@ object shorthands {
 
     // binary
 
-    def pow[L <: Nat, R <: Nat](l: V[L], r: V[R]): V[_ <: Nat] = Apply2(l, r, Pow)
+    def pow[L <: Nat, R <: Nat](l: V[L], r: V[R]): V[_ <: Nat] = InferElementwise2(l, r, Pow)
 
 
   }
 
   object syntax {
 
-    def where[N <: Nat](cond: B[N], l: V[N], r: V[N]): V[N] = CommonShapedWhere[N](cond, l, r)
+    def where[N <: Nat](cond: B[N], l: V[N], r: V[N]): V[N] = ElementwiseWhere[N](cond, l, r)
 
   }
 }

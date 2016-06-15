@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.{Shape, Shape0, Shape1, Shape2, Tensor}
+import com.kogecoo.scalaad.{BooleanTensor, Shape, Shape0, Shape1, Shape2, Tensor}
 import shapeless.Nat.{_0, _1, _2}
 
 
@@ -40,4 +40,30 @@ case class StdMatrix(data: T2) extends Tensor[_2] {
   def toStdDouble: Mat[Double] = data
 
   def toStd: Mat[T0] = data
+}
+
+
+case class StdBooleanScalar(data: Boolean) extends BooleanTensor[_0] {
+
+  def shape: Shape[_0] = Shape0()
+
+  def toStd: Scalar[Boolean] = data
+
+}
+
+
+case class StdBooleanVector(data: Vec[Boolean]) extends BooleanTensor[_1] {
+
+  def shape: Shape[_1] = Shape1(data.size)
+
+  def toStd: Vec[Boolean] = data
+
+}
+
+
+case class StdBooleanMatrix(data: Mat[Boolean]) extends BooleanTensor[_2] {
+
+  def shape: Shape[_2] = Shape2(data.size, data.head.size)
+
+  def toStd: Mat[Boolean] = data
 }

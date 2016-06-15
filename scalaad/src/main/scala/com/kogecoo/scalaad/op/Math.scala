@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{V, CommonShapedWhere}
+import com.kogecoo.scalaad.graph.{ElementwiseWhere, V, Where}
 import com.kogecoo.scalaad.op.shorthands.const._
 import com.kogecoo.scalaad.op.shorthands.math._
 import com.kogecoo.scalaad.op.shorthands.syntax._
@@ -82,7 +82,7 @@ case object Sqrt extends UnaryOp {
 case object Abs extends UnaryOp {
 
   def deriv[N <: Nat](v: V[N]): V[N] = {
-    CommonShapedWhere[N](v >= zero(v), one(v), -one(v))
+    ElementwiseWhere[N](v >= zero(v), one(v), -one(v))
   }
 
 }
@@ -131,18 +131,18 @@ case object Pow extends BinaryOp {
 
 }
 
-case object Max extends BinaryOp {
+case object Max2 extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
-    (where[L](l :>= r, one(l)), If[R](l :< r, one(r)))
+    (Where(l :>= r, one(l), zero(r)), Where(l :< r, one(r), zero(l)))
   }
 
 }
 
-case object Min extends BinaryOp {
+case object Min2 extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
-    (If[L](l :<= r, one(l)), If[R](l :> r, one(r)))
+    (Where(l :<= r, one(l), zero(r)), Where(l :> r, one(r), zero(l)))
   }
 
 }
@@ -151,20 +151,6 @@ case object Min extends BinaryOp {
 // Expr[Shape2] -> Expr[Shape0]
 
 case object Sum2 extends BinaryFoldOp {
-
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = (one(l), one(r))
-
-}
-
-
-case object Max2 extends BinaryFoldOp {
-
-  def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = (one(l), one(r))
-
-}
-
-
-case object Min2 extends BinaryFoldOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = (one(l), one(r))
 

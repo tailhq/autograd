@@ -8,6 +8,10 @@ import scala.math.{abs, max}
 
 object StdUtil {
 
+  type BT0 = Boolean
+  type BT1 = Vec[BT0]
+  type BT2 = Mat[BT0]
+
   // Matrix is expressed by following
   //              Seq(
   // |1, 2, 3|      Seq(1, 2, 3),
@@ -20,9 +24,9 @@ object StdUtil {
   final def shape2Of(a: T2): Shape[_2] = Shape2(a.size, a.head.size)
 
 
-  final def shape1Check(a: T1, b: T1): Boolean = a.size == b.size
+  final def shape1Check[A](a: Vec[A], b: Vec[A]): Boolean = a.size == b.size
 
-  final def shape2Check(a: T2, b: T2): Boolean = {
+  final def shape2Check[A](a: Mat[A], b: Mat[A]): Boolean = {
     a.size == b.size && a.head.size == b.head.size
   }
 
@@ -31,28 +35,27 @@ object StdUtil {
   }
 
   @throws[Exception]
-  final def shape1CheckOrThrow(a: T1, b: T1): Unit = {
+  final def shape1CheckOrThrow[A](a: Vec[A], b: Vec[A]): Unit = {
     if (!shape1Check(a, b)) {
       throw new Exception(s"Shapes of $a and $b are not aligned")
     }
   }
 
   @throws[Exception]
-  final def shape2CheckOrThrow(a: T2, b: T2): Unit = {
+  final def shape2CheckOrThrow[A](a: Mat[A], b: Mat[A]): Unit = {
     if (!shape2Check(a, b)) {
       throw new Exception(s"Shapes of $a and $b are not aligned")
     }
   }
 
-
   // boolean operations
 
   final def elementwiseForall1(a: T1, b: T1, f: (T0, T0) => Boolean): Boolean = {
-    elementwise1(a, b, f).forall(n => n)
+    elementwise1C(a, b, f).forall(n => n)
   }
 
   final def elementwiseForall2(a: T2, b: T2, f: (T0, T0) => Boolean): Boolean = {
-    elementwise2(a, b, f).map(_.forall(m => m)).forall(n => n)
+    elementwise2C(a, b, f).map(_.forall(m => m)).forall(n => n)
   }
 
   // ref: https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
@@ -83,21 +86,44 @@ object StdUtil {
 
 
   // operations for collections
+  final def _broadcast1[A, B](a: Vec[A], f: A => B): Vec[B] = a.map(f)
 
-  final def broadcast1[A](a: T1, f: T0 => A): Vec[A] = a.map(f)
+  final def _broadcast2[A, B](a: Mat[A], f: A => B): Mat[B] = a.map(_.map(f))
 
-  final def broadcast2[A](a: T2, f: T0 => A): Mat[A] = a.map(_.map(f))
+  final def broadcast1(a: T1, f: T0 => T0): T1 = _broadcast1[T0, T0](a, f)
+
+  final def broadcast2(a: T2, f: T0 => T0): T2 = _broadcast2[T0, T0](a, f)
+
+  final def broadcast1B(a: BT1, f: BT0 => BT0): BT1 = _broadcast1[BT0, BT0](a, f)
+
+  final def broadcast2B(a: BT2, f: BT0 => BT0): BT2 = _broadcast2[BT0, BT0](a, f)
+
+  final def broadcast1C(a: T1, f: T0 => BT0): BT1 = _broadcast1[T0, BT0](a, f)
+
+  final def broadcast2C(a: T2, f: T0 => BT0): BT2 = _broadcast2[T0, BT0](a, f)
 
 
-  final def elementwise1[A](a: T1, b: T1, f: (T0, T0) => A): Vec[A] = {
+  final def _elementwise1[A, B](a: Vec[A], b: Vec[A], f: (A, A) => B): Vec[B] = {
     shape1CheckOrThrow(a, b)
     a.zip(b).map { case (x, y) => f(x, y) }
   }
 
-  final def elementwise2[A](a: T2, b: T2, f: (T0, T0) => A): Mat[A] = {
+  final def _elementwise2[A, B](a: Mat[A], b: Mat[A], f: (A, A) => B): Mat[B] = {
     shape2CheckOrThrow(a, b)
     a.zip(b).map { case (x, y) => x.zip(y).map { case (v, w) => f(v, w) } }
   }
+
+  final def elementwise1(a: T1, b: T1, f: (T0, T0) => T0): T1 = _elementwise1[T0, T0](a, b, f)
+
+  final def elementwise2(a: T2, b: T2, f: (T0, T0) => T0): T2 = _elementwise2[T0, T0](a, b, f)
+
+  final def elementwise1B(a: BT1, b: BT1, f: (BT0, BT0) => BT0): BT1 = _elementwise1[BT0, BT0](a, b, f)
+
+  final def elementwise2B(a: BT2, b: BT2, f: (BT0, BT0) => BT0): BT2 = _elementwise2[BT0, BT0](a, b, f)
+
+  final def elementwise1C(a: T1, b: T1, f: (T0, T0) => BT0): BT1 = _elementwise1[T0, BT0](a, b, f)
+
+  final def elementwise2C(a: T2, b: T2, f: (T0, T0) => BT0): BT2 = _elementwise2[T0, BT0](a, b, f)
 
   /**
     * For example:

@@ -1,135 +1,141 @@
 package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad.Eval
-import com.kogecoo.scalaad.graph.{Var, _}
-import com.kogecoo.scalaad.impl.std.Implicits._
+import com.kogecoo.scalaad.graph._
+import com.kogecoo.scalaad.graph.bool.{Elementwise1B, Elementwise2B, Elementwise2C}
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
+import com.kogecoo.scalaad.op._
+import com.kogecoo.scalaad.op.bool._
+import shapeless.Nat
+import shapeless.Nat._1
 
 
-trait StdVecEval {
+trait StdVecEval { self: StdMatEval with StdVecValue =>
 
-  /*implicit val eval11_stdvec_double: Eval[V1, T1] = new Eval[V1, T1] {
+  implicit val eval_stdvec_double: Eval[V1, T1] = new Eval[V1, T1] {
 
     def eval(n: V1): T1 = n match {
-      // Leaf nodes
-      case Var(v)                     => v.value[T1]
-      case ArbVar1(name, data, shape) => data.get.value[T1]
-      case Zero1(shape: S1)           => U.const1(0.0, shape)
-      case Half1(shape: S1)           => U.const1(0.5, shape)
-      case One1(shape: S1)            => U.const1(1.0, shape)
-      case Const1(v, shape)           => v.value[T1]
+
+      case a: Var[_1]    => a.data.value[T1]
+      case a: ArbVar[_1] => a.data.get.value[T1]
+      case _: Zero[_1]   => U.const1(0.0, n.shape)
+      case _: Half[_1]   => U.const1(0.5, n.shape)
+      case _: One[_1]    => U.const1(1.0, n.shape)
+      case a: Const[_1]  => a.data.value[T1]
+
+      case a: Apply0[_1] => a.op match {
+        case ZeroOp             => U.const1(0.0, n.shape)
+        case HalfOp             => U.const1(0.5, n.shape)
+        case OneOp              => U.const1(1.0, n.shape)
+        case EyeOp              => U.const1(1.0, n.shape)
+        case c: ConstOp[Nat._1] => c.v.value[T1]
+        case c: DiagOp[Nat._1]  => c.v.value[T1]
+      }
 
       // Unary ops
-      case Pos1(v: V1) => U.broadcast1(v.eval[T1], +_)
-      case Neg1(v: V1) => U.broadcast1(v.eval[T1], -_)
-      //case Transpose1(v: N1) if v.shape.transposed => v.eval[StdTransVec[Double]].flatten
+      case Elementwise1(v, op) => {
+        val x = v.eval[T1]
+        op match {
+          case Pos      => U.broadcast1(x, +_)
+          case Neg      => U.broadcast1(x, -_)
+          case Identity => x
+          case Sign     => U.broadcast1(x, a => math.abs(a) / a)
+
+          case Sin => U.broadcast1(x, math.sin)
+          case Cos => U.broadcast1(x, math.cos)
+          case Tan => U.broadcast1(x, math.tan)
+
+          case Asin => U.broadcast1(x, math.asin)
+          case Acos => U.broadcast1(x, math.acos)
+          case Atan => U.broadcast1(x, math.atan)
+
+          case Sinh => U.broadcast1(x, math.sinh)
+          case Cosh => U.broadcast1(x, math.cosh)
+          case Tanh => U.broadcast1(x, math.tanh)
+
+          case Ln   => U.broadcast1(x, math.log)
+          case Exp  => U.broadcast1(x, math.exp)
+          case Sqrt => U.broadcast1(x, math.sqrt)
+
+          case Abs  => U.broadcast1(x, math.abs)
+        }
+      }
+
+      case Fold1(v, op, _) => {
+        val x = v.eval[T2]
+        op match {
+          case Sum1 => x.sum
+          case Max1 => x.max
+          case Min1 => x.min
+        }
+      }
 
       // Binary ops
-      case Add01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] + _)
-      case Add10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ + r.eval[T0])
-      case Add11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ + _)
 
-      case Sub01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] - _)
-      case Sub10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ - r.eval[T0])
-      case Sub11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ - _)
+      case Elementwise2(l, r, op) => {
+        val x = l.eval[T1]
+        val y = r.eval[T1]
+        op match {
+          case Add => U.elementwise1(x, y, _ + _)
+          case Sub => U.elementwise1(x, y, _ + _)
+          case Mul => U.elementwise1(x, y, _ + _)
+          case Div => U.elementwise1(x, y, _ + _)
 
-      case Mul01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] * _)
-      case Mul10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ * r.eval[T0])
-      case Mul11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ * _)
+          case Pow => U.elementwise1(x, y, math.pow)
+          case Max2 => U.elementwise1(x, y, math.max)
+          case Min2 => U.elementwise1(x, y, math.min)
+        }
+      }
 
-      case Div01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] / _)
-      case Div10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ / r.eval[T0])
-      case Div11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ / _)
+      case Fold2(l, r, op, axis) => {
+        val x = l.eval[T2]
+        val y = r.eval[T2]
+        op match {
+          case Dot  => U.elementwise1(x, y, _ * _).sum
+        }
+      }
 
-      // Math
-      case Sin1(v: V1) => U.broadcast1(v.eval[T1], math.sin)
-      case Cos1(v: V1) => U.broadcast1(v.eval[T1], math.cos)
-      case Tan1(v: V1) => U.broadcast1(v.eval[T1], math.tan)
+      case ElementwiseWhere(cond, a, b) => {
+        val z = cond.eval[Vec[Boolean]]
+        val x = a.eval[T1]
+        val y = b.eval[T1]
+        z.zip(x.zip(y)).map { case (c, (d, e)) => if (c) d else e }
 
-      case Asin1(v: V1) => U.broadcast1(v.eval[T1], math.asin)
-      case Acos1(v: V1) => U.broadcast1(v.eval[T1], math.acos)
-      case Atan1(v: V1) => U.broadcast1(v.eval[T1], math.atan)
-
-      case Sinh1(v: V1) => U.broadcast1(v.eval[T1], math.sinh)
-      case Cosh1(v: V1) => U.broadcast1(v.eval[T1], math.cosh)
-      case Tanh1(v: V1) => U.broadcast1(v.eval[T1], math.tanh)
-
-      case Ln1(v: V1)   => U.broadcast1(v.eval[T1], math.log)
-      case Exp1(v: V1)  => U.broadcast1(v.eval[T1], math.exp)
-      case Sqrt1(v: V1) => U.broadcast1(v.eval[T1], math.sqrt)
-
-      case Pow01(l: V0, r: V1)  => U.broadcast1(r.eval[T1], math.pow(l.eval[T0], _))
-      case Pow10(l: V1 , r: V0) => U.broadcast1(l.eval[T1], math.pow(_, r.eval[T0]))
-      case Pow11(l: V1 , r: V1)  => U.elementwise1(l.eval[T1], r.eval[T1], math.pow)
-
-      // Experimental
-
-      case VecFill(v: V0, s: S1) => U.const1(v.eval[T0], s)
-
-      case Abs1(v: V1)          => U.broadcast1(v.eval[T1], math.abs)
-      case Max01(l: V0, r: V1)  => U.broadcast1(r.eval[T1], math.max(l.eval[T0], _))
-      case Max10(l: V1 , r: V0) => U.broadcast1(l.eval[T1], math.max(_, r.eval[T0]))
-      case Max11(l: V1 , r: V1)  => U.elementwise1(l.eval[T1], r.eval[T1], math.max)
-      case Min01(l: V0, r: V1)  => U.broadcast1(r.eval[T1], math.min(l.eval[T0], _))
-      case Min10(l: V1 , r: V0) => U.broadcast1(l.eval[T1], math.min(_, r.eval[T0]))
-      case Min11(l: V1 , r: V1)  => U.elementwise1(l.eval[T1], r.eval[T1], math.min)
-
-      case Where0_1(cond: B0, a: V1, b: V1) => if (cond.eval[Boolean]) a.eval[T1] else b.eval[T1]
-      case Where1_1(cond: B1, a: V1, b: V1) => {
-        val ab = a.eval[T1].zip(b.eval[T1])
-        val cs = cond.eval[StdVec[Boolean]]
-        cs.zip(ab).map { case (c, (x, y)) => if (c) x else y }
       }
     }
   }
 
 
-  implicit val eval_bool11_stdvec_double: Eval[B1, Vec[Boolean]] = new Eval[B1, Vec[Boolean]] {
+  implicit val eval_bool_stdvec_double: Eval[B1, Vec[Boolean]] = new Eval[B1, Vec[Boolean]] {
 
     type BV = Vec[Boolean]
-    type B = Boolean
-
-    private[this] def broadcast1B(a: BV, f: B => B): BV = a.map(f)
-
-    private[this] def elementwise1B(a: BV, b: BV, f: (B, B) => B): BV = {
-      a.zip(b).map { case (x, y) => f(x, y) }
-    }
 
     def eval(n: B1): BV = n match {
-      case Eq01 (l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] == _)
-      case Eq10 (l: V1, r: V0) => U.broadcast1(l.eval[T1], _ == r.eval[T0])
-      case Eq11 (l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ == _)
+      case Elementwise1B(v, op) => op match {
+        case Not => U.broadcast1B(v.eval[BV], !_)
+      }
 
-      case Neq01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] != _)
-      case Neq10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ != r.eval[T0])
-      case Neq11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ != _)
+      case Elementwise2B(l, r, op) => op match {
+        case And => U.elementwise1B(l.eval[BV], r.eval[BV], _ && _)
+        case Or  => U.elementwise1B(l.eval[BV], r.eval[BV], _ || _)
+      }
 
-      case Lt01 (l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] <  _)
-      case Lt10 (l: V1, r: V0) => U.broadcast1(l.eval[T1], _ <  r.eval[T0])
-      case Lt11 (l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ <  _)
+      case Elementwise2C(l, r, op) => {
+        val x = l.eval[T1]
+        val y = r.eval[T1]
+        op match {
 
-      case Lte01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] <= _)
-      case Lte10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ <= r.eval[T0])
-      case Lte11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ <= _)
+          case Eq  => U.elementwise1C(x, y, _ == _)
+          case Neq => U.elementwise1C(x, y, _ != _)
+          case Lt  => U.elementwise1C(x, y, _ <  _)
+          case Lte => U.elementwise1C(x, y, _ <= _)
+          case Gt  => U.elementwise1C(x, y, _ >  _)
+          case Gte => U.elementwise1C(x, y, _ >= _)
 
-      case Gt01 (l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] >  _)
-      case Gt10 (l: V1, r: V0) => U.broadcast1(l.eval[T1], _ > r.eval[T0])
-      case Gt11 (l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ >  _)
 
-      case Gte01(l: V0, r: V1) => U.broadcast1(r.eval[T1], l.eval[T0] >= _)
-      case Gte10(l: V1, r: V0) => U.broadcast1(l.eval[T1], _ >= r.eval[T0])
-      case Gte11(l: V1, r: V1) => U.elementwise1(l.eval[T1], r.eval[T1], _ >= _)
-
-      case And01(l: B0, r: B1) => broadcast1B(r.eval[BV], l.eval[B] && _)
-      case And10(l: B1, r: B0) => broadcast1B(l.eval[BV], _ && r.eval[B])
-      case And11(l: B1, r: B1) => elementwise1B(l.eval[BV], r.eval[BV], _ && _)
-
-      case Or01 (l: B0, r: B1) => broadcast1B(r.eval[BV], l.eval[B] || _)
-      case Or10 (l: B1, r: B0) => broadcast1B(l.eval[BV], _ || r.eval[B])
-      case Or11 (l: B1, r: B1) => elementwise1B(l.eval[BV], r.eval[BV], _ || _)
-
-      case Not1(v: B1) => broadcast1B(v.eval[BV], !_)
+        }
+      }
     }
   }
-  */
+
 }
