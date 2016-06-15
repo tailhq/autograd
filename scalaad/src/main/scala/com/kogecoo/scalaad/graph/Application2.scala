@@ -25,9 +25,6 @@ trait Application2[N <: Nat, L <: Nat, R <: Nat] extends V[N] {
 }
 
 
-abstract class Fold2[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryFoldOp) extends Application2[N, L, R]
-
-
 // Binary Application
 
 @throws[Exception]
@@ -117,7 +114,7 @@ case class RightShapedApply2[L <: Nat, R <: Nat](l: V[L], r: V[R], op: BinaryOp)
 
 
 @throws[Exception]
-case class Fold2_-[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axis: Int) extends Application2[N, Succ[N], Succ[N]] {
+case class Fold2[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axis: Int) extends Application2[N, Succ[N], Succ[N]] {
 
   if (l.shape != r.shape)
     throw new Exception(s"Shapes of the left (${l.shape}) and the right (${r.shape}) must be equivalent.")
@@ -139,7 +136,7 @@ case class Fold2_-[N <: Nat](l: V[Succ[N]], r: V[Succ[N]], op: BinaryFoldOp, axi
 }
 
 @throws[Exception]
-case class LeftShapedFold2_-[L <: Nat, R <: Nat](l: V[Succ[L]], r: V[R], op: BinaryFoldOp, axis: Int) extends Application2[L, Succ[L], R] {
+case class LeftShapedFold2[L <: Nat, R <: Nat](l: V[Succ[L]], r: V[R], op: BinaryFoldOp, axis: Int) extends Application2[L, Succ[L], R] {
 
   if (l.shape.order <= r.shape.order)
     throw new Exception(s"The order of left (${l.shape}) must be larger than right's (${r.shape}).")
@@ -171,7 +168,7 @@ case class LeftShapedFold2_-[L <: Nat, R <: Nat](l: V[Succ[L]], r: V[R], op: Bin
 
 
 @throws[Exception]
-case class RightShapedFold2_-[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: BinaryFoldOp, axis: Int) extends Application2[R, L, Succ[R]] {
+case class RightShapedFold2[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: BinaryFoldOp, axis: Int) extends Application2[R, L, Succ[R]] {
 
   if (l.shape.order >= r.shape.order)
     throw new Exception(s"The order of the left (${l.shape}) must be smaller than the right's (${r.shape}).")

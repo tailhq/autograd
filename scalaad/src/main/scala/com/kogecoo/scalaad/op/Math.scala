@@ -87,6 +87,37 @@ case object Abs extends UnaryOp {
 }
 
 
+// Expr[Shape1] -> Expr[Shape0]
+
+/*
+case object L2Norm extends UnaryFoldOp {
+
+  def deriv[N <: Nat](v: V[N]): V[N] = two[N](v) * v
+
+}
+*/
+
+case object Sum1 extends UnaryFoldOp {
+
+  // FIXME
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
+
+}
+
+case object Max1 extends UnaryFoldOp {
+
+  // FIXME
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
+
+}
+
+case object Min1 extends UnaryFoldOp {
+
+  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
+
+}
+
+
 // (Expr[Shape0], Expr[Shape0]) -> Expr[Shape0]
 
 case object Pow extends BinaryOp {
@@ -112,48 +143,6 @@ case object Min extends BinaryOp {
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
     (If[L](l :<= r, one(l)), If[R](l :> r, one(r)))
   }
-
-}
-
-
-// Expr[Shape1] -> Expr[Shape0]
-
-case object L0Norm extends UnaryFoldOp {
-
-  def deriv[N <: Nat](v: V[N]): V[N] = zero(v)
-
-}
-
-case object L1Norm extends UnaryFoldOp {
-
-  def deriv[N <: Nat](v: V[N]): V[N] = sign(v)
-
-}
-
-
-case object L2Norm extends UnaryFoldOp {
-
-  def deriv[N <: Nat](v: V[N]): V[N] = two[N](v) * v
-
-}
-
-case object Sum1 extends UnaryFoldOp {
-
-  // FIXME
-  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
-
-}
-
-case object Max1 extends UnaryFoldOp {
-
-  // FIXME
-  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
-
-}
-
-case object Min1 extends UnaryFoldOp {
-
-  def deriv[N <: Nat](v: V[N]): V[N] = one(v)
 
 }
 

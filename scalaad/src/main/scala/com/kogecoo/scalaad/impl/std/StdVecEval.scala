@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph.{Var, _}
 import com.kogecoo.scalaad.impl.std.Implicits._
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}

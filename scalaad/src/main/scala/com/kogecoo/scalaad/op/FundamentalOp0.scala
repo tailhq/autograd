@@ -17,6 +17,6 @@ case object HalfOp extends NullaryOp
 
 case class ConstOp[N <: Nat](v: Tensor[N]) extends NullaryOp
 
-case class EyeOp[N <: Nat](shape: Shape[N])
+case object EyeOp extends NullaryOp
 
-case class DiagOp[N <: Nat](diag: Tensor[_1])
+case class DiagOp[N <: Nat](diag: Tensor[_1]) extends NullaryOp

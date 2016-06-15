@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.op
 
-import com.kogecoo.scalaad.graph.{Apply1, Fold1_-, Half, One, Two, Unsafe, V, Zero}
+import com.kogecoo.scalaad.graph.{Apply1, Fold1, Half, One, Two, Unsafe, V, Zero}
 import shapeless.{Nat, Succ}
 
 
@@ -48,7 +48,7 @@ object Shorthands {
 
     def sqrt[N <: Nat](v: V[N]): V[N] = Apply1[N](v, Sqrt)
 
-    def sum[N <: Nat](v: V[Succ[N]], axis: Int): V[N] = Fold1_-[N](v, Sum1, axis)
+    def sum[N <: Nat](v: V[Succ[N]], axis: Int): V[N] = Fold1[N](v, Sum1, axis)
 
     // binary
 

@@ -1,8 +1,7 @@
 package com.kogecoo.scalaad.impl.breeze
 
 import breeze.linalg.DenseMatrix
-import com.kogecoo.scalaad.{BooleanTensor2, Tensor2}
-import com.kogecoo.scalaad.algorithm.Value
+import com.kogecoo.scalaad.{BooleanTensor2, Tensor2, Value}
 
 
 trait BreezeMatrixValue {

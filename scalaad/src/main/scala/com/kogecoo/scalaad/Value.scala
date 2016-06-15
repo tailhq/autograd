@@ -1,4 +1,5 @@
-package com.kogecoo.scalaad.algorithm
+package com.kogecoo.scalaad
+
 
 trait Value[T, V] {
 

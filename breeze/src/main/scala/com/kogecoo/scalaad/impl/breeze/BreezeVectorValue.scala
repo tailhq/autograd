@@ -1,8 +1,7 @@
 package com.kogecoo.scalaad.impl.breeze
 
-import breeze.linalg.{Transpose, BitVector, DenseVector}
-import com.kogecoo.scalaad.{BooleanTensor1, Tensor1}
-import com.kogecoo.scalaad.algorithm.Value
+import breeze.linalg.{BitVector, DenseVector, Transpose}
+import com.kogecoo.scalaad.{BooleanTensor1, Tensor1, Value}
 
 trait BreezeVectorValue {
 

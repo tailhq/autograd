@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.nd4j
 
-import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.nd4j.Implicits._
 

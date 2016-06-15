@@ -1,10 +1,10 @@
 package com.kogecoo.scalaad.impl.breeze
 
-import breeze.linalg.{Transpose, BitVector, DenseVector}
-import breeze.{ numerics => bmath }
-import scala.Predef.{any2stringadd => _, _}
+import breeze.linalg.{BitVector, DenseVector, Transpose}
+import breeze.{numerics => bmath}
+import com.kogecoo.scalaad.Eval
 
-import com.kogecoo.scalaad.algorithm.Eval
+import scala.Predef.{any2stringadd => _, _}
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.breeze.Implicits._
 

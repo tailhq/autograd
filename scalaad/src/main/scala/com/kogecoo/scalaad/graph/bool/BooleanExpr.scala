@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.graph.bool
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.{Eval, Shape}
 import com.kogecoo.scalaad.graph.{B, Expr, Unsafe}
 import com.kogecoo.scalaad.op.bool.{And, ExpandEvery, Not, Or}
 import shapeless.Nat

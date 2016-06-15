@@ -70,15 +70,15 @@ object Unsafe {
       case _ if a.shape.order == b.shape.order => {
         val a_ = a.asInstanceOf[V[Succ[O]]]
         val b_ = b.asInstanceOf[V[Succ[O]]]
-        Fold2_-[O](a_, b_, op, axis)
+        Fold2[O](a_, b_, op, axis)
       }
       case _ if a.shape.order > b.shape.order => {
         val a_ = a.asInstanceOf[V[Succ[O]]]
-        LeftShapedFold2_-[O, Y](a_, b, op, axis)
+        LeftShapedFold2[O, Y](a_, b, op, axis)
       }
       case _ => {
         val b_ = b.asInstanceOf[V[Succ[O]]]
-        RightShapedFold2_-[X, O](a, b_, op, axis)
+        RightShapedFold2[X, O](a, b_, op, axis)
       }
     }
   }

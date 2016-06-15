@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.algorithm
+package com.kogecoo.scalaad
 
 
 trait Eval[N, V] {

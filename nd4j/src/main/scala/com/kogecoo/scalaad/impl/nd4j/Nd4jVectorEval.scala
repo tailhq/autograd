@@ -1,12 +1,12 @@
 package com.kogecoo.scalaad.impl.nd4j
 
-import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph._
 import com.kogecoo.scalaad.impl.nd4j.Implicits._
-
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 import org.nd4s.Implicits._
+
 import scala.Predef.{any2stringadd => _, _}
 
 

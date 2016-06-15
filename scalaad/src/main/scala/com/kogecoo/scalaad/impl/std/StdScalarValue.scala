@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.impl.std
 
-import com.kogecoo.scalaad.algorithm.Value
-import com.kogecoo.scalaad.{BooleanTensor, BooleanTensor0, Tensor}
+import com.kogecoo.scalaad.{BooleanTensor, BooleanTensor0, Tensor, Value}
 import shapeless.Nat._0
 
 

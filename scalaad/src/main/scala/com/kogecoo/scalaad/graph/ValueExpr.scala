@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.graph
 
-
-import com.kogecoo.scalaad.algorithm.Eval
+import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph.bool.{Apply2C, Apply2LeftC, Apply2RightC}
 import com.kogecoo.scalaad.op.bool.{Eq, Gt, Gte, Lt, Lte, Neq}
 import com.kogecoo.scalaad.op.{Add, Div, Mul, Neg, Pos, Sub}

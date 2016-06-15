@@ -1,6 +1,5 @@
 package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.algorithm.Value
 import com.kogecoo.scalaad.impl.std.{Mat, Vec}
 import shapeless.Nat
 import shapeless.Nat.{_0, _1, _2}

@@ -1,7 +1,6 @@
 package com.kogecoo.scalaad.impl.nd4j
 
-import com.kogecoo.scalaad.{BooleanTensor1, Tensor1}
-import com.kogecoo.scalaad.algorithm.Value
+import com.kogecoo.scalaad.{BooleanTensor1, Tensor1, Value}
 import org.nd4j.linalg.api.ndarray.INDArray
 
 
