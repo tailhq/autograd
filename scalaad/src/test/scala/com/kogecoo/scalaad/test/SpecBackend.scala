@@ -14,9 +14,9 @@ trait SpecBackend {
   type T2
 
 
-  def shapeOf(a: T1): Shape[_1]
+  def shape1Of(a: T1): Shape[_1]
 
-  def shapeOf(a: T2): Shape[_2]
+  def shape2Of(a: T2): Shape[_2]
 
 
   def one0: T0

@@ -1,9 +1,8 @@
 package com.kogecoo.scalaad.op
 
+import com.kogecoo.scalaad.Shorthands.const._
+import com.kogecoo.scalaad.Shorthands.math._
 import com.kogecoo.scalaad.graph.{ElementwiseWhere, V, Where}
-import com.kogecoo.scalaad.op.shorthands.const._
-import com.kogecoo.scalaad.op.shorthands.math._
-import com.kogecoo.scalaad.op.shorthands.syntax._
 import shapeless.Nat
 
 
@@ -170,10 +169,10 @@ case object Dot extends BinaryFoldOp {
 
 // (Expr[Shape2], Expr[Shape2]) -> Expr[Shape2]
 
-case object MatMul extends BinaryFoldOp {
+case object MatMulOp extends BinaryOp {
 
   def deriv[L <: Nat, R <: Nat](l: V[L], r: V[R]): (V[_ <: Nat], V[_ <: Nat]) = {
-    (one(l), one(r))
+    (l, r)
   }
 
 }

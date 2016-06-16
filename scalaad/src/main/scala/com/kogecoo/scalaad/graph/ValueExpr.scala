@@ -3,8 +3,8 @@ package com.kogecoo.scalaad.graph
 import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph.bool.{BroadcastLeft2C, BroadcastRight2C, Elementwise2C, InferElementwise2C}
 import com.kogecoo.scalaad.op.bool.{Eq, Gt, Gte, Lt, Lte, Neq}
-import com.kogecoo.scalaad.op.{Add, Div, Mul, Neg, Pos, Sub}
-import shapeless.Nat
+import com.kogecoo.scalaad.op.{Add, Div, Dot, Mul, Neg, Pos, Sub}
+import shapeless.{Nat, Succ}
 import shapeless.ops.nat.Sum
 
 
@@ -27,6 +27,12 @@ trait ValueExpr[N <: Nat]  extends Expr[N]{
 
 
 object ValueExpr {
+
+  implicit class RichValueExprFold[N <: Nat](val self: V[Succ[N]]) extends AnyVal {
+
+    def dot(rhs: V[Succ[N]]): V[N] = Fold2[N](self, rhs, Dot, 0)
+
+  }
 
   implicit class RichValueExpr[N <: Nat](val self: V[N]) extends AnyVal {
 

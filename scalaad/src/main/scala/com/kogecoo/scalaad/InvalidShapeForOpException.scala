@@ -47,7 +47,7 @@ object Constraint {
 
   @throws[Exception]
   def broadcastableToRight[L <: Nat, R <: Nat](l: Expr[L], r: Expr[R]): Unit = satisfy(
-    l.shape.underlying.take(r.shape.order) == r.shape.underlying,
+    r.shape.underlying.take(l.shape.order) == l.shape.underlying,
     {
       val hint = r.shape.shrink(r.shape.underlying.indices.toList.drop(l.shape.order))
       s"Broadcast cannot perform for shape pair (${l.shape}) and (${r.shape}). Maybe the right shape must be $hint."

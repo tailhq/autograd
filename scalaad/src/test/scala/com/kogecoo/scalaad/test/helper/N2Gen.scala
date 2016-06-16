@@ -9,7 +9,7 @@ import shapeless.Nat._2
 
 abstract class N2Gen[VG] {
 
-  def genVar2(shapeGen: Gen[Shape[_2]], valueGen: Gen[VG]): Gen[Var2]
+  def genVar2(shapeGen: Gen[Shape[_2]], valueGen: Gen[VG]): Gen[Var[_2]]
 
   def genConst2(shapeGen: Gen[Shape[_2]], valueGen: Gen[VG]): Gen[Const[_2]]
 

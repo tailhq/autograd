@@ -17,7 +17,6 @@ trait StdVecEval { self: StdMatEval with StdVecValue =>
     def eval(n: V1): T1 = n match {
 
       case a: Var[_1]    => a.data.value[T1]
-      case a: ArbVar[_1] => a.data.get.value[T1]
       case _: Zero[_1]   => U.const1(0.0, n.shape)
       case _: Half[_1]   => U.const1(0.5, n.shape)
       case _: One[_1]    => U.const1(1.0, n.shape)
@@ -29,7 +28,7 @@ trait StdVecEval { self: StdMatEval with StdVecValue =>
         case OneOp              => U.const1(1.0, n.shape)
         case EyeOp              => U.const1(1.0, n.shape)
         case c: ConstOp[Nat._1] => c.v.value[T1]
-        case c: DiagOp[Nat._1]  => c.v.value[T1]
+        case c: DiagOp          => c.v.value[T1]
       }
 
       // Unary ops
@@ -61,16 +60,7 @@ trait StdVecEval { self: StdMatEval with StdVecValue =>
         }
       }
 
-      case Fold1(v, op, _) => {
-        val x = v.eval[T2]
-        op match {
-          case Sum1 => x.sum
-          case Max1 => x.max
-          case Min1 => x.min
-        }
-      }
-
-      // Binary ops
+     // Binary ops
 
       case Elementwise2(l, r, op) => {
         val x = l.eval[T1]
@@ -87,14 +77,6 @@ trait StdVecEval { self: StdMatEval with StdVecValue =>
         }
       }
 
-      case Fold2(l, r, op, axis) => {
-        val x = l.eval[T2]
-        val y = r.eval[T2]
-        op match {
-          case Dot  => U.elementwise1(x, y, _ * _).sum
-        }
-      }
-
       case ElementwiseWhere(cond, a, b) => {
         val z = cond.eval[Vec[Boolean]]
         val x = a.eval[T1]
@@ -102,6 +84,16 @@ trait StdVecEval { self: StdMatEval with StdVecValue =>
         z.zip(x.zip(y)).map { case (c, (d, e)) => if (c) d else e }
 
       }
+
+      case Fold1(v, op, _) => {
+        val x = v.eval[T2]
+        op match {
+          case Sum1 => x.map(_.sum)
+          case Max1 => x.map(_.max)
+          case Min1 => x.map(_.min)
+        }
+      }
+
     }
   }
 

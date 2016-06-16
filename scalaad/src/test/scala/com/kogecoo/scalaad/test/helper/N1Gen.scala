@@ -11,7 +11,7 @@ import scala.language.higherKinds
 
 abstract class N1Gen[VG] {
 
-  def genVar1(shapeGen: Gen[Shape[_1]], valueGen: Gen[VG]): Gen[Var1]
+  def genVar1(shapeGen: Gen[Shape[_1]], valueGen: Gen[VG]): Gen[Var[_1]]
 
   def genConst1(shapeGen: Gen[Shape[_1]], valueGen: Gen[VG]): Gen[Const[_1]]
 

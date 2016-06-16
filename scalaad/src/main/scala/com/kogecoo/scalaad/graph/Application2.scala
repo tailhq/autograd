@@ -2,7 +2,7 @@ package com.kogecoo.scalaad.graph
 
 import com.kogecoo.scalaad.Constraint
 import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp}
+import com.kogecoo.scalaad.op.{BinaryFoldOp, BinaryOp, MatMulOp}
 import shapeless.{Nat, Succ}
 
 import scala.language.existentials
@@ -52,6 +52,9 @@ abstract class Elementwise2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], 
 
 }
 
+case class MatMul[N <: Nat](l: V[N], r: V[N]) extends Elementwise2Base[N, N, N](l, r, MatMulOp) {
+
+}
 
 object InferElementwise2 {
 

@@ -22,9 +22,9 @@ trait StdSpecBackend extends SpecBackend {
   override final type T2 = std.T2
 
 
-  override final def shapeOf(a: T1): Shape[_1] = StdUtil.shape1Of(a)
+  override final def shape1Of(a: T1): Shape[_1] = StdUtil.shape1Of(a)
 
-  override final def shapeOf(a: T2): Shape[_2] = StdUtil.shape2Of(a)
+  override final def shape2Of(a: T2): Shape[_2] = StdUtil.shape2Of(a)
 
 
   override final def one0: T0 = 1.0
@@ -105,11 +105,11 @@ trait StdSpecBackend extends SpecBackend {
   }
 
   override final def shouldEqualTo(a: T1, b: T1)(implicit d: DummyImplicit): Prop = {
-    (shape1Check(shapeOf(a), shapeOf(b)) && a.equalTo(b)) :| s"$a \n  should equal to \n    $b"
+    (shape1Check(shape1Of(a), shape1Of(b)) && a.equalTo(b)) :| s"$a \n  should equal to \n    $b"
   }
 
   override final def shouldEqualTo(a: T2, b: T2)(implicit d1: DummyImplicit, d2: DummyImplicit): Prop = {
-    (shape2Check(shapeOf(a), shapeOf(b)) && a.equalTo(b)) :| s"$a \n  should equal to \n    $b"
+    (shape2Check(shape2Of(a), shape2Of(b)) && a.equalTo(b)) :| s"$a \n  should equal to \n    $b"
   }
 
   override final def shouldCloseTo(a: T0, b: T0, relDiff: T0): Prop = {
@@ -117,11 +117,11 @@ trait StdSpecBackend extends SpecBackend {
   }
 
   override final def shouldCloseTo(a: T1, b: T1, relDiff: T0)(implicit d: DummyImplicit): Prop = {
-    (shape1Check(shapeOf(a), shapeOf(b)) && a.closeTo(b, relDiff)) :| s"$a \n  should close to \n    $b"
+    (shape1Check(shape1Of(a), shape1Of(b)) && a.closeTo(b, relDiff)) :| s"$a \n  should close to \n    $b"
   }
 
   override final def shouldCloseTo(a: T2, b: T2, relDiff: T0)(implicit d1: DummyImplicit, d2: DummyImplicit): Prop = {
-    (shape2Check(shapeOf(a), shapeOf(b)) && a.closeTo(b, relDiff)) :| s"$a \n  should close to \n    $b"
+    (shape2Check(shape2Of(a), shape2Of(b)) && a.closeTo(b, relDiff)) :| s"$a \n  should close to \n    $b"
   }
 
   private[this] final def closeTo(a: T0, b: T0, relDiff: T0 = eps.value): Boolean = {

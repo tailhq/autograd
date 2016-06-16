@@ -1,10 +1,11 @@
-package com.kogecoo.scalaad.op
+package com.kogecoo.scalaad
 
-import com.kogecoo.scalaad.graph.{B, Elementwise1, ElementwiseWhere, Fold1, Half, InferElementwise2, One, Two, V, Zero}
+import com.kogecoo.scalaad.graph.{B, Elementwise1, ElementwiseWhere, Fold1, Fold2, Half, InferElementwise2, One, Two, V, Zero}
+import com.kogecoo.scalaad.op.{Acos, Asin, Atan, Cos, Cosh, Exp, Ln, Pow, Sign, Sin, Sinh, Sqrt, Sum1, Tan, Tanh}
 import shapeless.{Nat, Succ}
 
 
-object shorthands {
+object Shorthands {
 
   object const {
 
@@ -53,7 +54,6 @@ object shorthands {
     // binary
 
     def pow[L <: Nat, R <: Nat](l: V[L], r: V[R]): V[_ <: Nat] = InferElementwise2(l, r, Pow)
-
 
   }
 

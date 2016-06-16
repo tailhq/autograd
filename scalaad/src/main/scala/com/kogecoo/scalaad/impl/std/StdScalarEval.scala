@@ -17,7 +17,6 @@ trait StdScalarEval { self: StdVecEval with StdScalarValue =>
     def eval(n: V0): T0 = n match {
 
       case a: Var[_0]   => a.data.value[T0]
-      case a: ArbVar0   => a.data.get.value[T0]
       case _: Zero[_0]  => 0.0
       case _: Half[_0]  => 0.5
       case _: One[_0]   => 1.0
@@ -60,15 +59,6 @@ trait StdScalarEval { self: StdVecEval with StdScalarValue =>
         }
       }
 
-      case Fold1(v, op, _) => {
-        val x = v.eval[T1]
-        op match {
-          case Sum1 => x.sum
-          case Max1 => x.max
-          case Min1 => x.min
-        }
-      }
-
       // Binary ops
       case Elementwise2(l, r, op) => {
         val x = l.eval[T0]
@@ -85,6 +75,19 @@ trait StdScalarEval { self: StdVecEval with StdScalarValue =>
         }
       }
 
+      case ElementwiseWhere(cond, a, b) => {
+        if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]
+      }
+
+      case Fold1(v, op, _) => {
+        val x = v.eval[T1]
+        op match {
+          case Sum1 => x.sum
+          case Max1 => x.max
+          case Min1 => x.min
+        }
+      }
+
       case Fold2(l, r, op, axis) => {
         val x = l.eval[T1]
         val y = r.eval[T1]
@@ -93,9 +96,7 @@ trait StdScalarEval { self: StdVecEval with StdScalarValue =>
         }
       }
 
-      case ElementwiseWhere(cond, a, b) => {
-        if (cond.eval[Boolean]) a.eval[T0] else b.eval[T0]
-      }
+
     }
   }
 

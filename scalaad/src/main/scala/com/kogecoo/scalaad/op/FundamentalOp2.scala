@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.op
 
 import com.kogecoo.scalaad.graph.V
-import com.kogecoo.scalaad.op.shorthands.const._
+import com.kogecoo.scalaad.Shorthands.const._
 import shapeless.Nat
 
 

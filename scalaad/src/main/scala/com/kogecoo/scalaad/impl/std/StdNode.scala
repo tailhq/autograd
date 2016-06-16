@@ -1,7 +1,7 @@
 package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad._
-import com.kogecoo.scalaad.graph.{ArbVar0, ArbVar1, ArbVar2, Var => Var_, Const => Const_}
+import com.kogecoo.scalaad.graph.{Const => Const_, Var => Var_}
 import shapeless.Nat.{_0, _1, _2}
 
 import scala.language.implicitConversions
@@ -15,10 +15,6 @@ trait StdNode {
     def apply(data: T1)(implicit d: DummyImplicit): Var_[_1] = Var_[_1](StdVector(data))
     def apply(data: T2)(implicit d1: DummyImplicit, d2: DummyImplicit): Var_[_2] = Var_[_2](StdMatrix(data))
 
-    // Experimental
-    def arbitrary(name: String, shape: Shape[_0]): ArbVar0 = ArbVar0(name)
-    def arbitrary(name: String, shape: Shape[_1])(implicit d: DummyImplicit): ArbVar1 = ArbVar1(name, shape)
-    def arbitrary(name: String, shape: Shape[_2])(implicit d1: DummyImplicit, d2: DummyImplicit): ArbVar2 = ArbVar2(name, shape)
   }
 
   object Const {
