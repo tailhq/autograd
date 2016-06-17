@@ -42,12 +42,12 @@ abstract class Elementwise2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], 
     val (dl, dr) = op.deriv[L, R](l, r)
     val fl: V[LO] = l._forward[W, LO](wrt)
     val fr: V[RO] = r._forward[W, RO](wrt)
-    (fl :* dr) :+ (dl :* fr)
+    ((fl :* dr) :+ (dl :* fr)).asInstanceOf[V[O]]
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
     val (dl, dr) = op.deriv[L, R](l, r)
-    l._reverse[G](adj  :* dr) ++ r._reverse[G](dl :* adj)
+    l._reverse[G]((adj  :* dr).asInstanceOf[V[G]]) ++ r._reverse[G]((dl :* adj).asInstanceOf[V[G]])
   }
 
 }
@@ -58,20 +58,16 @@ case class MatMul[N <: Nat](l: V[N], r: V[N]) extends Elementwise2Base[N, N, N](
 
 object InferElementwise2 {
 
-    def apply[O <: Nat, X <: Nat, Y <: Nat](a: V[X], b: V[Y], op: BinaryOp): V[O] = {
+    def apply[X <: Nat, Y <: Nat](a: V[X], b: V[Y], op: BinaryOp): V[_ <: Nat] = {
     (a, b) match {
       case _ if a.shape.order == b.shape.order => {
-        val a_ = a.asInstanceOf[V[O]]
-        val b_ = b.asInstanceOf[V[O]]
-        Elementwise2[O](a_, b_, op)
+        Elementwise2[X](a, b.asInstanceOf[V[X]], op)
       }
       case _ if a.shape.order > b.shape.order => {
-        val a_ = a.asInstanceOf[V[O]]
-        BroadcastLeft2[O, Y](a_, b, op)
+        BroadcastLeft2[X, Y](a, b, op)
       }
       case _ => {
-        val b_ = b.asInstanceOf[V[O]]
-        BroadcastRight2[X, O](a, b_, op)
+        BroadcastRight2[X, Y](a, b, op)
       }
     }
   }
@@ -129,12 +125,12 @@ abstract class Fold2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], op: Bin
     val (dl, dr) = op.deriv(l, r)
     val fl = l._forward[W, LO](wrt)
     val fr = r._forward[W, RO](wrt)
-    InferFold2(fl, dr, op, axis) :+ InferFold2(dl, fr, op, axis)
+    (InferFold2(fl, dr, op, axis) :+ InferFold2(dl, fr, op, axis)).asInstanceOf[V[O]]
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
     val (dl, dr) = op.deriv(l, r)
-    l._reverse[G](adj :* InferFold2(dl, r, op, axis)) ++ r._reverse[G](adj :* InferFold2(l, dr, op, axis))
+    l._reverse[G]((adj :* InferFold2(dl, r, op, axis)).asInstanceOf[V[G]]) ++ r._reverse[G]((adj :* InferFold2(l, dr, op, axis)).asInstanceOf[V[G]])
   }
 
 }

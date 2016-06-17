@@ -76,10 +76,10 @@ object ValueExpr {
     def >=:>[M <: Nat](rhs: V[M]): B[M] = BroadcastRight2C(self, rhs, Gte)
 
     // type unsafe operations
-    def :+[M <: Nat, O <: Nat](rhs: V[M]): V[O] = InferElementwise2[O, N, M](self, rhs, Add)
-    def :-[M <: Nat, O <: Nat](rhs: V[M]): V[O] = InferElementwise2[O, N, M](self, rhs, Sub)
-    def :*[M <: Nat, O <: Nat](rhs: V[M]): V[O] = InferElementwise2[O, N, M](self, rhs, Mul)
-    def :/[M <: Nat, O <: Nat](rhs: V[M]): V[O] = InferElementwise2[O, N, M](self, rhs, Div)
+    def :+[M <: Nat](rhs: V[M]): V[_ <: Nat] = InferElementwise2[N, M](self, rhs, Add)
+    def :-[M <: Nat](rhs: V[M]): V[_ <: Nat] = InferElementwise2[N, M](self, rhs, Sub)
+    def :*[M <: Nat](rhs: V[M]): V[_ <: Nat] = InferElementwise2[N, M](self, rhs, Mul)
+    def :/[M <: Nat](rhs: V[M]): V[_ <: Nat] = InferElementwise2[N, M](self, rhs, Div)
 
     def :==[M <: Nat, O <: Nat](rhs: V[M]): B[O] = InferElementwise2C(self, rhs, Eq)
     def :!=[M <: Nat, O <: Nat](rhs: V[M]): B[O] = InferElementwise2C(self, rhs, Neq)

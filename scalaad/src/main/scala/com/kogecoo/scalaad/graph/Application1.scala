@@ -26,11 +26,11 @@ case class Elementwise1[N <: Nat](v: V[N], op: UnaryOp) extends Application1[N, 
   def shape: Shape[N] = v.shape
 
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
-    v._forward[W, O](wrt) :* op.deriv[N](v)
+    (v._forward[W, O](wrt) :* op.deriv[N](v)).asInstanceOf[V[O]]
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
-    v._reverse[G](adj :* op.deriv[N](v))
+    v._reverse[G]((adj :* op.deriv[N](v)).asInstanceOf[V[G]])
   }
 
 }
@@ -48,12 +48,12 @@ case class Fold1[N <: Nat](v: V[Succ[N]], op: UnaryFoldOp, axis: Int) extends Ap
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
     val fv = v._forward[W, Succ[O]](wrt)
     val dv = op.deriv(v)
-    Fold1(fv :* dv, op, axis)
+    Fold1((fv :* dv).asInstanceOf[V[Succ[O]]], op, axis)
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
     val dv = op.deriv[Succ[N]](v)
-    v._reverse[G](adj :* Fold1[N](dv, op, axis))
+    v._reverse[G]((adj :* Fold1[N](dv, op, axis)).asInstanceOf[V[G]])
   }
 
 }
@@ -68,12 +68,12 @@ case class Expand1[N <: Nat, I <: Nat](v: V[I], op: UnaryExpandOp, s: Shape[_1])
   def _forward[W <: Nat, O <: Nat](wrt: V[W]): V[O] = {
     val fv = v._forward[W, I_](wrt)
     val dv = op.deriv(v)
-    Expand1[O, I_](fv :* dv, op, s)
+    Expand1[O, I_]((fv :* dv).asInstanceOf[V[I_]], op, s)
   }
 
   def _reverse[G <: Nat](adj: V[G]): Grad[G] = {
     val dv = op.deriv[I](v)
-    v._reverse[G](adj :* Expand1[N, I](dv, op, s))
+    v._reverse[G]((adj :* Expand1[N, I](dv, op, s)).asInstanceOf[V[G]])
   }
 
 }

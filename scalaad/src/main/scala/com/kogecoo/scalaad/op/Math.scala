@@ -40,7 +40,7 @@ case object Acos extends UnaryOp {
 
 case object Atan extends UnaryOp {
 
-  def deriv[N <: Nat](v: V[N]): V[N] = one(v) :/ (one(v) :+ (v :* v))
+  def deriv[N <: Nat](v: V[N]): V[N] = (one(v) :/ (one(v) :+ (v :* v))).asInstanceOf[V[N]]
 
 }
 
