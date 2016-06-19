@@ -52,9 +52,6 @@ abstract class Elementwise2Base[N <: Nat, L <: Nat, R <: Nat](l: V[L], r: V[R], 
 
 }
 
-case class MatMul[N <: Nat](l: V[N], r: V[N]) extends Elementwise2Base[N, N, N](l, r, MatMulOp) {
-
-}
 
 object InferElementwise2 {
 
@@ -202,17 +199,34 @@ case class BroadcastRightFold2[L <: Nat, R <: Nat](l: V[L], r: V[Succ[R]], op: B
 
 }
 
-
-//TODO
-case class BroadcastLeft2_-[N <: Nat](l: V[Succ[N]], r: V[N], op: BinaryOp) extends Elementwise2Base[Succ[N], Succ[N], N](l, r, op) {
-
-  override def shape: Shape[Succ[N]] = l.shape
+case class MatMul[N <: Nat](l: V[N], r: V[N]) extends Elementwise2Base[N, N, N](l, r, MatMulOp) {
 
 }
 
-case class BroadcastRight2_-[N <: Nat](l: V[N], r: V[Succ[N]], op: BinaryOp) extends Elementwise2Base[Succ[N], N, Succ[N]](l, r, op) {
 
-  override def shape: Shape[Succ[N]] = r.shape
 
+object BroadcastHelper {
+
+  def alignL[L <: Nat, R <: Nat](s1: Shape[L], s2: Shape[R]): Shape[L] = {
+    if (s1.order > s2.order) {
+      val fill = Seq.fill(s1.order - s2.order)(1)
+      (s1, Shape[L](fill ++ s2.underlying))
+    } else if (s1.order == s2.order) {
+      (s1, s2.asInstanceOf[L])
+    } else {
+      throw new Exception()
+    }
+  }
+
+  def alignR[L <: Nat, R <: Nat](s1: Shape[L], s2: Shape[R]): Shape[R] = {
+    if (s1.order < s2.order) {
+      val fill = Seq.fill(s2.order - s1.order)(1)
+      (s1, Shape[R](fill ++ s2.underlying))
+    } else if (s1.order == s2.order) {
+      (s1.asInstanceOf[R], s2)
+    } else {
+      throw new Exception()
+    }
+  }
 }
 
