@@ -2,7 +2,7 @@ package scalaad.impl.nd4j
 
 import org.nd4j.linalg.api.ndarray.INDArray
 
-import scalaad.{BooleanTensor, BooleanValue, Tensor, Value}
+import scalaad.{Tensor, Value}
 
 
 trait Nd4jValue {
@@ -23,18 +23,18 @@ trait Nd4jValue {
     }
   }
 
-  implicit val value_nd4j_tensor_bool: BooleanValue[INDArray] = {
-    new BooleanValue[INDArray] {
-      def value(t: BooleanTensor): INDArray = t match {
+  implicit val value_nd4j_tensor_bool: Value[INDArray] = {
+    new Value[INDArray] {
+      def value(t: Tensor): INDArray = t match {
         case t: Nd4jBooleanVector => t.data
       }
     }
   }
 
-  implicit val value_nd4j_scalar_bool: BooleanValue[B0] = {
-    new BooleanValue[B0] {
+  implicit val value_nd4j_scalar_bool: Value[B0] = {
+    new Value[B0] {
 
-      def value(t: BooleanTensor): B0 = t match {
+      def value(t: Tensor): B0 = t match {
         case Nd4jBooleanScalar(data) => data
       }
     }

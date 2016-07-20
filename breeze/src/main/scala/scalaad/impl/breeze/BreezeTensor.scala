@@ -9,9 +9,7 @@ case class BreezeScalar(data: T0) extends Tensor {
 
   private[this] val underlying = StdScalar(data)
 
-  def toStdFloat: std.Scalar[Float] = underlying.toStdFloat
-
-  def toStdDouble: std.T0 = underlying.toStdDouble
+  def toStd: std.T0 = underlying.data
 
   override def shape: Shape = underlying.shape
 }
@@ -19,9 +17,7 @@ case class BreezeScalar(data: T0) extends Tensor {
 
 case class BreezeVector(data: T1) extends Tensor {
 
-  def toStdFloat: std.Vec[Float] = toStdDouble.map(_.toFloat)
-
-  def toStdDouble: std.T1 = data.toArray.toSeq
+  def toStd: std.T1 = data.toArray.toSeq
 
   override def shape: Shape = Shape(data.size)
 }
@@ -31,9 +27,7 @@ case class BreezeMatrix(data: T2) extends Tensor {
 
   override def shape: Shape = Shape(data.rows, data.cols)
 
-  def toStdFloat: std.Mat[Float] = toStdDouble.map(_.map(_.toFloat))
-
-  def toStdDouble: std.T2 = {
+  def toStd: std.T2 = {
     (0 until data.rows).map { r =>
       (0 until data.cols).map { c => data(r, c) }
     }
@@ -49,9 +43,7 @@ case class BreezeTensor3(data: T3) extends Tensor {
     if (data.size > 0) data(0).cols else 0
   )
 
-  def toStdFloat: std.Vec[std.Mat[Float]] = toStdDouble.map(_.map(_.map(_.toFloat)))
-
-  def toStdDouble: std.Vec[std.T2] = {
+  def toStd: std.Vec[std.T2] = {
     (0 until data.size).map { a =>
       (0 until data(0).rows).map { r =>
         (0 until data(0).cols).map { c => data(a)(r, c) }
@@ -62,7 +54,7 @@ case class BreezeTensor3(data: T3) extends Tensor {
 }
 
 
-case class BreezeBooleanScalar(data: B0) extends BooleanTensor {
+case class BreezeBooleanScalar(data: B0) extends Tensor {
 
   private[this] val underlying = StdBooleanScalar(data)
 
@@ -73,7 +65,7 @@ case class BreezeBooleanScalar(data: B0) extends BooleanTensor {
 }
 
 
-case class BreezeBooleanVector(data: B1) extends BooleanTensor {
+case class BreezeBooleanVector(data: B1) extends Tensor {
 
   override def shape: Shape = Shape(data.size)
 
@@ -82,7 +74,7 @@ case class BreezeBooleanVector(data: B1) extends BooleanTensor {
 }
 
 
-case class BreezeBooleanMatrix(data: B2) extends BooleanTensor {
+case class BreezeBooleanMatrix(data: B2) extends Tensor {
 
   override def shape: Shape = Shape(data.rows, data.cols)
 
@@ -94,7 +86,7 @@ case class BreezeBooleanMatrix(data: B2) extends BooleanTensor {
 }
 
 
-case class BreezeBooleanTensor3(data: B3) extends BooleanTensor {
+case class BreezeBooleanTensor3(data: B3) extends Tensor {
 
   override def shape: Shape = Shape(
     data.size,

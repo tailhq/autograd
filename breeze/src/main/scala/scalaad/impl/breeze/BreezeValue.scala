@@ -1,6 +1,6 @@
 package scalaad.impl.breeze
 
-import scalaad.{BooleanTensor, BooleanValue, Tensor, Value}
+import scalaad.{Tensor, Value}
 
 
 trait BreezeValue {
@@ -11,8 +11,8 @@ trait BreezeValue {
     }
   }
 
-  implicit val value_breeze_scalar_bool: BooleanValue[B0] = new BooleanValue[B0] {
-    def value(t: BooleanTensor): B0 = t match {
+  implicit val value_breeze_scalar_bool: Value[B0] = new Value[B0] {
+    def value(t: Tensor): B0 = t match {
       case t: BreezeBooleanScalar => t.data
     }
   }
@@ -23,8 +23,8 @@ trait BreezeValue {
     }
   }
 
-  implicit val value_breeze_vector_bool: BooleanValue[B1] = new BooleanValue[B1] {
-    def value(t: BooleanTensor): B1 = t match {
+  implicit val value_breeze_vector_bool: Value[B1] = new Value[B1] {
+    def value(t: Tensor): B1 = t match {
       case t: BreezeBooleanVector => t.data
     }
   }
@@ -35,8 +35,8 @@ trait BreezeValue {
     }
   }
 
-  implicit val value_breeze_matrix_bool: BooleanValue[B2] = new BooleanValue[B2] {
-    def value(t: BooleanTensor): B2 = t match {
+  implicit val value_breeze_matrix_bool: Value[B2] = new Value[B2] {
+    def value(t: Tensor): B2 = t match {
       case t: BreezeBooleanMatrix => t.data
     }
   }
@@ -47,8 +47,8 @@ trait BreezeValue {
     }
   }
 
-  implicit val value_breeze_tensor3_bool: BooleanValue[B3] = new BooleanValue[B3] {
-    def value(t: BooleanTensor): B3 = t match {
+  implicit val value_breeze_tensor3_bool: Value[B3] = new Value[B3] {
+    def value(t: Tensor): B3 = t match {
       case t: BreezeBooleanTensor3 => t.data
     }
   }

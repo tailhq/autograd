@@ -2,7 +2,7 @@ package scalaad.impl.nd4j
 
 import scalaad.impl.std
 import scalaad.impl.std.{StdBooleanScalar, StdScalar}
-import scalaad.{BooleanTensor, Shape, Tensor}
+import scalaad.{Shape, Tensor}
 import org.nd4j.linalg.api.ndarray.INDArray
 
 
@@ -12,29 +12,21 @@ case class Nd4jScalar(data: T0) extends Tensor {
 
   def shape: Shape = underlying.shape
 
-  def toStdFloat: std.Scalar[Float] = underlying.toStdFloat
-
-  def toStdDouble: std.Scalar[Double] = underlying.toStdDouble
-
-  def toStd: std.Scalar[T0] = data
+  def toStd: std.Scalar[T0] = underlying.data
 
 }
 
 
 case class Nd4jVector(override val data: INDArray) extends Nd4jTensor(data) {
 
-  def toStdFloat: std.Vec[Float] = data.data.asDouble().map(_.toFloat)
-
-  def toStdDouble: std.Vec[Double] = data.data.asDouble()
+  def toStd: std.Vec[Double] = data.data.asDouble()
 
 }
 
 
 case class Nd4jMatrix(override val data: INDArray) extends Nd4jTensor(data) {
 
-  def toStdFloat: std.Mat[Float] = toStdDouble.map(_.map(_.toFloat))
-
-  def toStdDouble: std.Mat[Double] = {
+  def toStd: std.Mat[Double] = {
     (0 until data.rows()).toArray.toSeq.map { i =>
       data.getRow(i).data().asDouble().toSeq
     }
@@ -64,7 +56,7 @@ object Nd4jTensor {
 }
 
 
-case class Nd4jBooleanScalar(data: Boolean) extends BooleanTensor {
+case class Nd4jBooleanScalar(data: Boolean) extends Tensor {
 
   private[this] val underlying = StdBooleanScalar(data)
 
@@ -92,7 +84,7 @@ case class Nd4jBooleanMatrix(override val data: INDArray) extends Nd4jBooleanTen
 
 }
 
-class Nd4jBooleanTensor(val data: INDArray) extends BooleanTensor {
+class Nd4jBooleanTensor(val data: INDArray) extends Tensor {
 
   def shape: Shape = Shape(data.shape():_*)
 

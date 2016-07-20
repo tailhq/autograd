@@ -5,7 +5,7 @@ import scalaad.graph._
 import scalaad.impl.std.{StdUtil => U}
 
 
-trait StdVecEval { self: StdMatEval with StdVecValue with StdScalarEval =>
+trait StdVecEval { self: StdMatEval with StdScalarEval with StdValue =>
 
   implicit val eval_std_vector_double: Eval[Expr, T1] = new Eval[Expr, T1] {
 
