@@ -66,7 +66,7 @@ object Nd4jUtil {
     val dup = self.dup()
     Nd4j.getExecutioner.execAndReturn(
       new Dot(dup.linearView(), other.linearView(), dup.linearView(), dup.length())
-    ).currentResult().doubleValue() // FIXME
+    ).getFinalResult.doubleValue // FIXME
   }
 
   def eq(self: INDArray, other: INDArray): INDArray = {

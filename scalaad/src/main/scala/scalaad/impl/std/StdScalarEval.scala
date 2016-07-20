@@ -19,20 +19,20 @@ trait StdScalarEval { self: StdVecEval with StdValue =>
         case _: Eye                    => 1.0
 
         // Unary op
-        case Sum1(v, axis) => U.fold1[T0, T0](v.eval[T1], _ + _, 0.0)  // FIXME: assert(axis == 0)
-        case Max1(v, axis) => U.fold1[T0, T0](v.eval[T1], math.max, Double.MinValue) // FIXME: assert(axis == 0)
-        case Min1(v, axis) => U.fold1[T0, T0](v.eval[T1], math.min, Double.MaxValue) // FIXME: assert(axis == 0)
+        case Sum1(v, axis) => U.fold1[T0, T0](v.eval[T1], _ + _, 0.0)
+        case Max1(v, axis) => U.fold1[T0, T0](v.eval[T1], math.max, Double.MinValue)
+        case Min1(v, axis) => U.fold1[T0, T0](v.eval[T1], math.min, Double.MaxValue)
 
         // Binary op
-        // broadcast?
-        case Dot(l, r) =>
-          l.eval[T1].zip(r.eval[T1]).map({ case (a, b) => a * b}).foldLeft(0.0)(_ + _)
+        // TODO: support high order tensor
+        case Dot(l, r) => l.eval[T1].zip(r.eval[T1]).map({ case (a, b) => a * b}).foldLeft(0.0)(_ + _)
 
+        // TODO: support broadcasting
         case ElementwiseWhere(cond, a, b) =>
           if (cond.eval[B0]) a.eval[T0] else b.eval[T0]
 
         // Elementwise
-        case e: Elementwise0[Real] @unchecked =>
+        case e: Elementwise0[Real] =>
           val f = StdElementwiseOp.nullary(e)
           f()
 

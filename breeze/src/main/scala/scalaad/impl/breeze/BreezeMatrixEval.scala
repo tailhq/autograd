@@ -4,10 +4,11 @@ import breeze.linalg.{*, DenseMatrix, DenseVector}
 import breeze.{linalg, numerics}
 
 import scalaad.graph._
+import scalaad.impl.breeze.op.Op
 import scalaad.{Eval, NotImplementedYet}
 
 
-trait BreezeMatrixEval { self: BreezeValue =>
+trait BreezeMatrixEval { self: BreezeScalarEval with BreezeVectorEval with BreezeValue =>
 
   // FIXME: Broadcasting
   implicit val eval_breeze_matrix_double: Eval[Expr[Real], T2] = new Eval[Expr[Real], T2] {
@@ -87,21 +88,15 @@ trait BreezeMatrixEval { self: BreezeValue =>
         case Abs(v)  => numerics.abs(v.eval[T2])
 
         // Binary op
-        case Add(l, r) => l.eval[T2] :+ r.eval[T2]
-        case Sub(l, r) => l.eval[T2] :- r.eval[T2]
-        case Mul(l, r) => l.eval[T2] :* r.eval[T2]
-        case Div(l, r) => l.eval[T2] :/ r.eval[T2]
+        case Add(l, r) => Op.add(l, r)
+        case Sub(l, r) => Op.sub(l, r)
+        case Mul(l, r) => Op.mul(l, r)
+        case Div(l, r) => Op.div(l, r)
 
-        case Pow (l, r) => numerics.pow(l.eval[T2], r.eval[T2])
+        case Pow(l, r) => Op.pow(l, r)
 
-        case Max2(l, r) => {
-          val x = r.eval[T2]
-          l.eval[T2].mapPairs { case (k, v) => math.max(v, x(k)) }
-        }
-        case Min2(l, r) => {
-          val x = r.eval[T2]
-          l.eval[T2].mapPairs { case (k, v) => math.min(v, x(k)) }
-        }
+        case Max2(l, r) => Op.max(l, r)
+        case Min2(l, r) => Op.min(l, r)
 
       }
     }
@@ -111,16 +106,16 @@ trait BreezeMatrixEval { self: BreezeValue =>
 
     def eval(n: Expr[Bool]): B2 = n.shape.order match {
       case 2 => n match {
-        case Eq (l, r) => l.eval[T2] :== r.eval[T2]
-        case Neq(l, r) => l.eval[T2] :!= r.eval[T2]
-        case Lt (l, r) => l.eval[T2] :<  r.eval[T2]
-        case Lte(l, r) => l.eval[T2] :<= r.eval[T2]
-        case Gt (l, r) => l.eval[T2] :>  r.eval[T2]
-        case Gte(l, r) => l.eval[T2] :>= r.eval[T2]
+        case Eq (l, r) => Op.eq(l, r)
+        case Neq(l, r) => Op.neq(l, r)
+        case Lt (l, r) => Op.lt(l, r)
+        case Lte(l, r) => Op.lte(l, r)
+        case Gt (l, r) => Op.gt(l, r)
+        case Gte(l, r) => Op.gte(l, r)
 
         case Not(v)    => !v.eval[B2]
-        case And(l, r) => l.eval[B2] :& r.eval[B2]
-        case Or(l, r)  => l.eval[B2] :| r.eval[B2]
+        case And(l, r) => Op.and(l, r)
+        case Or(l, r)  => Op.or(l, r)
       }
     }
   }
@@ -132,21 +127,6 @@ trait BreezeMatrixEval { self: BreezeValue =>
 
     private[this] def elementwise3(v: Expr[Real], f: T2 => T2): T3 = v.eval[T3].map(f)
 
-    private[this] def elementwise3(l: Expr[Real], r: Expr[Real], f: (T2, T2) => T2): T3 = {
-      val x = l.eval[T3]
-      val y = r.eval[T3]
-      x.mapPairs { (k, v) => f(v, y(k)) }
-    }
-
-    private[this] def elementwise3(l: Expr[Real], r: Expr[Real], f: (T0, T0) => T0)(implicit d: DummyImplicit): T3 = {
-      val x = l.eval[T3]
-      val y = r.eval[T3]
-      x.mapPairs { (k1, v1) =>
-        v1.mapPairs { (k2, v2) =>
-          f(v2, y(k1)(k2))
-        }
-      }
-    }
 
     def eval(n: Expr[Real]): T3 = n.shape.order match {
       case 3 => n match {
@@ -206,45 +186,35 @@ trait BreezeMatrixEval { self: BreezeValue =>
         case Abs(v)  => elementwise3(v, (a: T2) => numerics.abs(a))
 
         // Binary op
-        case Add(l, r) => elementwise3(l, r, (_: T2) :+ (_: T2))
-        case Sub(l, r) => elementwise3(l, r, (_: T2) :- (_: T2))
-        case Mul(l, r) => elementwise3(l, r, (_: T2) :* (_: T2))
-        case Div(l, r) => elementwise3(l, r, (_: T2) :/ (_: T2))
+        case Add(l, r) => Op.add(l, r)
+        case Sub(l, r) => Op.sub(l, r)
+        case Mul(l, r) => Op.mul(l, r)
+        case Div(l, r) => Op.div(l, r)
 
-        case Pow (l, r) => elementwise3(l, r, (x: T2, y: T2) => numerics.pow(x, y))
+        case Pow(l, r) => Op.pow(l, r)
 
-        case Max2(l, r) => elementwise3(l, r, (x: T0, y: T0) => math.max(x, y))
-        case Min2(l, r) => elementwise3(l, r, (x: T0, y: T0) => math.min(x, y))
+        case Max2(l, r) => Op.max(l, r)
+        case Min2(l, r) => Op.min(l, r)
+
       }
     }
   }
 
   implicit val eval_breeze_tensor3_bool: Eval[Expr[Bool], B3] = new Eval[Expr[Bool], B3] {
 
-    private[this] def elementwise3C(l: Expr[Real], r: Expr[Real], f: (T2, T2) => B2): B3 = {
-      val x = l.eval[T3]
-      val y = r.eval[T3]
-      x.mapPairs { (k, v) => f(v, y(k)) }
-    }
-
-    private[this] def elementwise3B(l: Expr[Bool], r: Expr[Bool], f: (B2, B2) => B2): B3 = {
-      val x = l.eval[B3]
-      val y = r.eval[B3]
-      x.mapPairs { (k, v) => f(v, y(k)) }
-    }
-
     def eval(n: Expr[Bool]): B3 = n.shape.order match {
       case 3 => n match {
-        case Eq (l, r) => elementwise3C(l, r, (_: T2) :== (_: T2))
-        case Neq(l, r) => elementwise3C(l, r, (_: T2) :!= (_: T2))
-        case Lt (l, r) => elementwise3C(l, r, (_: T2) :<  (_: T2))
-        case Lte(l, r) => elementwise3C(l, r, (_: T2) :<= (_: T2))
-        case Gt (l, r) => elementwise3C(l, r, (_: T2) :>  (_: T2))
-        case Gte(l, r) => elementwise3C(l, r, (_: T2) :>= (_: T2))
+        case Eq (l, r) => Op.eq(l, r)
+        case Neq(l, r) => Op.neq(l, r)
+        case Lt (l, r) => Op.lt(l, r)
+        case Lte(l, r) => Op.lte(l, r)
+        case Gt (l, r) => Op.gt(l, r)
+        case Gte(l, r) => Op.gte(l, r)
 
-        case Not(v)    => v.eval[B3].map(!_)
-        case And(l, r) => elementwise3B(l, r, (_: B2) :& (_: B2))
-        case Or(l, r)  => elementwise3B(l, r, (_: B2) :| (_: B2))
+        case Not(v)    => !v.eval[B3]
+        case And(l, r) => Op.and(l, r)
+        case Or(l, r)  => Op.or(l, r)
+
       }
     }
   }

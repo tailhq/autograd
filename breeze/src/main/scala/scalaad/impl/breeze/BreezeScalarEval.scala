@@ -7,7 +7,6 @@ import scalaad.graph._
 import scalaad.impl.std.{StdElementwiseOp, StdElementwiseOpB, StdElementwiseOpC}
 
 
-// copy from StdScalarEval
 trait BreezeScalarEval { self: BreezeValue with BreezeVectorEval =>
 
   implicit val eval_breeze_scalar_double: Eval[Expr[Real], T0] = new Eval[Expr[Real], T0] {
@@ -21,6 +20,7 @@ trait BreezeScalarEval { self: BreezeValue with BreezeVectorEval =>
         case a: Diag                   => a.diagVec.value[T0]
         case _: Eye                    => 1.0
 
+        // Unary op
         case Sum1(v, axis) => linalg.sum(v.eval[T1])
         case Max1(v, axis) => linalg.max(v.eval[T1])
         case Min1(v, axis) => linalg.min(v.eval[T1])

@@ -1,11 +1,11 @@
 package scalaad.impl.breeze
 
-import breeze.linalg
 import breeze.linalg.{*, DenseVector}
-import breeze.numerics
+import breeze.{linalg, numerics}
 
 import scala.Predef.{any2stringadd => _}
 import scalaad.graph._
+import scalaad.impl.breeze.op.Op
 import scalaad.{Eval, NotImplementedYet}
 
 
@@ -27,7 +27,7 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
           val x = v.eval[T2]
           axis match {
             case 0 => linalg.sum(x(*, ::))
-            case 1 => linalg.sum(x(::, *)).inner.toDenseVector // FIXME
+            case 1 => linalg.sum(x(::, *)).inner.toDenseVector // FIXME: generalize
           }
         }
 
@@ -35,20 +35,20 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
           val x = v.eval[T2]
           axis match {
             case 0 => linalg.max(x(*, ::))
-            case 1 => linalg.min(x(::, *)).inner.toDenseVector
+            case 1 => linalg.max(x(::, *)).inner.toDenseVector
           }
         }
 
         case Min1(v, axis) => {
           val x = v.eval[T2]
           axis match {
-            case 0 => linalg.max(x(*, ::))
+            case 0 => linalg.min(x(*, ::))
             case 1 => linalg.min(x(::, *)).inner.toDenseVector
           }
         }
 
         // Binary op
-        case Dot(l, r)    => throw new NotImplementedYet()
+        case Dot(l, r) => throw new NotImplementedYet()
 
         // Ternary op
         case ElementwiseWhere(cond, a, b) => {
@@ -87,21 +87,16 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
         case Abs(v)  => numerics.abs(v.eval[T1])
 
         // Binary op
-        case Add(l, r) => l.eval[T1] :+ r.eval[T1]
-        case Sub(l, r) => l.eval[T1] :- r.eval[T1]
-        case Mul(l, r) => l.eval[T1] :* r.eval[T1]
-        case Div(l, r) => l.eval[T1] :/ r.eval[T1]
 
-        case Pow (l, r) => numerics.pow(l.eval[T1], r.eval[T1])
+        case Add(l, r) => Op.add(l, r)
+        case Sub(l, r) => Op.sub(l, r)
+        case Mul(l, r) => Op.mul(l, r)
+        case Div(l, r) => Op.div(l, r)
 
-        case Max2(l, r) => { // FIXME: UFunc
-          val x = r.eval[T1]
-          l.eval[T1].mapPairs { case (k, v) => math.max(v, x(k)) }
-        }
-        case Min2(l, r) => {
-          val x = r.eval[T1]
-          l.eval[T1].mapPairs { case (k, v) => math.min(v, x(k)) }
-        }
+        case Pow(l, r) => Op.pow(l, r)
+
+        case Max2(l, r) => Op.max(l, r)
+        case Min2(l, r) => Op.min(l, r)
 
       }
     }
@@ -111,16 +106,17 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
 
     def eval(n: Expr[Bool]): B1 = n.shape.order match {
       case 1 => n match {
-        case Eq (l, r) => l.eval[T1] :== r.eval[T1]
-        case Neq(l, r) => l.eval[T1] :!= r.eval[T1]
-        case Lt (l, r) => l.eval[T1] :<  r.eval[T1]
-        case Lte(l, r) => l.eval[T1] :<= r.eval[T1]
-        case Gt (l, r) => l.eval[T1] :>  r.eval[T1]
-        case Gte(l, r) => l.eval[T1] :>= r.eval[T1]
+        case Eq (l, r) => Op.eq(l, r)
+        case Neq(l, r) => Op.neq(l, r)
+        case Lt (l, r) => Op.lt(l, r)
+        case Lte(l, r) => Op.lte(l, r)
+        case Gt (l, r) => Op.gt(l, r)
+        case Gte(l, r) => Op.gte(l, r)
 
         case Not(v)    => !v.eval[B1]
-        case And(l, r) => l.eval[B1] :& r.eval[B1]
-        case Or(l, r)  => l.eval[B1] :| r.eval[B1]
+        case And(l, r) => Op.and(l, r)
+        case Or(l, r)  => Op.or(l, r)
+
       }
     }
   }

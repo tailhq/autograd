@@ -12,9 +12,14 @@ package object breeze {
   type T4 = DenseMatrix[DenseMatrix[T0]]
 
   type B0 = std.B0
-  type B1 = BitVector
+  type B1 = BitVector //DenseVector[B0]
   type B2 = DenseMatrix[B0]
   type B3 = DenseVector[DenseMatrix[B0]]
   type B4 = DenseMatrix[DenseMatrix[B0]]
+
+  type Scalar[A] = A
+  type Vec[A] = DenseVector[A]
+  type Mat[A] = DenseMatrix[A]
+  type Tensor3[A] = DenseVector[DenseMatrix[A]]
 
 }

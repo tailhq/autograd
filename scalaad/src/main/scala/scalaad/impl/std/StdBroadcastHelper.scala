@@ -4,6 +4,7 @@ import scalaad.Eval
 import scalaad.graph._
 
 
+// Use numpy's broadcast rule : http://docs.scipy.org/doc/numpy/reference/ufuncs.html#broadcasting
 object StdBroadcastHelper {
 
   def unary1[D <: DType, I0, O0](v: Expr[D], f: I0 => O0)(implicit e: Eval[Expr[D], Vec[I0]]): Vec[O0] = v.eval[Vec[I0]].map(f)
