@@ -2,16 +2,15 @@ package com.kogecoo.scalaad.impl.nd4j
 
 import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.graph.bool._
 import com.kogecoo.scalaad.impl.std.{StdElementwiseOp, StdElementwiseOpB, StdElementwiseOpC}
 
 
 // copy from StdScalarEval
 trait Nd4jScalarEval { self: Nd4jTensorEval with Nd4jValue =>
 
-  implicit val eval_nd4j_scalar_double: Eval[V, T0] = new Eval[V, T0] {
+  implicit val eval_nd4j_scalar_double: Eval[Expr, T0] = new Eval[Expr, T0] {
 
-    def eval(n: V): T0 = n.shape.order match {
+    def eval(n: Expr): T0 = n.shape.order match {
       case 0 => n match {
 
         // Nullary op
@@ -34,7 +33,7 @@ trait Nd4jScalarEval { self: Nd4jTensorEval with Nd4jValue =>
         }
 
         // Elementwise
-        case e: Apply0 =>
+        case e: Elementwise0 =>
           val f = StdElementwiseOp.nullary(e)
           f()
 
@@ -50,21 +49,21 @@ trait Nd4jScalarEval { self: Nd4jTensorEval with Nd4jValue =>
     }
   }
 
-  implicit val eval_nd4j_scalar_bool: Eval[B, B0] = new Eval[B, B0] {
+  implicit val eval_nd4j_scalar_bool: Eval[Expr, B0] = new Eval[Expr, B0] {
 
-    def eval(n: B): B0 = n.shape.order match {
+    def eval(n: Expr): B0 = n.shape.order match {
       case 0 => n match {
-        case e: Elementwise1B =>
+        case e: Elementwise2 with Differentiable =>
+          val f = StdElementwiseOpC.binary(e)
+          f(e.l.eval[T0], e.r.eval[T0])
+
+        case e: Elementwise1 =>
           val f = StdElementwiseOpB.unary(e)
           f(e.v.eval[B0])
 
-        case e: Elementwise2B =>
+        case e: Elementwise2 =>
           val f = StdElementwiseOpB.binary(e)
           f(e.l.eval[B0], e.r.eval[B0])
-
-        case e: Elementwise2C =>
-          val f = StdElementwiseOpC.binary(e)
-          f(e.l.eval[T0], e.r.eval[T0])
       }
     }
   }

@@ -5,7 +5,6 @@ import breeze.linalg.{*, DenseVector}
 import breeze.numerics
 import com.kogecoo.scalaad.{Eval, NotImplementedYet}
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.graph.bool._
 
 import scala.Predef.{any2stringadd => _}
 
@@ -13,9 +12,9 @@ import scala.Predef.{any2stringadd => _}
 trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with BreezeValue =>
 
   // FIXME: Broadcasting
-  implicit val eval11_breeze_vector_double: Eval[V, T1] = new Eval[V, T1] {
+  implicit val eval11_breeze_vector_double: Eval[Expr, T1] = new Eval[Expr, T1] {
 
-    def eval(n: V): T1 = n.shape.order match {
+    def eval(n: Expr): T1 = n.shape.order match {
       case 1 => n match {
         // Nullary op
         case a: Var     => a.data.value[T1]
@@ -108,9 +107,9 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
     }
   }
 
-  implicit val eval_bool_breeze_vecotr_double: Eval[B, B1] = new Eval[B, B1] {
+  implicit val eval_bool_breeze_vecotr_double: Eval[Expr, B1] = new Eval[Expr, B1] {
 
-    def eval(n: B): B1 = n.shape.order match {
+    def eval(n: Expr): B1 = n.shape.order match {
       case 1 => n match {
         case Eq (l, r) => l.eval[T1] :== r.eval[T1]
         case Neq(l, r) => l.eval[T1] :!= r.eval[T1]

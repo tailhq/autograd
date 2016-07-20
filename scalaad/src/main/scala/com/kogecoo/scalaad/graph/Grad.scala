@@ -3,11 +3,11 @@ package com.kogecoo.scalaad.graph
 import scala.Predef.{any2stringadd => _, _}
 
 
-class Grad(val m: Map[V, V]) {
+class Grad(val m: Map[DExpr, DExpr]) {
 
   def size: Int = m.size
 
-  def apply(x: V): Option[V] = m.get(x)
+  def apply(x: DExpr): Option[DExpr] = m.get(x)
 
   def ++(other: Grad): Grad = {
     val keys = this.m.keySet | other.m.keySet
@@ -24,7 +24,7 @@ class Grad(val m: Map[V, V]) {
       } else {
         (k, v2.get)
       }
-    }).toMap[V, V]
+    }).toMap[DExpr, DExpr]
     new Grad(m)
   }
 
@@ -32,13 +32,13 @@ class Grad(val m: Map[V, V]) {
 
 object Grad {
 
-  def apply(p: V, v: V): Grad = {
-    val m = Map[V, V](p -> v)
+  def apply(p: DExpr, v: DExpr): Grad = {
+    val m = Map[DExpr, DExpr](p -> v)
     new Grad(m)
   }
 
   def empty: Grad = {
-    val m = Map.empty[V, V]
+    val m = Map.empty[DExpr, DExpr]
     new Grad(m)
   }
 

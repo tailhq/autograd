@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.test
 
-import com.kogecoo.scalaad.graph.V
+import com.kogecoo.scalaad.graph.Expr
 import org.scalacheck.Prop
 
 
@@ -8,16 +8,16 @@ object SpecBackendHelper {
 
   case class Eps[T](value: T)
 
-  case class ToT0[T0](toT0: V => T0)
+  case class ToT0[T0](toT0: Expr => T0)
 
-  case class ToT1[T1](toT1: V => T1)
+  case class ToT1[T1](toT1: Expr => T1)
 
-  case class ToT2[T2](toT2: V => T2)
+  case class ToT2[T2](toT2: Expr => T2)
 
 
   object Implicits {
 
-    implicit class N0Ops[T0](val self: V) extends AnyVal {
+    implicit class N0Ops[T0](val self: Expr) extends AnyVal {
 
       def toT0(implicit cvt: ToT0[T0]): T0 = cvt.toT0(self)
 
@@ -27,7 +27,7 @@ object SpecBackendHelper {
 
     }
 
-    implicit class N1Ops[T0, T1](val self: V) extends AnyVal {
+    implicit class N1Ops[T0, T1](val self: Expr) extends AnyVal {
 
       def toT1(implicit cvt: ToT1[T1]): T1 = cvt.toT1(self)
 
@@ -37,7 +37,7 @@ object SpecBackendHelper {
 
     }
 
-    implicit class N2Ops[T0, T2](val self: V) extends AnyVal {
+    implicit class N2Ops[T0, T2](val self: Expr) extends AnyVal {
 
       def toT2(implicit cvt: ToT2[T2]): T2 = cvt.toT2(self)
 

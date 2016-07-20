@@ -2,15 +2,14 @@ package com.kogecoo.scalaad.impl.std
 
 import com.kogecoo.scalaad.Eval
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.graph.bool._
 import com.kogecoo.scalaad.impl.std.{StdUtil => U}
 
 
 trait StdVecEval { self: StdMatEval with StdVecValue with StdScalarEval =>
 
-  implicit val eval_std_vector_double: Eval[V, T1] = new Eval[V, T1] {
+  implicit val eval_std_vector_double: Eval[Expr, T1] = new Eval[Expr, T1] {
 
-    def eval(n: V): T1 = n.shape.order match {
+    def eval(n: Expr): T1 = n.shape.order match {
       case 1 => n match {
 
         // Nullary op
@@ -33,7 +32,7 @@ trait StdVecEval { self: StdMatEval with StdVecValue with StdScalarEval =>
         }
 
         // Elementwise
-        case e: Apply0 =>
+        case e: Elementwise0 =>
           val f = StdElementwiseOp.nullary(e)
           U.const1(f(), e.shape)
 
@@ -50,21 +49,23 @@ trait StdVecEval { self: StdMatEval with StdVecValue with StdScalarEval =>
   }
 
 
-  implicit val eval_std_vector_bool: Eval[B, B1] = new Eval[B, B1] {
+  implicit val eval_std_vector_bool: Eval[Expr, B1] = new Eval[Expr, B1] {
 
-    def eval(n: B): B1 = n.shape.order match {
+    def eval(n: Expr): B1 = n.shape.order match {
       case 1 => n match {
-        case e: Elementwise1B =>
+        case e: Elementwise2 with Differentiable =>
+          val f = StdElementwiseOpC.binary(e)
+          StdBroadcastHelper.binary1(e, f)
+
+        case e: Elementwise1 =>
           val f = StdElementwiseOpB.unary(e)
           StdBroadcastHelper.unary1(e, f)
 
-        case e: Elementwise2B =>
+        case e: Elementwise2 =>
           val f = StdElementwiseOpB.binary(e)
-          StdBroadcastHelper.binary1B(e, f)
+          StdBroadcastHelper.binary1(e, f)
 
-        case e: Elementwise2C =>
-          val f = StdElementwiseOpC.binary(e)
-          StdBroadcastHelper.binary1C(e, f)
+
       }
     }
   }

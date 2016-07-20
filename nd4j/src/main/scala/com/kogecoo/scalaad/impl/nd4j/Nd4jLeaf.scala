@@ -1,6 +1,6 @@
 package com.kogecoo.scalaad.impl.nd4j
 
-import com.kogecoo.scalaad.graph.{ValueExpr, Const => Const_, Var => Var_}
+import com.kogecoo.scalaad.graph.{Expr, Expr$, Const => Const_, Var => Var_}
 import org.nd4j.linalg.api.ndarray.INDArray
 
 import scala.language.implicitConversions
@@ -29,7 +29,7 @@ trait Nd4jLeaf {
   implicit def fromFloat(v: Float):   Const_ = Const(v.toDouble)
   implicit def fromDouble(v: Double): Const_ = Const(v)
 
-  implicit def fromINDArray(v: INDArray): ValueExpr = Const(v)
+  implicit def fromINDArray(v: INDArray): Expr = Const(v)
 
 }
 

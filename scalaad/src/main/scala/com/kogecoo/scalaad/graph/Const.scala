@@ -3,11 +3,11 @@ package com.kogecoo.scalaad.graph
 import com.kogecoo.scalaad._
 
 
-trait ConstBase extends Apply0 {
+trait ConstBase extends Elementwise0 with Differentiable {
 
-  def forward(wrt: V): V = Zero(forwardOutputShape(wrt))
+  def forward(wrt: DExpr): DExpr = Zero(forwardOutputShape(wrt))
 
-  def reverse(adj: V): Grad = Grad.empty
+  def reverse(adj: DExpr): Grad = Grad.empty
 
 }
 

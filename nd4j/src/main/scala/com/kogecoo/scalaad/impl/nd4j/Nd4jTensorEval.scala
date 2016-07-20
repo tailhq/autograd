@@ -1,9 +1,8 @@
 package com.kogecoo.scalaad.impl.nd4j
 
-import com.kogecoo.scalaad.{Eval, NotImplementedYet}
 import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.graph.bool._
 import com.kogecoo.scalaad.impl.nd4j.Implicits._
+import com.kogecoo.scalaad.{Eval, NotImplementedYet}
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.api.ops.{TransformOp, impl => nd4jops}
 import org.nd4j.linalg.factory.Nd4j
@@ -12,14 +11,14 @@ import org.nd4s.Implicits._
 
 trait Nd4jTensorEval {
 
-  implicit val eval_nd4j_tensor_double: Eval[V, T] = new Eval[V, T] {
+  implicit val eval_nd4j_tensor_double: Eval[Expr, T] = new Eval[Expr, T] {
 
     private[this] def exec(op: TransformOp): INDArray = {
       Nd4j.getExecutioner.execAndReturn(op)
     }
 
 
-    def eval(n: V): T = n.shape.order match {
+    def eval(n: Expr): T = n.shape.order match {
       case s if s > 0 => n match {
 
         // Nullary op
@@ -86,15 +85,15 @@ trait Nd4jTensorEval {
           Nd4jUtil.where(Nd4jUtil.lte(x, y), x, y)
         }
 
-      }
+      /*}
     }
   }
 
 
-  implicit val eval_ndj4_tensor_bool: Eval[BooleanExpr, T] = new Eval[BooleanExpr, T] {
+  implicit val eval_ndj4_tensor_bool: Eval[Expr, T] = new Eval[Expr, T] {
 
-    def eval(n: BooleanExpr): T = n.shape.order match {
-      case s if s > 0 => n match {
+    def eval(n: Expr): T = n.shape.order match {
+      case s if s > 0 => n match {*/
         case Eq (l, r) => Nd4jUtil.eq (l.eval[T], r.eval[T])
         case Neq(l, r) => Nd4jUtil.neq(l.eval[T], r.eval[T])
         case Lt (l, r) => Nd4jUtil.lt (l.eval[T], r.eval[T])

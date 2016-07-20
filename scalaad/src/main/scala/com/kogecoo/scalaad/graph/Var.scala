@@ -3,11 +3,11 @@ package com.kogecoo.scalaad.graph
 import com.kogecoo.scalaad.{Shape, Tensor}
 
 
-trait VarBase extends Apply0 {
+trait VarBase extends Elementwise0 with Differentiable {
 
-  def forward(wrt: V): V = Eye(forwardOutputShape(wrt))
+  def forward(wrt: DExpr): DExpr = Eye(forwardOutputShape(wrt))
 
-  def reverse(adj: V): Grad = Grad(this, adj)
+  def reverse(adj: DExpr): Grad = Grad(this, adj)
 
 }
 

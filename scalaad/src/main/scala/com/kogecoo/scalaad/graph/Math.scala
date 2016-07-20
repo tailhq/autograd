@@ -8,136 +8,136 @@ import com.kogecoo.scalaad.{Constraint, Shape}
 
 // Expr -> Expr
 
-case class Sin(v: V) extends Elementwise1(v) {
+case class Sin(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  final def forward(wrt: V): V = cos(v.forward(wrt))
+  final def forward(wrt: DExpr): DExpr = cos(v.forward(wrt))
 
-  final def reverse(adj: V): Grad = v.reverse(cos(adj))
+  final def reverse(adj: DExpr): Grad = v.reverse(cos(adj))
 
 }
 
 
-case class Cos(v: V) extends Elementwise1(v) {
+case class Cos(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  final def forward(wrt: V): V = -sin(v.forward(wrt))
+  final def forward(wrt: DExpr): DExpr = -sin(v.forward(wrt))
 
-  final def reverse(adj: V): Grad = v.reverse(-sin(adj))
+  final def reverse(adj: DExpr): Grad = v.reverse(-sin(adj))
 }
 
 
-case class Tan(v: V) extends Elementwise1(v) {
+case class Tan(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val t = tan(v.forward(wrt))
     one(v) :- (t :* t)
   }
 
-  def reverse(adj: V): Grad = v.reverse(one(adj) :- (tan(adj) :* tan(adj)))
+  def reverse(adj: DExpr): Grad = v.reverse(one(adj) :- (tan(adj) :* tan(adj)))
 
 }
 
 
-case class Asin(v: V) extends Elementwise1(v) {
+case class Asin(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val a = v.forward(wrt)
     one(a) :/ sqrt(one(a) :- (a :* a))
   }
 
-  def reverse(adj: V): Grad = v.reverse(one(adj) :/ sqrt(one(adj) :- (adj :* adj)))
+  def reverse(adj: DExpr): Grad = v.reverse(one(adj) :/ sqrt(one(adj) :- (adj :* adj)))
 
 }
 
 
-case class Acos(v: V) extends Elementwise1(v) {
+case class Acos(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val a = v.forward(wrt)
     -(one(a) :/ sqrt(one(a) :- (a :* a)))
   }
 
-  def reverse(adj: V): Grad = v.reverse(-(one(adj) :/ sqrt(one(adj) :- (adj :* adj))))
+  def reverse(adj: DExpr): Grad = v.reverse(-(one(adj) :/ sqrt(one(adj) :- (adj :* adj))))
 
 }
 
 
-case class Atan(v: V) extends Elementwise1(v) {
+case class Atan(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val a = v.forward(wrt)
     one(a) :/ (one(a) :+ (a :* a))
   }
 
-  def reverse(adj: V): Grad = v.reverse(one(adj) :/ (one(adj) :+ (adj :* adj)))
+  def reverse(adj: DExpr): Grad = v.reverse(one(adj) :/ (one(adj) :+ (adj :* adj)))
 
 }
 
 
-case class Sinh(v: V) extends Elementwise1(v) {
+case class Sinh(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = cosh(v.forward(wrt))
+  def forward(wrt: DExpr): DExpr = cosh(v.forward(wrt))
 
-  def reverse(adj: V): Grad = v.reverse(cosh(adj))
-
-}
-
-
-case class Cosh(v: V) extends Elementwise1(v) {
-
-  def forward(wrt: V): V = sinh(v.forward(wrt))
-
-  def reverse(adj: V): Grad = v.reverse(sinh(adj))
+  def reverse(adj: DExpr): Grad = v.reverse(cosh(adj))
 
 }
 
 
-case class Tanh(v: V) extends Elementwise1(v) {
+case class Cosh(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = sinh(v.forward(wrt))
+
+  def reverse(adj: DExpr): Grad = v.reverse(sinh(adj))
+
+}
+
+
+case class Tanh(override val v: DExpr) extends Elementwise1 with Differentiable {
+
+  def forward(wrt: DExpr): DExpr = {
     val a = v.forward(wrt)
     one(a) :- (tan(a) :* tan(a))
   }
 
-  def reverse(adj: V): Grad = v.reverse(one(adj) :- (tan(adj) :* tan(adj)))
+  def reverse(adj: DExpr): Grad = v.reverse(one(adj) :- (tan(adj) :* tan(adj)))
 
 }
 
 
-case class Ln(v: V) extends Elementwise1(v) {
+case class Ln(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val a = v.forward(wrt)
     one(a) :/ a
   }
 
-  def reverse(adj: V): Grad = v.reverse(one(adj) :/ adj)
+  def reverse(adj: DExpr): Grad = v.reverse(one(adj) :/ adj)
 
 }
 
 
-case class Exp(v: V) extends Elementwise1(v) {
+case class Exp(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = exp(v.forward(wrt))
+  def forward(wrt: DExpr): DExpr = exp(v.forward(wrt))
 
-  def reverse(adj: V): Grad = v.reverse(exp(adj))
-
-}
-
-
-case class Sqrt(v: V) extends Elementwise1(v) {
-
-  def forward(wrt: V): V = half(v) :/ sqrt(v)
-
-  def reverse(adj: V): Grad = v.reverse(half(adj) :/ sqrt(adj))
+  def reverse(adj: DExpr): Grad = v.reverse(exp(adj))
 
 }
 
 
-case class Abs(v: V) extends Elementwise1(v) {
+case class Sqrt(override val v: DExpr) extends Elementwise1 with Differentiable {
 
-  def forward(wrt: V): V = where(v :>= zero(v), one(v), -one(v))
+  def forward(wrt: DExpr): DExpr = half(v) :/ sqrt(v)
 
-  def reverse(adj: V): Grad = v.reverse(where(v :>= zero(v), adj, -adj))
+  def reverse(adj: DExpr): Grad = v.reverse(half(adj) :/ sqrt(adj))
+
+}
+
+
+case class Abs(override val v: DExpr) extends Elementwise1 with Differentiable {
+
+  def forward(wrt: DExpr): DExpr = where(v :>= zero(v), one(v), -one(v))
+
+  def reverse(adj: DExpr): Grad = v.reverse(where(v :>= zero(v), adj, -adj))
 
 }
 
@@ -152,46 +152,46 @@ case object L2Norm extends UnaryFoldOp {
 }
 */
 
-case class Sum1(v: V, axis: Int) extends AxisWiseFold1(v, axis) {
+case class Sum1(override val v: DExpr, override val axis: Int) extends AxisWiseFold1 with Differentiable {
 
-  def forward(wrt: V): V = sum(v.forward(wrt), axis)
+  def forward(wrt: DExpr): DExpr = sum(v.forward(wrt), axis)
 
-  def reverse(adj: V): Grad = v.reverse(sum(adj, axis))
-
-}
-
-case class Max1(v: V, axis: Int) extends AxisWiseFold1(v, axis) {
-
-  def forward(wrt: V): V = max(v.forward(wrt), axis)
-
-  def reverse(adj: V): Grad = v.reverse(max(adj, axis))
+  def reverse(adj: DExpr): Grad = v.reverse(sum(adj, axis))
 
 }
 
-case class Min1(v: V, axis: Int) extends AxisWiseFold1(v, axis) {
+case class Max1(override val v: DExpr, override val axis: Int) extends AxisWiseFold1 with Differentiable {
 
-  def forward(wrt: V): V = min(v.forward(wrt), axis)
+  def forward(wrt: DExpr): DExpr = max(v.forward(wrt), axis)
 
-  def reverse(adj: V): Grad = v.reverse(min(adj, axis))
+  def reverse(adj: DExpr): Grad = v.reverse(max(adj, axis))
+
+}
+
+case class Min1(override val v: DExpr, override val axis: Int) extends AxisWiseFold1 with Differentiable {
+
+  def forward(wrt: DExpr): DExpr = min(v.forward(wrt), axis)
+
+  def reverse(adj: DExpr): Grad = v.reverse(min(adj, axis))
 
 }
 
 
 // (Expr[Shape], Expr[Shape]) -> Expr[Shape0]
 
-case class Pow(l: V, r: V) extends Elementwise2(l, r) {
+case class Pow(override val l: DExpr, override val r: DExpr) extends Elementwise2 with Differentiable {
 
-  def forward(wrt: V): V = {
+  def forward(wrt: DExpr): DExpr = {
     val (dl, dr) = deriv(l, r)
     (l.forward(wrt) :* dr) :+ (dl :* r.forward(wrt))
   }
 
-  def reverse(adj: V): Grad = {
+  def reverse(adj: DExpr): Grad = {
     val (dl, dr) = deriv(l, r)
     l.reverse(adj :* dr) ++ r.reverse(dl :* adj)
   }
 
-  private[this] def deriv(l: V, r: V): (V, V) = {
+  private[this] def deriv(l: DExpr, r: DExpr): (DExpr, DExpr) = {
     val dl = ln(l) :* pow(l, r)
     val dr = r :* pow(l, r :- one(r))
     (dl, dr)
@@ -199,11 +199,11 @@ case class Pow(l: V, r: V) extends Elementwise2(l, r) {
 
 }
 
-case class Max2(l: V, r: V) extends Elementwise2(l, r) {
+case class Max2(override val l: DExpr, override val r: DExpr) extends Elementwise2 with Differentiable {
 
-  def forward(wrt: V): V = where(l :>= r, l.forward(wrt), r.forward(wrt))
+  def forward(wrt: DExpr): DExpr = where(l :>= r, l.forward(wrt), r.forward(wrt))
 
-  def reverse(adj: V): Grad = {
+  def reverse(adj: DExpr): Grad = {
     val a = l.reverse(where(l :>= r, adj, zero(r)))
     val b = r.reverse(where(l :>= r, zero(l), adj))
     a ++ b
@@ -211,11 +211,11 @@ case class Max2(l: V, r: V) extends Elementwise2(l, r) {
 
 }
 
-case class Min2(l: V, r: V) extends Elementwise2(l, r) {
+case class Min2(override val l: DExpr, override val r: DExpr) extends Elementwise2 with Differentiable {
 
-  def forward(wrt: V): V = where(l :<= r, l.forward(wrt), r.forward(wrt))
+  def forward(wrt: DExpr): DExpr = where(l :<= r, l.forward(wrt), r.forward(wrt))
 
-  def reverse(adj: V): Grad = {
+  def reverse(adj: DExpr): Grad = {
     val a = l.reverse(where(l :<= r, adj, zero(r)))
     val b = r.reverse(where(l :<= r, zero(l), adj))
     a ++ b
@@ -227,14 +227,14 @@ case class Min2(l: V, r: V) extends Elementwise2(l, r) {
 // (Expr[Shape1], Expr[Shape1]) -> Expr[Shape0]
 
 // TODO: Same behavior with http://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html
-case class Dot(l: V, r: V) extends Application2 {
+case class Dot(override val l: DExpr, override val r: DExpr) extends Application2 with Differentiable {
 
   // FIXME:
   def shape: Shape = l.shape.removeAxes(Seq(l.shape.order - 1)) // drop last axis
 
-  def forward(wrt: V): V = dot(l.forward(wrt), r) :+ dot(l, r.forward(wrt))
+  def forward(wrt: DExpr): DExpr = dot(l.forward(wrt), r) :+ dot(l, r.forward(wrt))
 
-  def reverse(adj: V): Grad = l.reverse(dot(adj, r)) ++ r.reverse(dot(l, adj))
+  def reverse(adj: DExpr): Grad = l.reverse(dot(adj, r)) ++ r.reverse(dot(l, adj))
 
 }
 
@@ -242,7 +242,7 @@ case class Dot(l: V, r: V) extends Application2 {
 // (Expr[Shape2], Expr[Shape2]) -> Expr[Shape2]
 
 @throws[Exception]
-case class MatMul(l: V, r: V) extends Application2 {
+case class MatMul(override val l: DExpr, override val r: DExpr) extends Application2 with Differentiable {
 
   Constraint.satisfy(l.shape.order >= 2, s"The order of lhs shape for MatMul needs to be >= 2")
 
@@ -260,8 +260,8 @@ case class MatMul(l: V, r: V) extends Application2 {
     } else s
   }
 
-  def forward(wrt: V): V = matmul(l.forward(wrt), r) :+ matmul(l, r.forward(wrt))
+  def forward(wrt: DExpr): DExpr = matmul(l.forward(wrt), r) :+ matmul(l, r.forward(wrt))
 
-  def reverse(adj: V): Grad = l.reverse(matmul(adj, r)) ++ r.reverse(matmul(l, adj))
+  def reverse(adj: DExpr): Grad = l.reverse(matmul(adj, r)) ++ r.reverse(matmul(l, adj))
 
 }
