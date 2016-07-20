@@ -1,6 +1,6 @@
-package com.kogecoo.scalaad.test
+package scalaad.test
 
-import com.kogecoo.scalaad.graph.Expr
+import scalaad.graph.Expr
 import org.scalacheck.Prop
 
 

@@ -6,5 +6,5 @@ libraryDependencies ++= Seq(
 initialCommands in console :=
 """
   |import breeze.linalg._
-  |import com.kogecoo.scalaad.impl.breeze.Implicits._
+  |import scalaad.impl.breeze.Implicits._
 """.stripMargin

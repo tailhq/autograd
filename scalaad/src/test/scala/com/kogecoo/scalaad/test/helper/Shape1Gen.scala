@@ -1,6 +1,6 @@
-package com.kogecoo.scalaad.test.helper
+package scalaad.test.helper
 
-import com.kogecoo.scalaad.Shape
+import scalaad.Shape
 import org.scalacheck.Gen
 
 

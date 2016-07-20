@@ -1,8 +1,8 @@
-package com.kogecoo.scalaad.test.helper.impl.std
+package scalaad.test.helper.impl.std
 
-import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.impl.std.Implicits._
-import com.kogecoo.scalaad.impl.std.{StdUtil, T0, T1, T2}
+import scalaad.graph._
+import scalaad.impl.std.Implicits._
+import scalaad.impl.std.{StdUtil, T0, T1, T2}
 
 
 

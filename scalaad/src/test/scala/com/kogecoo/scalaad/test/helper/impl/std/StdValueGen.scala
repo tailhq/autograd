@@ -1,4 +1,4 @@
-package com.kogecoo.scalaad.test.helper.impl.std
+package scalaad.test.helper.impl.std
 
 import org.scalacheck.{Arbitrary, Gen}
 

@@ -1,8 +1,8 @@
-package com.kogecoo.scalaad.test
+package scalaad.test
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.test.helper.{Shape1Gen, Shape2Gen}
+import scalaad.Shape
+import scalaad.graph._
+import scalaad.test.helper.{Shape1Gen, Shape2Gen}
 import org.scalacheck.Gen
 
 

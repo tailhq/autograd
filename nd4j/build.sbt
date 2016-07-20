@@ -6,6 +6,6 @@ libraryDependencies ++= Seq(
 
 initialCommands in console :=
 """
-  |import com.kogecoo.scalaad.impl.nd4j.Implicits._
+  |import scalaad.impl.nd4j.Implicits._
   |import org.nd4s.Implicits._
 """.stripMargin

@@ -1,7 +1,7 @@
-package com.kogecoo.scalaad.test
+package scalaad.test
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.test.helper.{N0Gen, N1Gen, N2Gen}
+import scalaad.Shape
+import scalaad.test.helper.{N0Gen, N1Gen, N2Gen}
 import org.scalacheck.Prop.BooleanOperators
 import org.scalacheck.{Gen, Prop}
 

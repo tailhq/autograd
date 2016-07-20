@@ -1,8 +1,8 @@
-package com.kogecoo.scalaad.test.helper.impl.std
+package scalaad.test.helper.impl.std
 
-import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.impl.std.StdScalar
-import com.kogecoo.scalaad.test.helper._
+import scalaad.graph._
+import scalaad.impl.std.StdScalar
+import scalaad.test.helper._
 import org.scalacheck.Gen
 
 

@@ -1,18 +1,18 @@
-package com.kogecoo.scalaad.test
+package scalaad.test
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.impl.std
-import com.kogecoo.scalaad.impl.std.Implicits._
-import com.kogecoo.scalaad.impl.std.{StdUtil => U}
-import com.kogecoo.scalaad.test.helper.impl.std.{StdN0Gen, StdN1Gen, StdN2Gen, StdValueGen}
-import com.kogecoo.scalaad.test.helper.{N0Gen, N1Gen, N2Gen}
+import scalaad.Shape
+import scalaad.impl.std
+import scalaad.impl.std.Implicits._
+import scalaad.impl.std.{StdUtil => U}
+import scalaad.test.helper.impl.std.{StdN0Gen, StdN1Gen, StdN2Gen, StdValueGen}
+import scalaad.test.helper.{N0Gen, N1Gen, N2Gen}
 import org.scalacheck.Prop.BooleanOperators
 import org.scalacheck.{Gen, Prop}
 
 
 trait StdSpecBackend extends SpecBackend {
 
-  import com.kogecoo.scalaad.test.helper.impl.std.Implicits._
+  import scalaad.test.helper.impl.std.Implicits._
 
   override final type T0 = std.T0
 

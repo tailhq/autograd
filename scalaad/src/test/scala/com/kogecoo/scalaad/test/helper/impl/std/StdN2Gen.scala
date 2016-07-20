@@ -1,9 +1,9 @@
-package com.kogecoo.scalaad.test.helper.impl.std
+package scalaad.test.helper.impl.std
 
-import com.kogecoo.scalaad.Shape
-import com.kogecoo.scalaad.graph._
-import com.kogecoo.scalaad.impl.std.{Mat, StdMatrix}
-import com.kogecoo.scalaad.test.helper._
+import scalaad.Shape
+import scalaad.graph._
+import scalaad.impl.std.{Mat, StdMatrix}
+import scalaad.test.helper._
 import org.scalacheck.Gen
 
 
