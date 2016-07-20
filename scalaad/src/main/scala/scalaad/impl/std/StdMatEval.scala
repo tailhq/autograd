@@ -7,20 +7,20 @@ import scalaad.impl.std.{StdUtil => U}
 
 trait StdMatEval { self: StdVecEval with StdScalarEval with StdValue =>
 
-  implicit val eval22_stdmat_double: Eval[Expr, T2] = new Eval[Expr, T2] {
+  implicit val eval22_stdmat_double: Eval[Expr[Real], T2] = new Eval[Expr[Real], T2] {
 
-    def eval(n: Expr): T2 = n.shape.order match {
+    def eval(n: Expr[Real]): T2 = n.shape.order match {
       case 2 => n match {
 
        // Nullary op
-        case a: Var     => a.data.value[T2]
-        case a: Const   => a.data.value[T2]
-        case Diag(d, _) => d.value[T2]
-        case _: Eye     => U.const2(1.0, n.shape)
+        case a: Var                    => a.data.value[T2]
+        case a: Const[Real] @unchecked => a.data.value[T2]
+        case Diag(d, _)                => d.value[T2]
+        case _: Eye                    => U.const2(1.0, n.shape)
 
 
         // Binary op
-        case MatMul(a: Expr, b: Expr) => {
+        case MatMul(a: Expr[Real], b: Expr[Real]) => {
           val aeval = a.eval[T2]
           val beval = b.eval[T2]
 
@@ -44,15 +44,15 @@ trait StdMatEval { self: StdVecEval with StdScalarEval with StdValue =>
         }
 
         // Elementwise
-        case e: Elementwise0 =>
+        case e: Elementwise0[Real] @unchecked =>
           val f = StdElementwiseOp.nullary(e)
           U.const2(f(), e.shape)
 
-        case e: Elementwise1 =>
+        case e: Elementwise1[Real, Real] @unchecked =>
           val f = StdElementwiseOp.unary(e)
           StdBroadcastHelper.unary2(e, f)
 
-        case e: Elementwise2 =>
+        case e: Elementwise2[Real, Real] @unchecked =>
           val f = StdElementwiseOp.binary(e)
           StdBroadcastHelper.binary2(e, f)
       }
@@ -60,19 +60,19 @@ trait StdMatEval { self: StdVecEval with StdScalarEval with StdValue =>
 
   }
 
-  implicit val eval_bool22_stdmat_double: Eval[Expr, B2] = new Eval[Expr, B2] {
+  implicit val eval_bool22_stdmat_double: Eval[Expr[Bool], B2] = new Eval[Expr[Bool], B2] {
 
-    def eval(n: Expr): B2 = n.shape.order match {
+    def eval(n: Expr[Bool]): B2 = n.shape.order match {
       case 2 => n match {
-        case e: Elementwise2 with Differentiable =>
+        case e: Comparison2[Real] @unchecked =>
           val f = StdElementwiseOpC.binary(e)
-          StdBroadcastHelper.binary2(e, f)
+          StdBroadcastHelper.binary2[Real, Bool, T0, B0](e, f)
 
-        case e: Elementwise1 =>
+        case e: BooleanOp1 =>
           val f = StdElementwiseOpB.unary(e)
           StdBroadcastHelper.unary2(e, f)
 
-        case e: Elementwise2 =>
+        case e: BooleanOp2 =>
           val f = StdElementwiseOpB.binary(e)
           StdBroadcastHelper.binary2(e, f)
 

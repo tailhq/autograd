@@ -32,10 +32,10 @@ object Implicits {
   }
 
 
-  implicit class N0Ops(val self: Expr) extends AnyVal { def toT0: T0 = self.eval[T0] }
+  implicit class N0Ops(val self: Expr[Real]) extends AnyVal { def toT0: T0 = self.eval[T0] }
 
-  implicit class N1Ops(val self: Expr) extends AnyVal { def toT1: T1 = self.eval[T1] }
+  implicit class N1Ops(val self: Expr[Real]) extends AnyVal { def toT1: T1 = self.eval[T1] }
 
-  implicit class N2Ops(val self: Expr) extends AnyVal { def toT2: T2 = self.eval[T2] }
+  implicit class N2Ops(val self: Expr[Real]) extends AnyVal { def toT2: T2 = self.eval[T2] }
 
 }

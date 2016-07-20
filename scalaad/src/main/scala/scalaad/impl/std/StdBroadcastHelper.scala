@@ -6,9 +6,9 @@ import scalaad.graph._
 
 object StdBroadcastHelper {
 
-  def unary1[I0, O0](v: Expr, f: I0 => O0)(implicit e: Eval[Expr, Vec[I0]]): Vec[O0] = v.eval[Vec[I0]].map(f)
+  def unary1[D <: DType, I0, O0](v: Expr[D], f: I0 => O0)(implicit e: Eval[Expr[D], Vec[I0]]): Vec[O0] = v.eval[Vec[I0]].map(f)
 
-  def unary2[I0, O0](v: Expr, f: I0 => O0)(implicit e: Eval[Expr, Mat[I0]]): Mat[O0] = v.eval[Mat[I0]].map(_.map(f))
+  def unary2[D <: DType, I0, O0](v: Expr[D], f: I0 => O0)(implicit e: Eval[Expr[D], Mat[I0]]): Mat[O0] = v.eval[Mat[I0]].map(_.map(f))
 
   def _binary1[I, O](l: Vec[I], r: Vec[I], f: (I, I) => O): Vec[O] = {
     (l.length, r.length) match {
@@ -20,7 +20,7 @@ object StdBroadcastHelper {
     }
   }
 
-  def binary1[I0, O0](v: Elementwise2, f: (I0, I0) => O0)(implicit e0: Eval[Expr, I0], e1: Eval[Expr, Vec[I0]]): Vec[O0] = {
+  def binary1[I <: DType, O <: DType, I0, O0](v: Elementwise2[O, I], f: (I0, I0) => O0)(implicit e0: Eval[Expr[I], I0], e1: Eval[Expr[I], Vec[I0]]): Vec[O0] = {
     val (x, y) = (v.l.shape.order, v.r.shape.order) match {
       case (1, 0) => (v.l.eval[Vec[I0]],   toVec(v.r.eval[I0]))
       case (0, 1) => (toVec(v.l.eval[I0]), v.r.eval[Vec[I0]])
@@ -30,7 +30,7 @@ object StdBroadcastHelper {
     _binary1(x, y, f)
   }
 
-  def binary2[I0, O0](v: Elementwise2, f: (I0, I0) => O0)(implicit e0: Eval[Expr, I0], e1: Eval[Expr, Vec[I0]], e2: Eval[Expr, Mat[I0]]): Mat[O0] = {
+  def binary2[I <: DType, O <: DType, I0, O0](v: Elementwise2[O, I], f: (I0, I0) => O0)(implicit e0: Eval[Expr[I], I0], e1: Eval[Expr[I], Vec[I0]], e2: Eval[Expr[I], Mat[I0]]): Mat[O0] = {
     val (x, y) = (v.l.shape.order, v.r.shape.order) match {
       case (2, 0) => (v.l.eval[Mat[I0]],        toMat(v.r.eval[I0]))
       case (2, 1) => (v.l.eval[Mat[I0]],        toMat(v.r.eval[Vec[I0]]))

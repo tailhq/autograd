@@ -88,70 +88,70 @@ trait NodeSpecBase { self: SpecBackend =>
   final def genNonzeroNV1(shape: Gen[Shape] = genS1(), value: Gen[T0] = dom) = n1gen.genNonzeroNonVar1(shape, value)
   final def genNonzeroNV2(shape: Gen[Shape] = genS2(), value: Gen[T0] = dom) = n2gen.genNonzeroNonVar2(shape, value)
 
-  final def genN1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genN1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n1gen.genNode1(genS1(), domain1)
       second <- n1gen.genNode1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genNV1_NV1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genNV1_NV1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n1gen.genNonVar1(genS1(), domain1)
       second <- n1gen.genNonVar1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genNV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genNV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n1gen.genNonVar1(genS1(), domain1)
       second <- n1gen.genNode1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr)] = {
+  final def genV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr[Real])] = {
     for {
       first  <- n1gen.genVar1(genS1(), domain1)
       second <- n1gen.genNode1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr)] = {
+  final def genV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr[Real])] = {
     for {
       first  <- n1gen.genVar1(genS1(), domain1)
       second <- n2gen.genNode2(genS2(first.shape.at(0)), domain2)
     } yield (first, second)
   }
 
-  final def genNV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genNV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n1gen.genNonVar1(genS1(), domain1)
       second <- n2gen.genNode2(genS2(first.shape.at(0)), domain2)
     } yield (first, second)
   }
 
-  final def genV1_NV1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr)] = {
+  final def genV1_NV1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr[Real])] = {
     for {
       first  <- n1gen.genVar1(genS1(), domain1)
       second <- n1gen.genNonVar1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genN1_V1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Var)] = {
+  final def genN1_V1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Var)] = {
     for {
       first  <- n1gen.genNode1(genS1(), domain1)
       second <- n1gen.genVar1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genNV1_V1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Var)] = {
+  final def genNV1_V1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Var)] = {
     for {
       first  <- n1gen.genNonVar1(genS1(), domain1)
       second <- n1gen.genVar1(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genNV2_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genNV2_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n2gen.genNonVar2(genS2(), domain1)
       s1     =  genS1(first.shape.at(0))
@@ -159,14 +159,14 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second)
   }
 
-  final def genNV2_N2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr, Expr)] = {
+  final def genNV2_N2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real])] = {
     for {
       first  <- n2gen.genNonVar2(genS2(), domain1)
       second <- n2gen.genNode2(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genV2_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr)] = {
+  final def genV2_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr[Real])] = {
     for {
       first  <- n2gen.genVar2(genS2(), domain1)
       s1     =  genS1(first.shape.at(0))
@@ -174,14 +174,14 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second)
   }
 
-  final def genV2_N2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr)] = {
+  final def genV2_N2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom): Gen[(Var, Expr[Real])] = {
     for {
       first  <- n2gen.genVar2(genS2(), domain1)
       second <- n2gen.genNode2(first.shape, domain2)
     } yield (first, second)
   }
 
-  final def genV1_NV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Expr, Expr)] = {
+  final def genV1_NV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Expr[Real], Expr[Real])] = {
     for {
       first   <- n1gen.genVar1(genS1(), domain1)
       second  <- n1gen.genNonVar1(first.shape, domain2)
@@ -189,7 +189,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genNV1_V1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr, Var, Expr)] = {
+  final def genNV1_V1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr[Real], Var, Expr[Real])] = {
     for {
       first   <- n1gen.genNonVar1(genS1(), domain1)
       second  <- n1gen.genVar1(first.shape, domain2)
@@ -197,7 +197,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genV1_V1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Var, Expr)] = {
+  final def genV1_V1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Var, Expr[Real])] = {
     for {
       first   <- n1gen.genVar1(genS1(), domain1)
       second  <- n1gen.genVar1(first.shape, domain2)
@@ -205,7 +205,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genNV1_NV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr, Expr, Expr)] = {
+  final def genNV1_NV1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real], Expr[Real])] = {
     for {
       first   <- n1gen.genNonVar1(genS1(), domain1)
       second  <- n1gen.genNonVar1(first.shape, domain2)
@@ -213,7 +213,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genN1_N1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr, Expr, Expr)] = {
+  final def genN1_N1_N1(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real], Expr[Real])] = {
     for {
       first   <- n1gen.genNode1(genS1(), domain1)
       second  <- n1gen.genNode1(first.shape, domain2)
@@ -221,7 +221,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genNV1_NV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr, Expr, Expr)] = {
+  final def genNV1_NV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr[Real], Expr[Real], Expr[Real])] = {
     for {
       first   <- n1gen.genNonVar1(genS1(), domain1)
       second  <- n1gen.genNonVar1(first.shape, domain2)
@@ -229,7 +229,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genV1_NV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Expr, Expr)] = {
+  final def genV1_NV1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Expr[Real], Expr[Real])] = {
     for {
       first   <- n1gen.genVar1(genS1(), domain1)
       second  <- n1gen.genNonVar1(first.shape, domain2)
@@ -237,7 +237,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genNV1_V1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr, Var, Expr)] = {
+  final def genNV1_V1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Expr[Real], Var, Expr[Real])] = {
     for {
       first   <- n1gen.genNonVar1(genS1(), domain1)
       second  <- n1gen.genVar1(first.shape, domain2)
@@ -245,7 +245,7 @@ trait NodeSpecBase { self: SpecBackend =>
     } yield (first, second, reverse)
   }
 
-  final def genV1_V1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Var, Expr)] = {
+  final def genV1_V1_RowEquivN2(domain1: Gen[T0] = dom, domain2: Gen[T0] = dom, domain3: Gen[T0] = dom): Gen[(Var, Var, Expr[Real])] = {
     for {
       first   <- n1gen.genVar1(genS1(), domain1)
       second  <- n1gen.genVar1(first.shape, domain2)

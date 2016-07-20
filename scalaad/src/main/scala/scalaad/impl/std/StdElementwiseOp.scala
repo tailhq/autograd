@@ -5,13 +5,13 @@ import scalaad.graph._
 
 object StdElementwiseOp {
 
-  def nullary(n: Expr): () => T0 = n match {
+  def nullary(n: Expr[Real]): () => T0 = n match {
     case Zero(_) => () => 0.0
     case Half(_) => () => 0.5
     case One (_) => () => 1.0
   }
 
-  def unary(n: Expr): (T0 => T0) = n match {
+  def unary(n: Expr[Real]): (T0 => T0) = n match {
     case _: Pos      => +_
     case _: Neg      => -_
     case _: Identity => v => v
@@ -36,7 +36,7 @@ object StdElementwiseOp {
     case _: Abs  => math.abs
   }
 
-  def binary(n: Expr): (T0, T0) => T0 = n match {
+  def binary(n: Expr[Real]): (T0, T0) => T0 = n match {
     case _: Add => (x, y) => x + y
     case _: Sub => (x, y) => x - y
     case _: Mul => (x, y) => x * y
@@ -52,11 +52,11 @@ object StdElementwiseOp {
 
 object StdElementwiseOpB {
 
-  def unary(n: Expr): (B0 => B0) = n match {
+  def unary(n: Expr[Bool]): (B0 => B0) = n match {
     case _: Not => v => !v
   }
 
-  def binary(n: Expr): ((B0, B0) => B0) = n match {
+  def binary(n: Expr[Bool]): ((B0, B0) => B0) = n match {
     case _: And => (x, y) => x && y
     case _: Or  => (x, y) => x || y
   }
@@ -66,7 +66,7 @@ object StdElementwiseOpB {
 
 object StdElementwiseOpC {
 
-  def binary(n: Expr): ((T0, T0) => B0) = n match {
+  def binary(n: Expr[Bool]): ((T0, T0) => B0) = n match {
     case _: Eq  => (x, y) => x == y
     case _: Neq => (x, y) => x != y
     case _: Lt  => (x, y) => x < y

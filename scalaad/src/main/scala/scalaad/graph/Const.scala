@@ -3,11 +3,11 @@ package scalaad.graph
 import scalaad._
 
 
-trait ConstBase extends Elementwise0 with Differentiable {
+trait ConstBase extends Elementwise0[Real] with Differentiable[Real] {
 
-  def forward(wrt: DExpr): DExpr = Zero(forwardOutputShape(wrt))
+  def forward(wrt: DExpr[Real]): DExpr[Real] = Zero(forwardOutputShape(wrt))
 
-  def reverse(adj: DExpr): Grad = Grad.empty
+  def reverse(adj: DExpr[Real]): Grad = Grad.empty
 
 }
 
@@ -21,7 +21,7 @@ case class One(shape: Shape) extends ConstBase
 case class Two(shape: Shape) extends ConstBase
 
 
-case class Const(data: Tensor) extends ConstBase { def shape: Shape = data.shape }
+case class Const[D <: DType](data: Tensor[D]) extends ConstBase { def shape: Shape = data.shape }
 
 
 @throws[Exception]
@@ -33,7 +33,7 @@ case class Eye(shape: Shape) extends ConstBase {
 
 
 @throws[Exception]
-case class Diag(diagVec: Tensor, order: Int) extends ConstBase {
+case class Diag(diagVec: Tensor[Real], order: Int) extends ConstBase {
 
   Constraint.satisfy(diagVec.shape.order == 1, s"The order of a reference vector for Diag tensor needs to be == 1 but $diagVec")
 

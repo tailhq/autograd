@@ -9,9 +9,9 @@ abstract class N0Gen[T] {
 
   def genVar0(valueGen: Gen[T]): Gen[Var]
 
-  def genConst0(valueGen: Gen[T]): Gen[Const]
+  def genConst0(valueGen: Gen[T]): Gen[Const[Real]]
 
-  final def genNode0(valueGen: Gen[T]): Gen[Expr] = {
+  final def genNode0(valueGen: Gen[T]): Gen[Expr[Real]] = {
     Gen.oneOf(
       genVar0(valueGen),
       genConst0(valueGen),
@@ -21,7 +21,7 @@ abstract class N0Gen[T] {
     )
   }
 
-  final def genNonzeroNode0(valueGen: Gen[T]): Gen[Expr] = {
+  final def genNonzeroNode0(valueGen: Gen[T]): Gen[Expr[Real]] = {
     Gen.oneOf(
       genVar0(valueGen),
       genConst0(valueGen),
@@ -30,7 +30,7 @@ abstract class N0Gen[T] {
     )
   }
 
-  final def genNonVar0(valueGen: Gen[T]): Gen[Expr] = {
+  final def genNonVar0(valueGen: Gen[T]): Gen[Expr[Real]] = {
     Gen.oneOf(
       genConst0(valueGen),
       genZero0(),
@@ -39,7 +39,7 @@ abstract class N0Gen[T] {
     )
   }
 
-  final def genNonzeroNonVar0(valueGen: Gen[T]): Gen[Expr] = {
+  final def genNonzeroNonVar0(valueGen: Gen[T]): Gen[Expr[Real]] = {
     Gen.oneOf(
       genConst0(valueGen),
       genHalf0(),

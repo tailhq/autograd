@@ -1,10 +1,12 @@
 package scalaad
 
+import scalaad.graph.DType
 
-trait Tensor {
+
+trait Tensor[D <: DType] {
 
   def shape: Shape
 
-  def value[A](implicit v: Value[A]): A = v.value(this)
+  def value[R](implicit v: Value[D, R]): R = v.value(this)
 
 }

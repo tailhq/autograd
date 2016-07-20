@@ -3,6 +3,6 @@ package scalaad
 
 package object graph {
 
-  type DExpr = Expr with Differentiable
+  type DExpr[D <: DType] = Expr[D] with Differentiable[D]
 
 }

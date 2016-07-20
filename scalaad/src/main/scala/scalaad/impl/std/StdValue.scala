@@ -1,60 +1,61 @@
 package scalaad.impl.std
 
+import scalaad.graph.{Bool, Real}
 import scalaad.{Tensor, Value}
 
 
 trait StdValue {
 
-  implicit val value_std_scalar_double: Value[T0] = {
-    new Value[T0] {
-      def value(t: Tensor): T0 = t match {
-        case StdScalar(data) => data
+  implicit val value_std_scalar_double: Value[Real, T0] = {
+    new Value[Real, T0] {
+      def value(t: Tensor[Real]): T0 = t match {
+        case a: StdScalar[T0, Real] @unchecked => a.data
       }
     }
   }
 
-  implicit val value_std_vector_double: Value[T1] = {
-    new Value[T1] {
-      def value(t: Tensor): T1 = t match {
-        case StdVector(data) => data
+  implicit val value_std_vector_double: Value[Real, T1] = {
+    new Value[Real, T1] {
+      def value(t: Tensor[Real]): T1 = t match {
+        case a: StdVector[T0, Real] @unchecked => a.data
       }
     }
   }
 
-  implicit val value_std_matrix_double: Value[T2] = {
-    new Value[T2] {
+  implicit val value_std_matrix_double: Value[Real, T2] = {
+    new Value[Real, T2] {
 
-      def value(t: Tensor): T2 = t match {
-        case StdMatrix(data) => data
+      def value(t: Tensor[Real]): T2 = t match {
+        case a: StdMatrix[T0, Real] @unchecked => a.data
       }
 
     }
   }
 
 
-  implicit val value_std_scalar_bool: Value[B0] = {
-    new Value[B0] {
+  implicit val value_std_scalar_bool: Value[Bool, B0] = {
+    new Value[Bool, B0] {
 
-      def value(t: Tensor): B0 = t match {
-        case StdBooleanScalar(data) => data
+      def value(t: Tensor[Bool]): B0 = t match {
+        case a: StdScalar[B0, Bool] @unchecked => a.data
       }
     }
   }
 
-  implicit val value_std_vector_bool: Value[B1] = {
-    new Value[B1] {
+  implicit val value_std_vector_bool: Value[Bool, B1] = {
+    new Value[Bool, B1] {
 
-      def value(t: Tensor): B1 = t match {
-        case StdBooleanVector(data) => data
+      def value(t: Tensor[Bool]): B1 = t match {
+        case a: StdVector[B0, Bool] @unchecked => a.data
       }
     }
   }
 
-  implicit val value_std_matrix_bool: Value[B2] = {
-    new Value[B2] {
+  implicit val value_std_matrix_bool: Value[Bool, B2] = {
+    new Value[Bool, B2] {
 
-      def value(t: Tensor): B2 = t match {
-        case StdBooleanMatrix(data) => data
+      def value(t: Tensor[Bool]): B2 = t match {
+        case a: StdMatrix[B0, Bool] @unchecked => a.data
 
       }
     }

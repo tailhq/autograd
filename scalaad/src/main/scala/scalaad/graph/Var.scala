@@ -3,15 +3,15 @@ package scalaad.graph
 import scalaad.{Shape, Tensor}
 
 
-trait VarBase extends Elementwise0 with Differentiable {
+trait VarBase extends Elementwise0[Real] with Differentiable[Real] {
 
-  def forward(wrt: DExpr): DExpr = Eye(forwardOutputShape(wrt))
+  def forward(wrt: DExpr[Real]): DExpr[Real] = Eye(forwardOutputShape(wrt))
 
-  def reverse(adj: DExpr): Grad = Grad(this, adj)
+  def reverse(adj: DExpr[Real]): Grad = Grad(this, adj)
 
 }
 
-case class Var(data: Tensor) extends VarBase { def shape: Shape = data.shape }
+case class Var(data: Tensor[Real]) extends VarBase { def shape: Shape = data.shape }
 
 
 // Future Work

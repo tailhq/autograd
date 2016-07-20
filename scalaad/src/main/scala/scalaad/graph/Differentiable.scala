@@ -3,15 +3,15 @@ package scalaad.graph
 import scalaad.Shape
 
 
-trait Differentiable { self: Expr =>
+trait Differentiable[D <: DType] { self: Expr[D] =>
 
 
-  def forward(wrt: DExpr): DExpr
+  def forward(wrt: DExpr[D]): DExpr[D]
 
-  def reverse(adj: DExpr): Grad
+  def reverse(adj: DExpr[D]): Grad
 
   // Reference: https://en.wikipedia.org/wiki/Matrix_calculus#Vector-by-vector
-  final def forwardOutputShape(wrt: Expr): Shape = wrt.shape.concat(self.shape)
+  final def forwardOutputShape(wrt: Expr[D]): Shape = wrt.shape.concat(self.shape)
 
 }
 

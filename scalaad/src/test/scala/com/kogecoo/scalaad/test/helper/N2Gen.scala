@@ -10,7 +10,7 @@ abstract class N2Gen[VG] {
 
   def genVar2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Var]
 
-  def genConst2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Const]
+  def genConst2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Const[Real]]
 
   final def genZero2(shapeGen: Gen[Shape]): Gen[Zero] = {
     for (s <- shapeGen; n <- Gen.const(Zero(s))) yield n
@@ -26,7 +26,7 @@ abstract class N2Gen[VG] {
 
   // composite
 
-  final def genNode2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr] = {
+  final def genNode2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr[Real]] = {
     oneOf(
       genVar2(shapeGen, valueGen),
       genConst2(shapeGen, valueGen),
@@ -36,7 +36,7 @@ abstract class N2Gen[VG] {
     )
   }
 
-  final def genNonVar2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr] = {
+  final def genNonVar2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr[Real]] = {
     oneOf(
       genVar2(shapeGen, valueGen),
       genConst2(shapeGen, valueGen),
@@ -46,7 +46,7 @@ abstract class N2Gen[VG] {
     )
   }
 
-  final def genNonzeroNode2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr] = {
+  final def genNonzeroNode2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr[Real]] = {
     oneOf(
       genConst2(shapeGen, valueGen),
       genHalf2(shapeGen),
@@ -54,7 +54,7 @@ abstract class N2Gen[VG] {
     )
   }
 
-  final def genNonzeroNonVar2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr] = {
+  final def genNonzeroNonVar2(shapeGen: Gen[Shape], valueGen: Gen[VG]): Gen[Expr[Real]] = {
     oneOf(
       genConst2(shapeGen, valueGen),
       genHalf2(shapeGen),

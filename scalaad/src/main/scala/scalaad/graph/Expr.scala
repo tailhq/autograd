@@ -3,11 +3,11 @@ package scalaad.graph
 import scalaad.{Eval, Shape}
 
 
-trait Expr {
+trait Expr[D <: DType] {
 
   def shape: Shape
 
-  def eval[R](implicit ev: Eval[Expr, R]): R = ev.eval(this)
+  def eval[R](implicit ev: Eval[Expr[D], R]): R = ev.eval(this)
 
 }
 
@@ -15,32 +15,43 @@ trait Expr {
 object Expr {
 
 
-  implicit class RichExpr(val self: DExpr) extends AnyVal {
+  implicit class RichRealExpr(val self: DExpr[Real]) extends AnyVal {
 
-    def unary_+(): DExpr = Pos(self)
-    def unary_-(): DExpr = Neg(self)
+    def unary_+(): DExpr[Real] = Pos(self)
 
-    def :+(rhs: DExpr): DExpr = Add(self, rhs)
-    def :-(rhs: DExpr): DExpr = Sub(self, rhs)
-    def :*(rhs: DExpr): DExpr = Mul(self, rhs)
-    def :/(rhs: DExpr): DExpr = Div(self, rhs)
+    def unary_-(): DExpr[Real] = Neg(self)
 
-    def dot(rhs: DExpr): DExpr = Dot(self, rhs)
+    def :+(rhs: DExpr[Real]): DExpr[Real] = Add(self, rhs)
 
-    def :==(rhs: DExpr): Expr = Eq (self, rhs)
-    def :!=(rhs: DExpr): Expr = Neq(self, rhs)
-    def :< (rhs: DExpr): Expr = Lt (self, rhs)
-    def :<=(rhs: DExpr): Expr = Lte(self, rhs)
-    def :> (rhs: DExpr): Expr = Gt (self, rhs)
-    def :>=(rhs: DExpr): Expr = Gte(self, rhs)
+    def :-(rhs: DExpr[Real]): DExpr[Real] = Sub(self, rhs)
 
+    def :*(rhs: DExpr[Real]): DExpr[Real] = Mul(self, rhs)
+
+    def :/(rhs: DExpr[Real]): DExpr[Real] = Div(self, rhs)
+
+    def dot(rhs: DExpr[Real]): DExpr[Real] = Dot(self, rhs)
+
+    def :==(rhs: DExpr[Real]): Expr[Bool] = Eq(self, rhs)
+
+    def :!=(rhs: DExpr[Real]): Expr[Bool] = Neq(self, rhs)
+
+    def :<(rhs: DExpr[Real]): Expr[Bool] = Lt(self, rhs)
+
+    def :<=(rhs: DExpr[Real]): Expr[Bool] = Lte(self, rhs)
+
+    def :>(rhs: DExpr[Real]): Expr[Bool] = Gt(self, rhs)
+
+    def :>=(rhs: DExpr[Real]): Expr[Bool] = Gte(self, rhs)
+  }
+
+  implicit class RichBoolExpr(val self: Expr[Bool]) extends AnyVal {
 
     // FIXME: check underlying type
-    def :&(rhs: Expr): Expr = And(self, rhs)
-    def :|(rhs: Expr): Expr = Or(self, rhs)
+    def :&(rhs: Expr[Bool]): Expr[Bool] = And(self, rhs)
 
-    def unary_!(): Expr = Not(self)
+    def :|(rhs: Expr[Bool]): Expr[Bool] = Or(self, rhs)
 
+    def unary_!(): Expr[Bool] = Not(self)
   }
 
 }

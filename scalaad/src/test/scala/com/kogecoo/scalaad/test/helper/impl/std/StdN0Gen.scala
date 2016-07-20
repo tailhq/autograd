@@ -12,7 +12,7 @@ class StdN0Gen extends N0Gen[Double] {
     for (v <- valueGen) yield Var(StdScalar(v))
   }
 
-  override def genConst0(valueGen: Gen[Double]): Gen[Const] = {
+  override def genConst0(valueGen: Gen[Double]): Gen[Const[Real]] = {
     for (v <- valueGen) yield Const(StdScalar(v))
   }
 

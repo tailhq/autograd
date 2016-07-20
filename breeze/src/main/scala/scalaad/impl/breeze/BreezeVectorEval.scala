@@ -12,15 +12,15 @@ import scalaad.{Eval, NotImplementedYet}
 trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with BreezeValue =>
 
   // FIXME: Broadcasting
-  implicit val eval11_breeze_vector_double: Eval[Expr, T1] = new Eval[Expr, T1] {
+  implicit val eval11_breeze_vector_double: Eval[Expr[Real], T1] = new Eval[Expr[Real], T1] {
 
-    def eval(n: Expr): T1 = n.shape.order match {
+    def eval(n: Expr[Real]): T1 = n.shape.order match {
       case 1 => n match {
         // Nullary op
-        case a: Var     => a.data.value[T1]
-        case a: Const   => a.data.value[T1]
-        case Diag(d, _) => d.value[T1]
-        case _: Eye     => DenseVector.ones[T0](n.shape.at(0))
+        case a: Var                    => a.data.value[T1]
+        case a: Const[Real] @unchecked => a.data.value[T1]
+        case a: Diag                   => a.diagVec.value[T1]
+        case _: Eye                    => DenseVector.ones[T0](n.shape.at(0))
 
         // Unary op
         case Sum1(v, axis) => {
@@ -107,9 +107,9 @@ trait BreezeVectorEval { self: BreezeMatrixEval with BreezeScalarEval with Breez
     }
   }
 
-  implicit val eval_bool_breeze_vecotr_double: Eval[Expr, B1] = new Eval[Expr, B1] {
+  implicit val eval_bool_breeze_vecotr_double: Eval[Expr[Bool], B1] = new Eval[Expr[Bool], B1] {
 
-    def eval(n: Expr): B1 = n.shape.order match {
+    def eval(n: Expr[Bool]): B1 = n.shape.order match {
       case 1 => n match {
         case Eq (l, r) => l.eval[T1] :== r.eval[T1]
         case Neq(l, r) => l.eval[T1] :!= r.eval[T1]

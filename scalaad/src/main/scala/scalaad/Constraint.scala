@@ -1,6 +1,6 @@
 package scalaad
 
-import scalaad.graph.Expr
+import scalaad.graph.{DType, Expr}
 
 
 object Constraint {
@@ -11,25 +11,25 @@ object Constraint {
   }
 
   @throws[Exception]
-  def commonShape(l: Expr, r: Expr): Unit = satisfy(
+  def commonShape[D <: DType](l: Expr[D], r: Expr[D]): Unit = satisfy(
     l.shape.order == r.shape.order && l.shape == r.shape,
     s"Shapes (${l.shape}) and (${r.shape}) must be equivalent."
   )
 
   @throws[Exception]
-  def leftOrderBiggerThanRight(l: Expr, r: Expr): Unit = satisfy(
+  def leftOrderBiggerThanRight[D <: DType](l: Expr[D], r: Expr[D]): Unit = satisfy(
     l.shape.order > r.shape.order,
     s"The order of the left (${l.shape}) must be bigger than the right's (${r.shape})."
   )
 
   @throws[Exception]
-  def rightOrderBiggerThanLeft(l: Expr, r: Expr): Unit = satisfy(
+  def rightOrderBiggerThanLeft[D <: DType](l: Expr[D], r: Expr[D]): Unit = satisfy(
     l.shape.order < r.shape.order,
     s"The order of the left (${l.shape}) must be smaller than the right's (${r.shape})."
   )
 
   @throws[Exception]
-  def broadcastableToLeft(l: Expr, r: Expr): Unit = satisfy(
+  def broadcastableToLeft[D <: DType](l: Expr[D], r: Expr[D]): Unit = satisfy(
     l.shape.underlying.take(r.shape.order) == r.shape.underlying,
     {
       val hint = l.shape.removeAxes(l.shape.underlying.indices.toList.drop(r.shape.order))
@@ -38,7 +38,7 @@ object Constraint {
   )
 
   @throws[Exception]
-  def broadcastableToRight(l: Expr, r: Expr): Unit = satisfy(
+  def broadcastableToRight[D <: DType](l: Expr[D], r: Expr[D]): Unit = satisfy(
     r.shape.underlying.take(l.shape.order) == l.shape.underlying,
     {
       val hint = r.shape.removeAxes(r.shape.underlying.indices.toList.drop(l.shape.order))
@@ -58,15 +58,15 @@ object Constraint {
   }
 
   @throws[Exception]
-  def foldable(e: Expr): Unit = satisfy(
+  def foldable[D <: DType](e: Expr[D]): Unit = satisfy(
     e.shape.order > 0,
-    s"Fold cannot perform for the order of Expr $e. It must be > 0"
+    s"Fold cannot perform for the order of Expr[D] $e. It must be > 0"
   )
 
   @throws[Exception]
   def expandable(numNewAxes: Int): Unit = satisfy(
     numNewAxes >= 0,
-    s"The size of numNewAxes for Expand Expr must be >= 0"
+    s"The size of numNewAxes for Expand Expr[D] must be >= 0"
   )
 
   @throws[Exception]

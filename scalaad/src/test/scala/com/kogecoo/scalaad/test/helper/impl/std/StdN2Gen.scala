@@ -24,7 +24,7 @@ class StdN2Gen extends N2Gen[Double] {
     } yield Var(StdMatrix(mat))
   }
 
-  override def genConst2(shapeGen: Gen[Shape], valueGen: Gen[Double]): Gen[Const] = {
+  override def genConst2(shapeGen: Gen[Shape], valueGen: Gen[Double]): Gen[Const[Real]] = {
     for {
       s   <- shapeGen
       mat <- genStdMatWithShape(s, valueGen)

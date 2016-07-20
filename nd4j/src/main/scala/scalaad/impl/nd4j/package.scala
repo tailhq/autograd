@@ -9,4 +9,5 @@ package object nd4j {
   type T  = INDArray
 
   type B0 = std.B0
+  type B  = INDArray
 }

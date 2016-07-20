@@ -10,15 +10,15 @@ import scalaad.{Eval, NotImplementedYet}
 trait BreezeMatrixEval { self: BreezeValue =>
 
   // FIXME: Broadcasting
-  implicit val eval_breeze_matrix_double: Eval[Expr, T2] = new Eval[Expr, T2] {
+  implicit val eval_breeze_matrix_double: Eval[Expr[Real], T2] = new Eval[Expr[Real], T2] {
 
-    def eval(n: Expr): T2 = n.shape.order match {
+    def eval(n: Expr[Real]): T2 = n.shape.order match {
       case 2 => n match {
         // Nullary op
-        case a: Var     => a.data.value[T2]
-        case a: Const   => a.data.value[T2]
-        case Diag(d, _) => d.value[T2]
-        case _: Eye     => DenseMatrix.eye(n.shape.at(0))
+        case a: Var                    => a.data.value[T2]
+        case a: Const[Real] @unchecked => a.data.value[T2]
+        case a: Diag                   => a.diagVec.value[T2]
+        case _: Eye            => DenseMatrix.eye(n.shape.at(0))
 
         // Unary op
         case Sum1(v, axis) => {
@@ -107,9 +107,9 @@ trait BreezeMatrixEval { self: BreezeValue =>
     }
   }
 
-  implicit val eval_breeze_matrix_bool: Eval[Expr, B2] = new Eval[Expr, B2] {
+  implicit val eval_breeze_matrix_bool: Eval[Expr[Bool], B2] = new Eval[Expr[Bool], B2] {
 
-    def eval(n: Expr): B2 = n.shape.order match {
+    def eval(n: Expr[Bool]): B2 = n.shape.order match {
       case 2 => n match {
         case Eq (l, r) => l.eval[T2] :== r.eval[T2]
         case Neq(l, r) => l.eval[T2] :!= r.eval[T2]
@@ -126,19 +126,19 @@ trait BreezeMatrixEval { self: BreezeValue =>
   }
 
   // FIXME: generalize
-  implicit val eval_breeze_tensor3_double: Eval[Expr, T3] = new Eval[Expr, T3] {
+  implicit val eval_breeze_tensor3_double: Eval[Expr[Real], T3] = new Eval[Expr[Real], T3] {
 
     private[this] def fillVector(size: Int, m: T2): T3 = DenseVector.fill(size)(m)
 
-    private[this] def elementwise3(v: Expr, f: T2 => T2): T3 = v.eval[T3].map(f)
+    private[this] def elementwise3(v: Expr[Real], f: T2 => T2): T3 = v.eval[T3].map(f)
 
-    private[this] def elementwise3(l: Expr, r: Expr, f: (T2, T2) => T2): T3 = {
+    private[this] def elementwise3(l: Expr[Real], r: Expr[Real], f: (T2, T2) => T2): T3 = {
       val x = l.eval[T3]
       val y = r.eval[T3]
       x.mapPairs { (k, v) => f(v, y(k)) }
     }
 
-    private[this] def elementwise3(l: Expr, r: Expr, f: (T0, T0) => T0)(implicit d: DummyImplicit): T3 = {
+    private[this] def elementwise3(l: Expr[Real], r: Expr[Real], f: (T0, T0) => T0)(implicit d: DummyImplicit): T3 = {
       val x = l.eval[T3]
       val y = r.eval[T3]
       x.mapPairs { (k1, v1) =>
@@ -148,13 +148,13 @@ trait BreezeMatrixEval { self: BreezeValue =>
       }
     }
 
-    def eval(n: Expr): T3 = n.shape.order match {
+    def eval(n: Expr[Real]): T3 = n.shape.order match {
       case 3 => n match {
         // Nullary op
-        case a: Var     => a.data.value[T3]
-        case a: Const   => a.data.value[T3]
-        case Diag(d, _) => throw new NotImplementedYet()
-        case _: Eye     => throw new NotImplementedYet()
+        case a: Var                    => a.data.value[T3]
+        case a: Const[Real] @unchecked => a.data.value[T3]
+        case a: Diag                   => throw new NotImplementedYet()
+        case _: Eye                    => throw new NotImplementedYet()
 
         // Unary op
         case Sum1(v, axis) => throw new NotImplementedYet()
@@ -219,21 +219,21 @@ trait BreezeMatrixEval { self: BreezeValue =>
     }
   }
 
-  implicit val eval_breeze_tensor3_bool: Eval[Expr, B3] = new Eval[Expr, B3] {
+  implicit val eval_breeze_tensor3_bool: Eval[Expr[Bool], B3] = new Eval[Expr[Bool], B3] {
 
-    private[this] def elementwise3C(l: Expr, r: Expr, f: (T2, T2) => B2): B3 = {
+    private[this] def elementwise3C(l: Expr[Real], r: Expr[Real], f: (T2, T2) => B2): B3 = {
       val x = l.eval[T3]
       val y = r.eval[T3]
       x.mapPairs { (k, v) => f(v, y(k)) }
     }
 
-    private[this] def elementwise3B(l: Expr, r: Expr, f: (B2, B2) => B2): B3 = {
+    private[this] def elementwise3B(l: Expr[Bool], r: Expr[Bool], f: (B2, B2) => B2): B3 = {
       val x = l.eval[B3]
       val y = r.eval[B3]
       x.mapPairs { (k, v) => f(v, y(k)) }
     }
 
-    def eval(n: Expr): B3 = n.shape.order match {
+    def eval(n: Expr[Bool]): B3 = n.shape.order match {
       case 3 => n match {
         case Eq (l, r) => elementwise3C(l, r, (_: T2) :== (_: T2))
         case Neq(l, r) => elementwise3C(l, r, (_: T2) :!= (_: T2))
