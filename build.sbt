@@ -18,8 +18,8 @@ lazy val commonPublishSettings = Seq(
   homepage := Some(url("http://kogecoo.github.com/scalaad")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  pomIncludeRepository := (_ => false),
-  pomExtra := commonPomExtra //,
+  pomIncludeRepository := (_ => false)//,
+  //pomExtra := commonPomExtra //,
   //publishTo               ~= version {(v: String) => choosePublishTo(v)}
 )
 

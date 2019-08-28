@@ -32,7 +32,7 @@ object Application {
 
     val x = Var(DenseVector(1.0, 2.0, 3.0))
 
-    val y = 1 * sin(x) * 2 + x * 3
+    val y = sin(x) * 2 + x * 3
 
     println(y)
     println(y.deriv(x))
