@@ -5,7 +5,7 @@ import com.kogecoo.scalaad.rule._
 
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
-import org.nd4s.Implicits._
+//import org.nd4s.Implicits._
 
 import scala.language.implicitConversions
 

@@ -1,34 +1,34 @@
 lazy val root = project.in(file("."))
-  .aggregate(scalaad, breeze, nd4j)
+  .aggregate(core, breeze)
   .settings(commonSettings: _*)
-  .settings(name := "scalaad-root")
+  .settings(name := "autograd")
   .settings(publish := { })
   .settings(testSettings: _*)
 
-lazy val scalaad = project.in(file("scalaad"))
-  .settings(commonSettings ++ commonPublishSettings:_*)
-  .settings(name := "scalaad")
+lazy val core = project.in(file("autograd-core"))
+  .settings(commonSettings)
+  //.settings(crossScalaVersions := Seq("2.11.8"))
+  .settings(name := "autograd-core")
 
 lazy val breeze = project.in(file("breeze"))
-  .dependsOn(scalaad)
-  .settings(commonSettings ++ commonPublishSettings:_*)
+  .dependsOn(core)
+  .settings(commonSettings)
 
-lazy val nd4j = project.in(file("nd4j"))
-  .dependsOn(scalaad)
-  .settings(commonSettings ++ commonPublishSettings:_*)
+/* lazy val nd4j = project.in(file("nd4j"))
+  .dependsOn(core)
+  .settings(commonSettings)
+  .settings(scalaVersion := "2.11.8") */
 
 lazy val example = project.in(file("example"))
   .dependsOn(breeze)
-  .dependsOn(nd4j)
-  .dependsOn(scalaad)
+  .dependsOn(core)
   .settings(commonSettings:_*)
 
 lazy val commonSettings = Seq(
-  organization            :=  "com.kogecoo",
-  name                    <<= name("scalaad-" + _),
+  organization            :=  "io.github.transcendent-ai-labs",
+  name                    ~= (n => "autograd-" + n),
   version                 :=  "0.0.1-SNAPSHOT",
-  scalaVersion            :=  "2.11.7",
-  crossScalaVersions      := Seq("2.11.7"),
+  scalaVersion            :=  "2.12.8",
   scalacOptions           ++= commonScalacOptions,
   resolvers               ++= commonResolvers,
   libraryDependencies     ++= commonLibraryDependencies
@@ -40,8 +40,8 @@ lazy val commonPublishSettings = Seq(
   publishMavenStyle       :=  true,
   publishArtifact in Test :=  false,
   pomIncludeRepository    :=  (_ => false),
-  pomExtra                :=  commonPomExtra,
-  publishTo               <<= version { (v: String) => choosePublishTo(v) }
+  pomExtra                :=  commonPomExtra//,
+  //publishTo               ~= version {(v: String) => choosePublishTo(v)}
 )
 
 lazy val commonScalacOptions = Seq(
@@ -60,8 +60,8 @@ lazy val commonResolvers = Seq(
 )
 
 lazy val commonLibraryDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.12.6" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 )
 
 lazy val commonPomExtra = {

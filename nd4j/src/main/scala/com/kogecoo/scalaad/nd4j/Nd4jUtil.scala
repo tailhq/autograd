@@ -4,7 +4,7 @@ import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.api.ops.impl.scalar.comparison.{ScalarGreaterThanOrEqual, ScalarLessThanOrEqual}
 import org.nd4j.linalg.api.ops.impl.transforms.comparison.{GreaterThanOrEqual, LessThanOrEqual}
 import org.nd4j.linalg.factory.Nd4j
-import org.nd4s.Implicits._
+//import org.nd4s.Implicits._
 
 
 object Nd4jUtil {

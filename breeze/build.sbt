@@ -1,6 +1,6 @@
 libraryDependencies ++= Seq(
-  "org.scalanlp" %% "breeze"         % "0.11.2",
-  "org.scalanlp" %% "breeze-natives" % "0.11.2"
+  "org.scalanlp" %% "breeze"         % "1.0" % "compile",
+  "org.scalanlp" %% "breeze-natives" % "1.0" % "compile"
 )
 
 initialCommands in console :=
