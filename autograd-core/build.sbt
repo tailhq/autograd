@@ -1,4 +1,4 @@
 initialCommands in console :=
   """
-    |import com.kogecoo.scalaad.ScalarRule.Implicits._
+    |import io.github.tailabs.autograd.ScalarRule.Implicits._
   """.stripMargin

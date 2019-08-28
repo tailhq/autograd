@@ -14,8 +14,9 @@ build/*.jar
 target/*
 breeze/target/*
 nd4j/target/*
-example/target/*
-scalaad/target/*
+examples/target/*
+autograd-core/target/*
+resolution-cache
 release.properties
 *.log
 data/results*
